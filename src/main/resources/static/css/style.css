@@ -1,0 +1,89 @@
+/* ==========================================
+   リセットCSS
+   ========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN W3", sans-serif;
+  color: #3b4043;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* ==========================================
+   Header
+   ========================================== */
+header {
+  background-color: #f1f8fe;
+  margin-bottom: 48px;
+  padding: 20px 0;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-logo img {
+  height: 40px;
+  display: block;
+}
+
+.header-menus {
+  display: flex;
+  gap: 10px;
+}
+
+.regist-btn,
+.login-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #87cefa;
+  text-decoration: none;
+  user-select: none;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  transition: 0.4s ease;
+  cursor: pointer;
+}
+
+.regist-btn:hover,
+.login-btn:hover {
+  background-color: #87cefa;
+  color: #fff;
+}
+
+/* ==========================================
+   Footer
+   ========================================== */
+.footer {
+  background-color: #999;
+  padding: 10px 0;
+  text-align: center;
+  color: #fff;
+  margin-top: auto;
+}
