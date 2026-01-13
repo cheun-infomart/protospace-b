@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=protospace
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: spring-app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/protospace
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    ports:
+      - "8080:8080"
