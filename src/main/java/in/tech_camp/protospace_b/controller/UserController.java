@@ -13,12 +13,14 @@ import lombok.AllArgsConstructor;
 public class UserController {
   private final UserRepository userRepository;
 
+  //ログイン成功
   @GetMapping("/users/login")
   public String showLogin(){
       return "users/login";
   }
-  
-   @GetMapping("/login")
+
+  //ログイン失敗
+  @GetMapping("/login")
   public String showLoginWithError(@RequestParam(value = "error") String error, Model model) {
     if (error != null) {
       model.addAttribute("loginError", "メールアドレスまたはパスワードが無効です。");
