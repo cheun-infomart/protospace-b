@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <header th:fragment="header">
+      <nav class="header-nav">
+        <div class="header-logo">
+          <img th:src="@{/images/Logo.png}" alt="Logo" />
+        </div>
+        <div class="header-menus">
+          <a th:href="@{/users/register}" class="regist-btn">会員登録</a>
+          <a th:href="@{/users/login}" class="login-btn">ログイン</a>
+        </div>
+      </nav>
+    </header>
+  </body>
+</html>
