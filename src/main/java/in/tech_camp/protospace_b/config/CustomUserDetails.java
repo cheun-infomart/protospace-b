@@ -1,15 +1,20 @@
 package in.tech_camp.protospace_b.config;
 
+import java.util.Collection; // 追加
+import java.util.Collections; // 追加
+
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-public class CustomUserDetails {
-  private final UserEntity user;
 
-    public CustomUserDetail(UserEntity user) {
+public class CustomUserDetails implements UserDetails{
+    @Getter // 外部から userEntity を取得したい場合のみ必要
+    private final UserEntity user;
+
+    public CustomUserDetails(UserEntity user) {
         this.user = user;
     }
 
@@ -29,22 +34,14 @@ public class CustomUserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 }

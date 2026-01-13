@@ -7,8 +7,29 @@
           <img th:src="@{/images/Logo.png}" alt="Logo" />
         </div>
         <div class="header-menus">
-          <a th:href="@{/users/register}" class="regist-btn">会員登録</a>
-          <a th:href="@{/users/login}" class="login-btn">ログイン</a>
+          <div
+            class="user_nav grid-6"
+            th:if="${#authorization.expression('isAuthenticated()')}"
+          >
+            <form
+              th:action="@{/logout}"
+              method="post"
+              style="display: inline-block"
+              0.
+            >
+              <input class="logout-btn" type="submit" value="ログアウト" />
+            </form>
+
+            <a class="post" th:href="@{#}">New Proto</a>
+          </div>
+
+          <div
+            class="grid-6"
+            th:if="${#authorization.expression('!isAuthenticated()')}"
+          >
+            <a th:href="@{/users/register}" class="regist-btn">会員登録</a>
+            <a th:href="@{/users/login}" class="login-btn">ログイン</a>
+          </div>
         </div>
       </nav>
     </header>

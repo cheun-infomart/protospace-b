@@ -1,5 +1,6 @@
 package in.tech_camp.protospace_b.repository;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -9,4 +10,7 @@ import in.tech_camp.protospace_b.entity.UserEntity;
 public interface UserRepository {
   @Select("SELECT * FROM users WHERE email = #{email}")
   UserEntity findByEmail(String email);
+
+  @Insert("INSERT INTO users (name, email, password, profile, department, position) VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position})")
+  void insert(UserEntity user);
 }
