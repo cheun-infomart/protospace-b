@@ -14,7 +14,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 a {
@@ -40,11 +39,7 @@ header {
   background-color: #f1f8fe;
   margin-bottom: 48px;
   padding: 20px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  z-index: 1000;
 }
 
 .header-nav {
