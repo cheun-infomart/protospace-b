@@ -1,47 +1,57 @@
 <!DOCTYPE html>
-  <head>
-    <th:block th:replace="~{common/head :: head}"></th:block>
-  </head>
+<head>
+  <th:block th:replace="~{common/head :: head}"></th:block>
+</head>
 <body>
   <header th:replace="~{common/header :: header}"></header>
   <main>
     <div class="prototype-new-inner">
       <div class="prototype-new-form-wrapper">
         <h2 class="prototype-new-page-heading">新規プロトタイプ投稿</h2>
-        <form th:action="@{/prototypes}" th:method="post" th:object="${prototypeForm}">
+        <div th:if="${errorMessages}" th:each="error : ${errorMessages}">
+          <div th:text="${error}"></div>
+        </div>
+        <form
+          th:action="@{/prototypes}"
+          th:method="post"
+          th:object="${prototypeForm}"
+          enctype="multipart/form-data"
+        >
           <div class="prototype-new-field">
             <label th:for="name">プロトタイプの名称</label>
-            <br>
+            <br />
             <input type="text" th:field="*{name}" id="name" />
           </div>
 
           <div class="prototype-new-field">
             <label th:for="catchCopy">キャッチコピー</label>
-            <br>
+            <br />
             <textarea th:field="*{catchCopy}" id="catchCopy"></textarea>
           </div>
 
           <div class="prototype-new-field">
             <label th:for="concept">コンセプト</label>
-            <br>
+            <br />
             <textarea th:field="*{concept}" id="concept"></textarea>
           </div>
 
           <div class="prototype-new-field">
             <label th:for="image">プロトタイプの画像</label>
-            <br>
+            <br />
             <input type="file" th:field="*{image}" id="image" />
           </div>
 
           <div class="prototype-new-actions">
-            <input type="submit" value="保存する" class="prototype-new-form-btn" />
+            <input
+              type="submit"
+              value="保存する"
+              class="prototype-new-form-btn"
+            />
           </div>
         </form>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<footer th:replace="~{common/footer :: footer}"></footer>
+  <footer th:replace="~{common/footer :: footer}"></footer>
 </body>
-</html>
