@@ -14,7 +14,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 a {
@@ -40,11 +39,7 @@ header {
   background-color: #f1f8fe;
   margin-bottom: 48px;
   padding: 20px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  z-index: 1000;
 }
 
 .header-nav {
@@ -82,6 +77,32 @@ header {
 
 .regist-btn:hover,
 .login-btn:hover {
+  background-color: #87cefa;
+  color: #fff;
+}
+
+.logout-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #87cefa;
+  text-decoration: none;
+  user-select: none;
+}
+
+.new_proto-post {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #87cefa;
+  text-decoration: none;
+  user-select: none;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  transition: 0.4s ease;
+}
+
+.new_proto-post:hover {
   background-color: #87cefa;
   color: #fff;
 }
@@ -169,4 +190,3 @@ footer {
     font-size: 24px;
   }
 }
-

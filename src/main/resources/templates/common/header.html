@@ -16,10 +16,17 @@
               method="post"
               style="display: inline-block"
             >
-              <input class="logout-btn" type="submit" value="ログアウト" />
+              <!-- <input class="logout-btn" type="submit" value="ログアウト" /> -->
+              <a
+                class="logout-btn"
+                rel="nofollow"
+                data-method="delete"
+                href="/logout"
+                >ログアウト</a
+              >
             </form>
 
-            <a class="post" th:href="@{#}">New Proto</a>
+            <a class="new_proto-post" th:href="@{#}">New Proto</a>
           </div>
 
           <div
