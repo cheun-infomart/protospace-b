@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+  <head>
+    <th:block th:replace="~{common/head :: head}"></th:block>
+  </head>
+
+  <body>
+    <header th:replace="~{common/header :: header}"></header>
+    <main class="user-show-container">
+      <section class="user-show-info">
+        <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h1>
+        <table class="user-show-info-table">
+          <tr>
+            <th>名前</th>
+            <td th:text="${user.name}">名前</td>
+          </tr>
+
+          <tr>
+            <th>プロフィール</th>
+            <td th:text="${user.profile}">プロフィール</td>
+          </tr>
+
+          <tr>
+            <th>所属</th>
+            <td th:text="${user.department}">所属</td>
+          </tr>
+
+          <tr>
+            <th>役職</th>
+            <td th:text="${user.position}">役職</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="user-show-prototype-section">
+        <h1 th:text="${user.name} + 'さんのプロトタイプ'">名前さんのプロトタイプ</h1>
+        <div class="user-show-prototype-grid">
+          <div th:each="prototype : ${prototypes}" class="user-show-prototype-card">
+            <div class="user-show-card-image">
+              <img th:src="@{/uploads/{name}(name=${prototype.image})}" alt="img" />
+            </div>
+            <div class="user-show-card-content">
+              <h3 th:text="${prototype.name}" class="user-show-card-title">プロトタイプタイトル</h3>
+              <p th:text="${prototype.catchCopy}"></p>
+              <div class="user-show-card-footer">
+                <a
+                  th:href="@{/user/{id}(id=${user.id})}"
+                  th:text="|by ${user.name}|"
+                  class="user-show-author-link"
+                  >by 名前</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer th:replace="~{common/footer :: footer}"></footer>
+  </body>
+</html>
