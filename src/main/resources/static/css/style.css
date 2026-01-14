@@ -89,6 +89,82 @@ main {
   min-height: calc(100vh - 161px);
   width: 100%;
 }
+.prototype-index-main {
+  display: block;
+  unicode-bidi: isolate;
+}
+.prototype-index-content{
+  width: 1024px;
+  margin: 0 auto;
+}
+.prototype-index-greeting{
+  margin-bottom: 20px;
+}
+.prototype-index-greeting_link{
+  text-decoration: underline;
+}
+.prototype-index-card_wrapper{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  min-height: calc(100vh - 161px);
+}
+.prototype-index-card{
+  width: calc((100% - 50px) / 3);
+  margin-bottom: 40px;
+}
+.prototype-index-card_img{
+  margin-bottom: 16px;
+}
+.prototype-index-card_title{
+  display: block;
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+.prototype-index-card_summary{
+  font-size: 16px;
+}
+.prototype-index-card_user{
+  display: block;
+  font-size: 12px;
+  color: #999;
+  text-align: right;
+  text-decoration: underline;
+}
+
+/* 1024px以下の表示 */
+@media(max-width: 1024px){
+  .prototype-index-content{
+    width: 90%;
+    margin: 0 auto;
+  }
+  .prototype-index-card{
+    width: 48%;
+    margin-bottom: 40px;
+  }
+  .prototype-index-card_title{
+    font-size: 18px;
+  }
+  .prototype-index-card_summary{
+    font-size: 14px;
+  }
+}
+
+/* 599px以下の表示 */
+@media(max-width: 599px){
+  .prototype-index-card{
+    width: 100%;
+    margin-bottom: 60px;
+  }
+  .prototype-index-card_title{
+    font-size: 16px;
+  }
+  .prototype-index-card_summary{
+    font-size: 12px;
+  }
+}
 
 /* ==========================================
    Footer
