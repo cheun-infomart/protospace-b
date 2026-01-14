@@ -8,7 +8,11 @@
     <div class="prototype-new-inner">
       <div class="prototype-new-form-wrapper">
         <h2 class="prototype-new-page-heading">新規プロトタイプ投稿</h2>
-        <div th:if="${errorMessages}" th:each="error : ${errorMessages}">
+        <div
+          th:if="${errorMessages}"
+          th:each="error : ${errorMessages}"
+          class="prototype-new-error"
+        >
           <div th:text="${error}"></div>
         </div>
         <form

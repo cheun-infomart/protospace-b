@@ -242,6 +242,11 @@ footer {
   margin-bottom: 40px;
 }
 
+.prototype-new-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 1024px) {
   .prototype-new-inner {
     width: 90%;
