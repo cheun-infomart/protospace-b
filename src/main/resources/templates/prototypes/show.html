@@ -27,28 +27,51 @@
       </div>
 
 
-      <div class="prototype-show-details">
-        <div class="prototype-show-explanation">
-          <div class="prototype-show-catchcopy">
-            <div class="prototype-show-catchcopy-name">
-              <h3>キャッチコピー</h3>
+      
+      <div class="prototype-show-explanation">
+        <div class="prototype-show-catchcopy">
+          <div class="prototype-show-catchcopy-name">
+            <h3>キャッチコピー</h3>
+          </div>
+          <div class="prototype-show-catchcopy-text">
+            <p th:text="${prototype.catchCopy}"></p>
+          </div>
+        </div>
+        <div class="prototype-show-concept">
+          <div class="prototype-show-concept-name">
+            <h3>コンセプト</h3>
+          </div>
+          <div class="prototype-show-concept-text">
+            <p th:text="${prototype.concept}"></p>
+          </div>
+        </div>
+
+        <!--コメントエリア-->
+        <div class="prototype-show-comment-area">
+          <div class="prototype-show-comment-input-and-button">
+            <div class="prototype-show-comment-input">
+              <form>
+                <label for="comment">コメント</label>
+                <input type="text" id="comment">
+              </form>
             </div>
-            <div class="prototype-show-catchcopy-text">
-              <p th:text="${prototype.catchCopy}"></p>
+            <div class="prototype-show-comment-button">
+              <input type="submit" value="送信する">
             </div>
           </div>
-          <div class="prototype-show-concept">
-            <div class="prototype-show-concept-name">
-              <h3>コンセプト</h3>
-            </div>
-            <div class="prototype-show-concept-text">
-              <p th:text="${prototype.concept}"></p>
-            </div>
-          </div>
-
-
+            <ul class="prototype-show-comments">
+              <li class="prototype-show-comment">
+                <span class="prototype-show-comment-text">テキストテキストテキストテキストテキストテキスト</span>
+                <a href="#" class="prototype-show-comment-user">コメントユーザー名</a>
+              </li>
+              <li class="prototype-show-comment">
+                <span class="prototype-show-comment-text">テキストテキストテキストテキストテキスト</span>
+                <a href="#" class="prototype-show-comment-user">コメントユーザー名2</a>
+              </li>
+            </ul>
         </div>
       </div>
+      
     </div> 
     
     <footer th:replace="~{common/footer :: footer}"></footer>

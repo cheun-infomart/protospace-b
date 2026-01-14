@@ -106,14 +106,16 @@ footer {
    ========================================== */
 .prototype-show-main{
   max-width: 1440px;
+  width:100%;
   height: auto;
-  padding:0 208px;
   background-color: #ffffff;
-  text-align: center;
   display:flex;
   flex-flow: column;
+  text-align: center;
+  align-items: center;
   margin: 0 auto;
   box-sizing: border-box; 
+  
 }
 
 .prototype-show-content-text-and-button{
@@ -185,6 +187,9 @@ footer {
 }
 
 .prototype-show-explanation{
+  max-width:1024px;
+  width:100%;
+  margin:0 auto;
   display:flex;
   flex-flow: column;
   gap:8px;
@@ -212,9 +217,112 @@ footer {
   margin-bottom: 8px;
 }
 
+.prototype-show-comment-area{
+  padding: 20px;
+  display:flex;
+  flex-flow: column;
+  gap:40px;
+  background-color: #f6f6f6;
+  max-width:1024px;
+  width:100%;
+  margin:28px auto 40px;
+  text-align: left;
+  align-self: stretch;
+}
+
+.prototype-show-comment-input-and-button{
+  display:flex;
+  flex-flow: column;
+  align-items: flex-start; 
+  gap: 10px;
+}
+
+.prototype-show-comment-input form{
+  display:flex;
+  flex-flow: column;
+  align-items: flex-start; 
+  gap: 10px;
+}
+
+.prototype-show-comment-input label{
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #000000;
+}
+
+.prototype-show-comment-input input{
+  border:1px solid #767676;
+  border-radius: 2px;
+  width:100%;
+  max-width:200px;
+}
+
+.prototype-show-comment-button input{
+  padding: 5px 20px 6px;
+  background-color: #87CEFA;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+  border: none;
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color:#ffffff
+}
+
+.prototype-show-comment-button input:hover {
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}
+
+.prototype-show-comments{
+  display:flex;
+  flex-flow: column;
+  gap: 5px;
+}
+
+.prototype-show-comment{
+  display:flex;
+  gap:6px;
+  list-style-type: none;
+  align-items: center; 
+}
+
+.prototype-show-comment::before {
+  content: "";            /* 空の要素を作る */
+  width: 6px;             /* 四角の幅 */
+  height: 6px;            /* 四角の高さ */
+  background-color: #3b4043; /* 四角の色 */
+  flex-shrink: 0;         /* 四角が潰れないように固定 */
+}
+
+.prototype-show-comment-text{
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  
+}
 
 
 
+.prototype-show-comment-user{
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-underline-offset: 0%;
+  text-decoration-thickness:0%;
+  color: #999999;
+}
 
 
 .copyright {
