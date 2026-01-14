@@ -81,6 +81,32 @@ header {
   color: #fff;
 }
 
+.logout-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #87cefa;
+  text-decoration: none;
+  user-select: none;
+}
+
+.new_proto-post {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #87cefa;
+  text-decoration: none;
+  user-select: none;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  transition: 0.4s ease;
+}
+
+.new_proto-post:hover {
+  background-color: #87cefa;
+  color: #fff;
+}
+
 /* ==========================================
    main
    ========================================== */
@@ -315,12 +341,71 @@ footer {
   color: #999999;
 }
 
+/* ==========================================
+   ログイン画面
+   ========================================== */
+
+.login-inner {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+.login-form {
+  min-height: calc(100vh - 161px);
+}
+
+.login-h2 {
+  font-size: 30px;
+  margin-bottom: 28px;
+}
+
+.login-field {
+  margin: 10px 0;
+}
+
+.login-actions {
+  margin-bottom: 40px;
+}
+
+.login-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #fff;
+  text-decoration: none;
+  user-select: none;
+  background: #87cefa;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+}
+
+.login-btn:hover {
+  background: #6fbef3;
+  transform: translateY(-1px);
+}
+
+.login-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+}
+
 .copyright {
   text-align: center;
   color: #fff;
   font-size: 10px;
 }
 
+@media (max-width: 1024px) {
+  .login-inner {
+    width: 90%;
+    margin: 0 auto;
+  }
+  .login-h2 {
+    font-size: 24px;
+  }
+}
 /* ==========================================
    ユーザー詳細ページ
    ========================================== */
