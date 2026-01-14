@@ -87,3 +87,120 @@ header {
   color: #fff;
   margin-top: auto;
 }
+
+  /* ==========================================
+   prototypes-show
+   ========================================== */
+.prototype-show-main{
+  max-width: 1440px;
+  height: auto;
+  padding:0 208px;
+  background-color: #ffffff;
+  text-align: center;
+  display:flex;
+  flex-flow: column;
+  margin: 0 auto;
+  box-sizing: border-box; 
+}
+
+.prototype-show-content-text-and-button{
+  display:flex;
+  flex-flow: column;
+  gap:16px;
+}
+
+.prototype-show-content-text-name{
+  font-family:  'Noto Sans CJK JP', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color:#3b4043;
+  box-sizing: border-box; 
+}
+
+.prototype-show-content-text-username{
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-underline-offset: 0%;
+  text-decoration-thickness:0%;
+  color: #999999;
+}
+
+.prototype-show-content-button{
+  display: inline-flex;
+  justify-content: center; 
+  align-items: center;
+  gap:8px;
+}
+
+.prototype-show-content-button-edit,
+.prototype-show-content-button-delete{
+  height:24px;
+  border-radius: 3px;
+  border: 1px solid #999999;
+  padding: 5px 20px;
+  font-family:  'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0%;
+
+ 
+  
+  background-color: #ffffff;
+  color:#999999;
+  cursor: pointer;   
+}
+
+.prototype-show-content-button-edit:hover,
+.prototype-show-content-button-delete:hover{
+  color:#ffffff;
+  background-color: #999999;
+  transition: 0.5s;
+}
+
+
+.prototype-show-image{
+  padding: 16px 0;
+
+}
+
+.prototype-show-explanation{
+  display:flex;
+  flex-flow: column;
+  gap:8px;
+}
+
+.prototype-show-catchcopy-name,
+.prototype-show-concept-name{
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #3B4043;
+  padding-bottom: 8px;
+}
+
+.prototype-show-catchcopy-text,
+.prototype-show-concept-text {
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #3B4043;
+  margin-bottom: 8px;
+}
+
+
+
+
+
+

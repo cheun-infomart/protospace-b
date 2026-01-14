@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+  <head>
+    <th:block th:replace="~{common/head :: head}"></th:block>
+  </head>
+  <body>
+    <header th:replace="~{common/header :: header}"></header>
+    
+    <!--詳細エリア-->
+    <div class="prototype-show-main">
+      <div class="prototype-show-content">
+        <div class="prototype-show-content-text-and-button">
+          <div class="prototype-show-content-text">
+            <h3 class="prototype-show-content-text-name" th:text="${prototype.name}"></h3>
+            <a href="#" class="prototype-show-content-text-username" th:text="'by ' + ${user.name}"></a>
+          </div>
+          <div class="prototype-show-content-button">
+            <a href="#" class="prototype-show-content-button-edit">編集する</a>
+            <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
+              <input type="submit" class="prototype-show-content-button-delete" value="削除する">
+            </form> 
+          </div>
+        </div>
+        <div class="prototype-show-image">
+          <img th:src="@{${prototype.image}}" alt="メッセージ画像" style="width: 324px; height: 324px;" />
+        </div>
+      </div>
+
+
+      <div class="prototype-show-details">
+        <div class="prototype-show-explanation">
+          <div class="prototype-show-catchcopy">
+            <div class="prototype-show-catchcopy-name">
+              <h3>キャッチコピー</h3>
+            </div>
+            <div class="prototype-show-catchcopy-text">
+              <p th:text="${prototype.catchCopy}"></p>
+            </div>
+          </div>
+          <div class="prototype-show-concept">
+            <div class="prototype-show-concept-name">
+              <h3>コンセプト</h3>
+            </div>
+            <div class="prototype-show-concept-text">
+              <p th:text="${prototype.concept}"></p>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div> 
+    
+    <footer th:replace="~{common/footer :: footer}"></footer>
+  </body>
+</html>
