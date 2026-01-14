@@ -14,11 +14,15 @@
             <h3 class="prototype-show-content-text-name" th:text="${prototype.name}"></h3>
             <a href="#" class="prototype-show-content-text-username" th:text="'by ' + ${user.name}"></a>
           </div>
-          <div class="prototype-show-content-button">
-            <a href="#" class="prototype-show-content-button-edit">編集する</a>
-            <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
-              <input type="submit" class="prototype-show-content-button-delete" value="削除する">
-            </form> 
+
+          <!--ログイン状態かつ自分の投稿かでボタンの表示変更-->
+          <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == user.id}">
+            <div class="prototype-show-content-button">
+              <a href="#" class="prototype-show-content-button-edit">編集する</a>
+              <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
+                <input type="submit" class="prototype-show-content-button-delete" value="削除する">
+              </form> 
+            </div>
           </div>
         </div>
         <div class="prototype-show-image">
@@ -71,7 +75,6 @@
             </ul>
         </div>
       </div>
-      
     </div> 
     
     <footer th:replace="~{common/footer :: footer}"></footer>
