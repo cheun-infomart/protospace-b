@@ -11,6 +11,10 @@ body {
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN W3", sans-serif;
   color: #3b4043;
   line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 80px;
 }
 
 a {
@@ -36,6 +40,11 @@ header {
   background-color: #f1f8fe;
   margin-bottom: 48px;
   padding: 20px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .header-nav {
@@ -78,9 +87,16 @@ header {
 }
 
 /* ==========================================
+   main
+   ========================================== */
+main {
+  flex: 1;
+}
+
+/* ==========================================
    Footer
    ========================================== */
-.footer {
+footer {
   background-color: #999;
   padding: 10px 0;
   text-align: center;
@@ -138,6 +154,12 @@ header {
   font-size: 0.85rem;
 }
 
+.copyright {
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+}
+
 @media (max-width: 1024px) {
   .login-inner {
     width: 90%;
@@ -147,3 +169,4 @@ header {
     font-size: 24px;
   }
 }
+

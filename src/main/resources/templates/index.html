@@ -7,13 +7,15 @@
   <body>
     <header th:replace="~{common/header :: header}"></header>
 
-    <!-- 追加 -->
-    <span
-      class="welcome-msg"
-      th:if="${#authorization.expression('isAuthenticated()')}"
-      th:text="'こんにちは、' + ${#authentication.principal.user.name} + 'さん'"
-    ></span>
-
+    <!-- 山下さんへ　仮で入れてます-->
+    <main>
+      <span
+        class="welcome-msg"
+        th:if="${#authorization.expression('isAuthenticated()')}"
+        th:text="'こんにちは、' + ${#authentication.principal.user.name} + 'さん'"
+      ></span>
+    </main>
+    
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
 </html>
