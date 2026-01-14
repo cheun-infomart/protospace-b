@@ -23,6 +23,7 @@ import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
+import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
 
 
@@ -41,7 +42,7 @@ public class PrototypeController {
 
   // プロトタイプ投稿保存
   @PostMapping("/prototypes")
-  public String createPrototype(@ModelAttribute("prototypeForm") @Validated PrototypeForm prototypeForm, BindingResult result, Model model) {
+  public String createPrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, Model model) {
 
     // 画像が無い場合は入力必須のエラーを返す(@NotBlankが使えないのでここで手動設定)
     if (prototypeForm.getImage().isEmpty()) {
