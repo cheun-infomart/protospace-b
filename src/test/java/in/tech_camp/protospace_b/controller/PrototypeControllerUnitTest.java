@@ -1,17 +1,10 @@
 package in.tech_camp.protospace_b.controller;
 
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.BeforeEach;
-import in.tech_camp.protospace_b.entity.PrototypeEntity;
-import in.tech_camp.protospace_b.repository.PrototypeRepository;
-import in.tech_camp.protospace_b.repository.UserRepository;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +14,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +35,7 @@ public class PrototypeControllerUnitTest {
   @Mock
   private PrototypeRepository prototypeRepository;
 
+  @Mock
   private PrototypeService prototypeService;  
 
   @Mock
@@ -94,10 +90,9 @@ public class PrototypeControllerUnitTest {
 
   @Test
   public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
-    String result = prototypeController.showPrototypeDetail(1, model);
     when(prototypeRepository.findById(1)).thenReturn(null);
+    String result = prototypeController.showPrototypeDetail(1, model);
     assertThat(result, is("redirect:/"));
-
   }
 }
 
@@ -198,5 +193,4 @@ public class PrototypeControllerUnitTest {
       }
     }
   }
-}
 }
