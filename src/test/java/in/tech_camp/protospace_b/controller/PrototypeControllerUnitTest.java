@@ -13,7 +13,6 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
-import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class TweetControllerUnitTest {
+public class PrototypeControllerUnitTest {
   @Mock
   private PrototypeRepository prototypeRepository;
 
@@ -47,22 +46,29 @@ public class TweetControllerUnitTest {
 
     
     when(prototypeRepository.findById(1)).thenReturn(prototype);
-    String result = prototypeController.showTweetDetail(1, model);
+    String result = prototypeController.showPrototypeDetail(1, model);
     
     assertThat(result, is("prototypes/show"));
   }
 
   @Test
-  public void 詳細機能にリクエストするとレスポンスにプロトタイプとユーザーが存在する(){
+  public void 詳細機能にリクエストするとレスポンスにプロトタイプが存在する(){
     PrototypeEntity prototype = new PrototypeEntity();
     Integer prototypeId = 1;
     prototype.setId(prototypeId);
     
     when(prototypeRepository.findById(1)).thenReturn(prototype);
-    String result = prototypeController.showTweetDetail(1, model);
+    String result = prototypeController.showPrototypeDetail(1, model);
     
     assertThat(result, is("prototypes/show"));
 
     assertThat(model.getAttribute("prototype"), is(prototype));
+  }
+
+  @Test
+  public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
+    String result = prototypeController.showPrototypeDetail(1, model);
+    
+    assertThat(result, is("redirect:/"));
   }
 }

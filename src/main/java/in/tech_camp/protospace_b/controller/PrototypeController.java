@@ -18,8 +18,11 @@ public class PrototypeController {
   private final UserRepository userRepository;
 
   @GetMapping("/prototypes/{prototypeId}")
-  public String showTweetDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
+  public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
       PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+      if(prototype == null){
+        return "redirect:/";
+      }
       model.addAttribute("prototype", prototype);
       return "prototypes/show";
   }
