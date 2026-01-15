@@ -45,7 +45,7 @@ public class PrototypeControllerUnitTest {
   private PrototypeController prototypeController;
 
   @Nested
-  class プロトコル新規投稿ページ表示機能 {
+  class プロトタイプ新規投稿ページ表示機能 {
     @Test
     public void 新規投稿フォーム表示機能にリクエストすると投稿フォームのビューファイルがレスポンスで返ってくる() {
       Model model = new ExtendedModelMap();
