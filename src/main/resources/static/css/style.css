@@ -127,6 +127,12 @@ footer {
   margin-top: auto;
 }
 
+.copyright {
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+}
+
   /* ==========================================
    prototypes-show
    ========================================== */
@@ -312,7 +318,9 @@ footer {
   text-decoration-style: solid;
   text-underline-offset: 0%;
   color: #999999;
-}
+  }
+
+
 
 /* ==========================================
    ログイン画面
@@ -364,12 +372,6 @@ footer {
   font-size: 0.85rem;
 }
 
-.copyright {
-  text-align: center;
-  color: #fff;
-  font-size: 10px;
-}
-
 @media (max-width: 1024px) {
   .login-inner {
     width: 90%;
@@ -379,6 +381,72 @@ footer {
     font-size: 24px;
   }
 }
+
+/* ==========================================
+  プロトタイプ投稿画面
+  ========================================== */
+
+.prototype-new-inner {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+.prototype-new-form-wrapper {
+  min-height: calc(100vh - 161px);
+}
+
+.prototype-new-page-heading {
+  font-size: 30px;
+  margin-bottom: 28px;
+}
+
+.prototype-new-field {
+  margin: 10px 0;
+}
+
+.prototype-new-field input {
+  padding: 3px;
+}
+
+.prototype-new-field textarea {
+  width: 50%;
+  padding: 3px;
+}
+
+.prototype-new-form-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #fff;
+  text-decoration: none;
+  user-select: none;
+  background: #87cefa;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+}
+
+.prototype-new-actions {
+  margin-bottom: 40px;
+}
+
+.prototype-new-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1024px) {
+  .prototype-new-inner {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .prototype-new-page-heading {
+    font-size: 24px;
+  }
+}
+
 /* ==========================================
    ユーザー詳細ページ
    ========================================== */
