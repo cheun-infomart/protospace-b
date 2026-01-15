@@ -121,7 +121,7 @@ public class PrototypeControllerUnitTest {
       }
 
       @Test
-      public void 画像が空の場合にバリデーションエラーが発生しプロトコル新規投稿画面を返す() {
+      public void 画像が空の場合にバリデーションエラーが発生しプロトタイプ新規投稿画面を返す() {
         PrototypeForm form = PrototypeFormFactory.createPrototype();
 
         // 画像は空にする
