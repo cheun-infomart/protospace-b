@@ -11,10 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
+import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
@@ -74,25 +77,21 @@ public class PrototypeController {
     }
   }
 
-  @GetMapping("/prototype/{id}/edit")
-  public String editTweet(@PathVariable("id") Integer id, Model model) {
-    PrototypeEntity prototype = prototypeRepository.findById(id);
+  //Prototypeの編集画面に移動
+  @GetMapping("/prototypes/{id}/edit")
+  public String editPrototype(@PathVariable("id") Integer id, Model model) {
 
-    PrototypeForm prototypeForm = new PrototypeForm();
-    
-    prototypeForm.setName(prototype.getName());
-    prototypeForm.setCatchCopy(prototype.getCatchCopy());
-    prototypeForm.setConcept(prototype.getConcept());
-    prototypeForm.setImage(prototype.getImage());
+    PrototypeForm form = prototypeService.getPrototypeForm(id);
 
-    model.addAttribute("prototypeForm", prototypeForm);
+
+    model.addAttribute("prototypeForm", form);
     model.addAttribute("id", id);
     
     return "prototype/edit";
   }
   
-  @PostMapping("/prototype/{id}/update")
-  public String updateTweet(@ModelAttribute("prototypeForm") @Validated PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
+  @PostMapping("/prototypes/{id}/update")
+  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
     //TODO: process POST request
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
@@ -103,19 +102,12 @@ public class PrototypeController {
       return "prototype/edit";
     }
 
-    PrototypeEntity prototype = prototypeRepository.findById(id);
-    
-    prototype.setName(prototypeForm.getName());
-    prototype.setCatchCopy(prototypeForm.getCatchCopy());
-    prototype.setConcept(prototypeForm.getConcept());
-    prototype.setImage(prototypeForm.getImage());
-
     try {
-      prototypeRepository.update(prototype);
+      prototypeService.updatePrototype(id, prototypeForm);
     } catch (Exception e) {
       // TODO: handle exception
       System.out.println("えらー：" + e);
-      return "redirect:/";
+      return "redirect:/prototypes/" + id + "/edit";
     }
     
     return "redirect:/";

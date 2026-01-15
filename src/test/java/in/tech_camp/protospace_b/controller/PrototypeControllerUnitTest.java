@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,6 +45,13 @@ public class PrototypeControllerUnitTest {
 
   @InjectMocks
   private PrototypeController prototypeController;
+
+  private PrototypeForm testForm;
+
+  @BeforeEach
+    public void setUp() {
+        testForm = PrototypeFormFactory.createPrototype();
+    }
 
   @Nested
   class プロトタイプ新規投稿ページ表示機能 {
@@ -140,4 +149,30 @@ public class PrototypeControllerUnitTest {
       }
     }
   }
+
+  @Nested
+  class プロトタイプ編集機能 {
+    @Test
+    public void ゲットメソッドでView画面表示できる() {
+    when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
+    Model model = new ExtendedModelMap();
+
+    String result = prototypeController.editPrototype(1, model);
+    //修正画面に代わっているか
+    assertThat(result, is("prototype/edit"));
+    //modelにフォームの情報が入っているか
+    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+    }
+    @Test
+    public void updatePrototype_Success_Test() {
+    when(bindingResult.hasErrors()).thenReturn(false);
+    Model model = new ExtendedModelMap();
+    //updateメソッド実行
+    String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
+    //問題なくupdateされredirectになっているか
+    assertThat(result, is("redirect:/"));
+    }
+  }
 }
+
+ 
