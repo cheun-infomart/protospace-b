@@ -1,17 +1,15 @@
 package in.tech_camp.protospace_b.controller;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-
+import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.Nested;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,31 +21,22 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
-import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.PrototypeForm;
-import in.tech_camp.protospace_b.repository.PrototypeRepository;
-import in.tech_camp.protospace_b.repository.UserRepository;
+import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class PrototypeControllerUnitTest {
   @Mock
-  private PrototypeRepository prototypeRepository;
-  
-  @Mock
-  private UserRepository userRepository;
+  private PrototypeService prototypeService;  
 
   @Mock
   private BindingResult bindingResult;
 
   @Mock
   private MultipartFile multipartFile;
-
-  @Mock
-  private ImageUrl imageUrl;
 
   @Mock
   private Authentication authentication;
@@ -69,104 +58,66 @@ public class PrototypeControllerUnitTest {
 
   @Nested
   class 新規投稿保存機能 {
-    @Test
-    public void すべての項目が入力されて保存ボタンが押された場合insertメソッドが呼ばれてトップページにリダイレクトする() throws Exception {
-      PrototypeForm form = PrototypeFormFactory.createPrototype();
-      form.setImage(multipartFile);
-
-      // 画像を準備
-      Mockito.when(multipartFile.isEmpty()).thenReturn(false);
-      Mockito.when(multipartFile.getInputStream()).thenReturn(new java.io.ByteArrayInputStream(new byte[0]));
-      Mockito.when(multipartFile.getOriginalFilename()).thenReturn("test.png");
-
-      // id10のユーザーをログインユーザーとする
-      UserEntity mockUser = new UserEntity();
-      mockUser.setId(10);
-      Mockito.when(authentication.isAuthenticated()).thenReturn(true);
-      Mockito.when(authentication.getName()).thenReturn("test@test.com");
-      Mockito.when(userRepository.findByEmail("test@test.com")).thenReturn(mockUser);
-      
-      // 画像が選択され、エラーも起きていない状態を生成
-      Mockito.when(imageUrl.getImageUrl()).thenReturn("src/main/resources/static/uploads");
-      Mockito.when(bindingResult.hasErrors()).thenReturn(false);
-
-      Model model = new ExtendedModelMap();
-      String result = prototypeController.createPrototype(form, bindingResult, model, authentication);
-
-      assertThat(result, is("redirect:/"));
-
-      // ArgumentCaptorでinsertに渡されたPrototypeEntityを取得する
-      ArgumentCaptor<PrototypeEntity> captor = ArgumentCaptor.forClass(PrototypeEntity.class);
-      Mockito.verify(prototypeRepository).insert(captor.capture());
-
-      // 取得したプロトタイプエンティティの中身を確認
-      PrototypeEntity savedPrototype = captor.getValue();
-      assertThat(savedPrototype.getUserId(), is(10)); // IDがログインユーザーのものか確認
-      assertThat(savedPrototype.getName(), is(form.getName()));
-    }
 
     @Nested
-    class ログインしていない場合 {
+    class 保存に成功する場合 {
+
       @Test
-      public void 保存ボタンを押した際にログインしていない場合はログインページにリダイレクトする() throws Exception {
+      public void すべての項目が入力されて保存ボタンが押された場合serviceが呼ばれてトップページにリダイレクトする() throws Exception {
         PrototypeForm form = PrototypeFormFactory.createPrototype();
         form.setImage(multipartFile);
 
-        // 画像が選択されている状態（バリデーションを通過させるため）
         Mockito.when(multipartFile.isEmpty()).thenReturn(false);
-        Mockito.when(multipartFile.getOriginalFilename()).thenReturn("test.png"); // 追加
-        Mockito.when(multipartFile.getInputStream()).thenReturn(new java.io.ByteArrayInputStream(new byte[0])); // 追加
-        Mockito.when(imageUrl.getImageUrl()).thenReturn(System.getProperty("java.io.tmpdir"));
-
-        // 未ログイン状態を作るためauthenticationがnull、またはisAuthenticatedがfalseを返すように設定
-        Mockito.when(authentication.isAuthenticated()).thenReturn(false);
+        Mockito.when(bindingResult.hasErrors()).thenReturn(false);
 
         Model model = new ExtendedModelMap();
-
         String result = prototypeController.createPrototype(form, bindingResult, model, authentication);
 
-        // ログイン画面へのリダイレクトを確認
-        assertThat(result, is("redirect:/users/login"));
-        
-        // 保存処理（insert）が呼ばれていないことも確認
-        Mockito.verify(prototypeRepository, Mockito.never()).insert(Mockito.any());
+        // リダイレクト先の検証
+        assertThat(result, is("redirect:/"));
+
+        // サービスが呼ばれたことを検証
+        // 引数として渡されたPrototypeEntityの内容をチェックする
+        ArgumentCaptor<PrototypeEntity> captor = ArgumentCaptor.forClass(PrototypeEntity.class);
+        Mockito.verify(prototypeService).createPrototype(captor.capture(), eq(multipartFile), eq(authentication));
+
+        PrototypeEntity savedPrototype = captor.getValue();
+        assertThat(savedPrototype.getName(), is(form.getName()));
       }
     }
 
     @Nested
     class 保存に失敗する場合 {
       @Test
+      public void 保存ボタンを押した際にログインしていない場合はログインページにリダイレクトする() throws Exception {
+        PrototypeForm form = PrototypeFormFactory.createPrototype();
+        form.setImage(multipartFile);
+        Mockito.when(multipartFile.isEmpty()).thenReturn(false);
+
+        // Serviceが未ログイン例外を投げるように設定
+        Mockito.doThrow(new RuntimeException("Unauthenticated"))
+              .when(prototypeService).createPrototype(Mockito.any(), Mockito.any(), Mockito.any());
+
+        String result = prototypeController.createPrototype(form, bindingResult, new ExtendedModelMap(), authentication);
+
+        assertThat(result, is("redirect:/users/login"));
+      }
+
+      @Test
       public void データベースの保存処理でエラーが発生した場合新規投稿ページを返す() throws Exception {
         PrototypeForm form = PrototypeFormFactory.createPrototype();
         form.setImage(multipartFile);
 
-        // 画像のモック設定
         Mockito.when(multipartFile.isEmpty()).thenReturn(false);
-        Mockito.when(multipartFile.getInputStream()).thenReturn(new java.io.ByteArrayInputStream(new byte[0]));
-        Mockito.when(multipartFile.getOriginalFilename()).thenReturn("test.png");
-
-        // id10のユーザーをログインユーザーとする
-        UserEntity mockUser = new UserEntity();
-        mockUser.setId(10);
-        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
-        Mockito.when(authentication.getName()).thenReturn("test@test.com");
-        Mockito.when(userRepository.findByEmail("test@test.com")).thenReturn(mockUser);
-
-        Mockito.when(imageUrl.getImageUrl()).thenReturn(System.getProperty("java.io.tmpdir"));
         Mockito.when(bindingResult.hasErrors()).thenReturn(false);
 
-        // insertメソッドが呼ばれたら、例外を投げるように設定
-        Mockito.doThrow(new RuntimeException("DBエラーが発生しました"))
-              .when(prototypeRepository).insert(Mockito.any());
+        // Serviceが汎用的な例外を投げるように設定
+        Mockito.doThrow(new java.io.IOException("画像保存またはDBエラー"))
+              .when(prototypeService).createPrototype(Mockito.any(), Mockito.any(), Mockito.any());
 
-        Model model = new ExtendedModelMap();
+        String result = prototypeController.createPrototype(form, bindingResult, new ExtendedModelMap(), authentication);
 
-        String result = prototypeController.createPrototype(form, bindingResult, model, authentication);
-        // 例外をcatchした場合、新規投稿画面が返されることを確認
         assertThat(result, is("prototypes/new"));
-        
-        // insertメソッドが少なくとも1回は呼ばれたことを確認
-        Mockito.verify(prototypeRepository).insert(Mockito.any());
       }
 
       @Test
