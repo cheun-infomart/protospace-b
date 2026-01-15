@@ -20,9 +20,7 @@ public class PrototypeController {
   @GetMapping("/prototypes/{prototypeId}")
   public String showTweetDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
       PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
-      UserEntity user = userRepository.findById(prototype.getUserId());
       model.addAttribute("prototype", prototype);
-      model.addAttribute("user", user);
       return "prototypes/show";
   }
 }

@@ -12,7 +12,7 @@
         <div class="prototype-show-content-text-and-button">
           <div class="prototype-show-content-text">
             <h3 class="prototype-show-content-text-name" th:text="${prototype.name}"></h3>
-            <a href="#" class="prototype-show-content-text-username" th:text="'by ' + ${user.name}"></a>
+            <a href="#" class="prototype-show-content-text-username" th:text="'by ' + ${prototype.user.name}"></a>
           </div>
 
           <!--ログイン状態かつ自分の投稿かでボタンの表示変更-->
