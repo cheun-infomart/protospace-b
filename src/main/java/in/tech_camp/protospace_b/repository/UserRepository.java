@@ -24,7 +24,7 @@ public interface UserRepository {
     @Results(value = {
         @Result(property = "id", column = "id", id = true),
         @Result(property = "prototypes", column = "id", 
-                many = @Many(select = "com.example.repository.PrototypeRepository.findByUserId"))
+                many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))
     })
     UserEntity findByIdWithProto(Integer id);
 
