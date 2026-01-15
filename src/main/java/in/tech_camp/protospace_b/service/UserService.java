@@ -13,12 +13,13 @@ public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public void createUser(UserEntity user) {
-      // パスワードをハッシュ化してセットし直す
-      String encodedPassword = passwordEncoder.encode(user.getPassword());
-      user.setPassword(encodedPassword);
-      
-      // 保存（Repositoryにinsertメソッドが必要です）
-      userRepository.insert(user);
+  public void createUserWithEncryptedPassword(UserEntity userEntity) {
+    String encodedPassword = encodePassword(userEntity.getPassword());
+    userEntity.setPassword(encodedPassword);
+    userRepository.insert(userEntity);
+  }
+
+  private String encodePassword(String password) {
+    return passwordEncoder.encode(password);
   }
 }

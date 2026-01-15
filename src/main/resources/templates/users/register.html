@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css" />
+    <title>protospace-b</title>
+  </head>
+  <body>
+    <header th:replace="~{common/header :: header}"></header>
+    <main class="main">
+      <div class="register-inner">
+        <div class="register-form">
+          <h2 class="register-h2">ユーザー新規登録</h2>
+          <!-- 新規登録できなかった際のエラーを表示 -->
+          <p th:if="${registerError}" class="user-register-error" th:text="${registerError}"></p>
+          <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="user-new-error">
+            <div th:text="${error}"></div>
+          </div>
+
+          <form class="register-new-user" th:action="@{/user}" th:object="${userForm}" method="post">
+            <div class="register-field">
+              <label>メールアドレス</label><br />
+              <input type="text" th:field="*{email}" autofocus="autofocus" />
+              <p class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            </div>
+
+            <div class="register-field">
+              <label>パスワード(6文字以上)</label><br />
+              <input type="password" th:field="*{password}" autocomplete="off" />
+              <p class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+            </div>
+
+            <div class="register-field">
+              <label>パスワード再入力</label><br />
+              <input type="password" th:field="*{passwordConfirmation}" />
+              <p
+                class="error-message"
+                th:if="${#fields.hasErrors('passwordConfirmation')}"
+                th:errors="*{passwordConfirmation}"
+              ></p>
+            </div>
+
+            <div class="register-field">
+              <label>ユーザー名</label><br />
+              <input type="text" th:field="*{name}" />
+              <p class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+            </div>
+
+            <div class="register-field">
+              <label>プロフィール</label><br />
+              <textarea class="register-textarea" th:field="*{profile}"></textarea>
+              <p class="error-message" th:if="${#fields.hasErrors('profile')}" th:errors="*{profile}"></p>
+            </div>
+
+            <div class="register-field">
+              <label>所属</label><br />
+              <textarea class="register-textarea" th:field="*{department}"></textarea>
+              <p class="error-message" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></p>
+            </div>
+
+            <div class="register-field">
+              <label>役職</label><br />
+              <textarea class="register-textarea" th:field="*{position}"></textarea>
+              <p class="error-message" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></p>
+            </div>
+
+            <div class="register-actions">
+              <input class="register-btn" type="submit" value="新規登録" data-disable-with="新規登録" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <footer th:replace="~{common/footer :: footer}"></footer>
+  </body>
+</html>

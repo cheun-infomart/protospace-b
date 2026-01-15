@@ -61,8 +61,7 @@ header {
   gap: 10px;
 }
 
-.regist-btn,
-.login-btn {
+.header-nav_btn {
   display: inline-block;
   padding: 0.4em 1.6em;
   font-size: 0.8em;
@@ -72,13 +71,11 @@ header {
   border: 1px #87cefa solid;
   border-radius: 3px;
   transition: 0.4s ease;
-  cursor: pointer;
 }
 
-.regist-btn:hover,
-.login-btn:hover {
-  background-color: #87cefa;
+.header-nav_btn:hover {
   color: #fff;
+  background: #87cefa;
 }
 
 .logout-btn {
@@ -128,7 +125,64 @@ footer {
 }
 
 /* ==========================================
-   ログイン画面
+   ユーザー登録ページ
+   ========================================== */
+
+.register-new-user {
+  display: block;
+  margin-top: 0em;
+  unicode-bidi: isolate;
+}
+
+.register-field {
+  margin: 10px 0;
+}
+
+.register-textarea {
+  width: 50%;
+}
+.register-inner {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+.register-actions {
+  margin-bottom: 40px;
+}
+
+.register-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #fff;
+  text-decoration: none;
+  user-select: none;
+  background: #87cefa;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+}
+
+.register-btn:hover {
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.user-register-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1024px) {
+  .register-inner {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+/* ==========================================
+   ログインページ
    ========================================== */
 
 .login-inner {
