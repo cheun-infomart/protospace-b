@@ -5,6 +5,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
@@ -91,6 +94,53 @@ public class PrototypeControllerUnitTest {
     // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
     assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
   }
+
+  private Model model;
+
+  @BeforeEach
+  public void setUp(){
+    model = new ExtendedModelMap();
+  }
+
+  @Nested
+  class プロトタイプ詳細機能 {
+
+  @Test
+  public void 詳細機能にリクエストするとプロトタイプ詳細表示のビューファイルがレスポンスで返ってくる(){
+    PrototypeEntity prototype = new PrototypeEntity();
+    Integer prototypeId = 1;
+    prototype.setId(prototypeId);
+
+
+    
+    when(prototypeRepository.findById(1)).thenReturn(prototype);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    
+    assertThat(result, is("prototypes/show"));
+  }
+
+  @Test
+  public void 詳細機能にリクエストするとレスポンスにプロトタイプが存在する(){
+    PrototypeEntity prototype = new PrototypeEntity();
+    Integer prototypeId = 1;
+    prototype.setId(prototypeId);
+    
+    when(prototypeRepository.findById(1)).thenReturn(prototype);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    
+    assertThat(result, is("prototypes/show"));
+
+    assertThat(model.getAttribute("prototype"), is(prototype));
+  }
+
+  @Test
+  public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
+    when(prototypeRepository.findById(1)).thenReturn(null);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    assertThat(result, is("redirect:/"));
+  }
+}
+
 
   @Nested
   class プロトタイプ新規投稿ページ表示機能 {

@@ -1,5 +1,13 @@
 package in.tech_camp.protospace_b.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -20,8 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
-import lombok.AllArgsConstructor;
-
 
 @Controller
 @AllArgsConstructor
@@ -81,5 +87,16 @@ public class PrototypeController {
       System.out.println("保存エラー：" + e);
       return "prototypes/new";
     }
+  }
+
+  //プロトタイプ詳細画面への遷移
+  @GetMapping("/prototypes/{prototypeId}")
+  public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
+      PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+      if(prototype == null){
+        return "redirect:/";
+      }
+      model.addAttribute("prototype", prototype);
+      return "prototypes/show";
   }
 }
