@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### アップロードした画像の置き場 ###
+src/main/resources/static/uploads/**
