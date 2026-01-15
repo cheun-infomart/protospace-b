@@ -21,8 +21,8 @@
         </div>
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
-            <a th:href="@{/prototypes/{id}(id=${prototype.id})}">
-              <img class="prototype-index-card_img">
+            <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
+              <img class="prototype-index-card_img"  th:src="@{${prototype.image}}">
             </a>
             <div class="prototype-index-card_body">
               <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>

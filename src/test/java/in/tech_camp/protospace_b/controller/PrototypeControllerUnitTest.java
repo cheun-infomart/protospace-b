@@ -18,27 +18,16 @@ import org.springframework.ui.Model;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import org.hamcrest.MatcherAssert;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
-import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
@@ -48,6 +37,8 @@ import in.tech_camp.protospace_b.service.PrototypeService;
 public class PrototypeControllerUnitTest {
   @Mock
   private PrototypeRepository prototypeRepository;
+
+  @Mock
   private PrototypeService prototypeService;  
 
   @Mock
@@ -99,6 +90,8 @@ public class PrototypeControllerUnitTest {
 
     // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
     assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
+  }
+
   @Nested
   class プロトタイプ新規投稿ページ表示機能 {
     @Test

@@ -140,6 +140,9 @@ main {
   width: calc((100% - 50px) / 3);
   margin-bottom: 40px;
 }
+#prototype_link{
+  display: block;
+}
 .prototype-index-card_img{
   margin-bottom: 16px;
 }

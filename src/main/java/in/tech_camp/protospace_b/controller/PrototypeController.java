@@ -12,15 +12,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
@@ -31,6 +27,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PrototypeController {
   private final PrototypeRepository prototypeRepository;
+  private final PrototypeService prototypeService;
   
   @GetMapping("/")
   public String showPrototypes(Model model) {
@@ -38,7 +35,6 @@ public class PrototypeController {
     model.addAttribute("prototypes", prototypes);
     return "index";
   } 
-  private final PrototypeService prototypeService;
 
   // プロトタイプ投稿画面表示
   @GetMapping("/prototypes/new")
