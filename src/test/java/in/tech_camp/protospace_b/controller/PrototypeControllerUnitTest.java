@@ -37,7 +37,7 @@ public class PrototypeControllerUnitTest {
   }
 
   @Test
-  public void プロトタイプ一覧機能にリクエストするとレスポンスに投稿済みのツイートがすべて含まれること(){
+  public void プロトタイプ一覧機能にリクエストするとレスポンスに投稿済みのプロトタイプがすべて含まれること(){
     PrototypeEntity prototype1 = new PrototypeEntity();
     prototype1.setId(1);
     prototype1.setName("プロトタイプ名1");
