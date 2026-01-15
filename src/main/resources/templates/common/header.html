@@ -13,7 +13,7 @@
               <a class="logout-btn" rel="nofollow" data-method="delete" href="/logout">ログアウト</a>
             </form>
 
-            <a class="new_proto-post" th:href="@{#}">New Proto</a>
+            <a class="new_proto-post" th:href="@{/prototypes/new}">New Proto</a>
           </div>
 
           <div class="grid-6" th:if="${#authorization.expression('!isAuthenticated()')}">

@@ -20,8 +20,12 @@ public interface UserRepository {
   boolean existsByEmail(String email);
   
   //データベースから特定のメールアドレスを持つユーザーを探してくる
+  @Select("SELECT * FROM users WHERE id = #{id}")
+  UserEntity findById(Integer id);
+
   @Select("SELECT * FROM users WHERE email = #{email}")
   UserEntity findByEmail(String email);
 
   
 }
+
