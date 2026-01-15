@@ -11,30 +11,23 @@
     <main class="prototype-index-main">
       <div class="prototype-index-content">
         <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
+          <span>こんにちは、</span>
           <a 
             class="prototype-index-greeting_link"
             th:href="@{/users/{id}(id=${#authentication?.principal.getId()})}"
-            th:text="'こんにちは、' + ${#authentication?.principal.getName()} + 'さん'"
+            th:text="${#authentication?.principal.getName()} + 'さん'"
           >
-            ログインユーザー名
           </a>
         </div>
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
             <a th:href="@{/prototypes/{id}(id=${prototype.id})}">
               <img class="prototype-index-card_img">
-              プロトタイプの画像
             </a>
             <div class="prototype-index-card_body">
-              <a class="prototype-index-card_title" th:text="${prototype.name}">プロトタイプの名称</a>
-              <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}">プロトタイプのキャッチコピー</a>
-              <a 
-                class="prototype-index-card_user"
-                th:href="@{/users/{id}(id=${prototype.user.id})}"
-                th:text="'by ' + ${prototype.user.name}"
-              >
-                ユーザー名
-              </a>
+              <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
+              <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
+              <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
             </div>
           </div>
         </div>

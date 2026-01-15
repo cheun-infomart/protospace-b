@@ -17,10 +17,9 @@ public class PrototypeController {
   private final PrototypeRepository prototypeRepository;
   
   @GetMapping("/")
-  public String showPosts(Model model) {
+  public String showPrototypes(Model model) {
     List<PrototypeEntity> prototypes = prototypeRepository.findAll();
     model.addAttribute("prototypes", prototypes);
     return "index";
-  }
-  
+  } 
 }
