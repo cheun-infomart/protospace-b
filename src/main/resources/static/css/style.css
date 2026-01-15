@@ -130,7 +130,7 @@ footer {
   /* ==========================================
    prototypes-show
    ========================================== */
-.prototype-show-main{
+.prototype-show-details{
   max-width: 1440px;
   width:100%;
   height: auto;
@@ -140,30 +140,25 @@ footer {
   text-align: center;
   align-items: center;
   margin: 0 auto;
-  box-sizing: border-box; 
-  
 }
 
-.prototype-show-content-text-and-button{
+.prototype-show-header{
   display:flex;
   flex-flow: column;
   gap:16px;
 }
 
-.prototype-show-content-text-name{
+.prototype-show-title{
   font-weight: 700;
   font-size: 24px;
   line-height: 100%;
-  letter-spacing: 0%;
   color:#3b4043;
-  box-sizing: border-box; 
 }
 
-.prototype-show-content-text-username{
+.prototype-show-author{
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
-  letter-spacing: 0%;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-underline-offset: 0%;
@@ -171,15 +166,14 @@ footer {
   color: #999999;
 }
 
-.prototype-show-content-button{
+.prototype-show-button-section{
   display: inline-flex;
   justify-content: center; 
   align-items: center;
   gap:8px;
 }
 
-.prototype-show-content-button-edit,
-.prototype-show-content-button-delete{
+.prototype-show-btn{
   height:24px;
   border-radius: 3px;
   border: 1px solid #999999;
@@ -187,9 +181,6 @@ footer {
   font-weight: 400;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0%;
-
- 
   
   background-color: #ffffff;
   color:#999999;
@@ -209,7 +200,7 @@ footer {
 
 }
 
-.prototype-show-explanation{
+.prototype-show-description{
   max-width:1024px;
   width:100%;
   margin:0 auto;
@@ -218,27 +209,23 @@ footer {
   gap:8px;
 }
 
-.prototype-show-catchcopy-name,
-.prototype-show-concept-name{
+.prototype-show-info-label{
   font-weight: 700;
   font-size: 20px;
   line-height: 100%;
-  letter-spacing: 0%;
   color: #3B4043;
   padding-bottom: 8px;
 }
 
-.prototype-show-catchcopy-text,
-.prototype-show-concept-text {
+.prototype-show-info-text{
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: 0%;
   color: #3B4043;
   margin-bottom: 8px;
 }
 
-.prototype-show-comment-area{
+.prototype-show-comment-section{
   padding: 20px;
   display:flex;
   flex-flow: column;
@@ -251,37 +238,31 @@ footer {
   align-self: stretch;
 }
 
-.prototype-show-comment-input-and-button{
+.prototype-show-comment-form{
   display:flex;
   flex-flow: column;
-  align-items: flex-start; 
+  align-items: flex-start;
   gap: 10px;
 }
 
-.prototype-show-comment-input form{
-  display:flex;
-  flex-flow: column;
-  align-items: flex-start; 
-  gap: 10px;
-}
-
-.prototype-show-comment-input label{
+.prototype-show-comment-label{
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: 0%;
   color: #000000;
 }
 
-.prototype-show-comment-input input{
+.prototype-show-comment-input{
   border:1px solid #767676;
   border-radius: 2px;
   width:100%;
   max-width:200px;
 }
 
-.prototype-show-comment-button input{
+.prototype-show-comment-button{
   padding: 5px 20px 6px;
+  width: 96px;
+  height: 31px;
   background-color: #87CEFA;
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
@@ -289,11 +270,10 @@ footer {
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: 0%;
   color:#ffffff
 }
 
-.prototype-show-comment-button input:hover {
+.prototype-show-comment-button:hover {
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
     cursor: pointer;
 }
@@ -323,21 +303,14 @@ footer {
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: 0%;
-  
-}
-
-
-
+  }
 .prototype-show-comment-user{
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: 0%;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-underline-offset: 0%;
-  text-decoration-thickness:0%;
   color: #999999;
 }
 
