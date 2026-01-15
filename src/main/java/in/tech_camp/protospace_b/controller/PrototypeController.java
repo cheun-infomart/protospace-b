@@ -1,15 +1,20 @@
 package in.tech_camp.protospace_b.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -17,13 +22,12 @@ import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
-import lombok.AllArgsConstructor;
-
 
 @Controller
 @AllArgsConstructor
 public class PrototypeController {
   private final PrototypeService prototypeService;
+  private final PrototypeRepository prototypeRepository;
 
   // プロトタイプ投稿画面表示
   @GetMapping("/prototypes/new")
@@ -70,5 +74,16 @@ public class PrototypeController {
       System.out.println("保存エラー：" + e);
       return "prototypes/new";
     }
+  }
+
+  //プロトタイプ詳細画面への遷移
+  @GetMapping("/prototypes/{prototypeId}")
+  public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
+      PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+      if(prototype == null){
+        return "redirect:/";
+      }
+      model.addAttribute("prototype", prototype);
+      return "prototypes/show";
   }
 }

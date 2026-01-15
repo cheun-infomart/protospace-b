@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,11 +26,15 @@ import org.springframework.web.multipart.MultipartFile;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class PrototypeControllerUnitTest {
+  @Mock
+  private PrototypeRepository prototypeRepository;
+
   @Mock
   private PrototypeService prototypeService;  
 
@@ -43,6 +49,53 @@ public class PrototypeControllerUnitTest {
 
   @InjectMocks
   private PrototypeController prototypeController;
+
+  private Model model;
+
+  @BeforeEach
+  public void setUp(){
+    model = new ExtendedModelMap();
+  }
+
+  @Nested
+  class プロトタイプ詳細機能 {
+
+  @Test
+  public void 詳細機能にリクエストするとプロトタイプ詳細表示のビューファイルがレスポンスで返ってくる(){
+    PrototypeEntity prototype = new PrototypeEntity();
+    Integer prototypeId = 1;
+    prototype.setId(prototypeId);
+
+
+    
+    when(prototypeRepository.findById(1)).thenReturn(prototype);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    
+    assertThat(result, is("prototypes/show"));
+  }
+
+  @Test
+  public void 詳細機能にリクエストするとレスポンスにプロトタイプが存在する(){
+    PrototypeEntity prototype = new PrototypeEntity();
+    Integer prototypeId = 1;
+    prototype.setId(prototypeId);
+    
+    when(prototypeRepository.findById(1)).thenReturn(prototype);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    
+    assertThat(result, is("prototypes/show"));
+
+    assertThat(model.getAttribute("prototype"), is(prototype));
+  }
+
+  @Test
+  public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
+    when(prototypeRepository.findById(1)).thenReturn(null);
+    String result = prototypeController.showPrototypeDetail(1, model);
+    assertThat(result, is("redirect:/"));
+  }
+}
+
 
   @Nested
   class プロトタイプ新規投稿ページ表示機能 {
