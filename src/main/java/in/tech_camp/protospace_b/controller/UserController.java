@@ -5,13 +5,12 @@ import org.springframework.ui.Model; // 追加
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam; // 追加
 
-import in.tech_camp.protospace_b.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
 public class UserController {
-  private final UserRepository userRepository;
+
 
   //ログイン成功
   @GetMapping("/users/login")

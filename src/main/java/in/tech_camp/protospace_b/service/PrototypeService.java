@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
+import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -66,4 +67,43 @@ public class PrototypeService {
 		// DBへ保存
 		prototypeRepository.insert(prototype);
 	}
+
+	public PrototypeForm getPrototypeForm(Integer id) {
+		PrototypeEntity prototype = prototypeRepository.findById(id);
+		PrototypeForm form = new PrototypeForm();
+		form.setName(prototype.getName());
+		form.setCatchCopy(prototype.getCatchCopy());
+		form.setConcept(prototype.getConcept());
+		
+		return form;
+	}
+
+	public void updatePrototype(Integer id, PrototypeForm form) throws IOException {
+		PrototypeEntity prototype = prototypeRepository.findById(id);
+
+
+		prototype.setName(form.getName());
+		prototype.setCatchCopy(form.getCatchCopy());
+		prototype.setConcept(form.getConcept());
+
+		MultipartFile newFile = form.getImage();
+		if (newFile != null && !newFile.isEmpty()) {
+			
+			String savedFileName = saveImage(newFile); 
+			prototype.setImage(savedFileName);
+		}
+
+		prototypeRepository.update(prototype);
+
+	}
+
+	public PrototypeEntity findPrototypeById(Integer id) {
+		PrototypeEntity prototype = prototypeRepository.findById(id);
+
+		if (prototype == null) {
+        throw new RuntimeException("Prototype ID：" + id + "が存在しません。");
+    }
+		return prototype;
+	}
+
 }
