@@ -61,8 +61,7 @@ header {
   gap: 10px;
 }
 
-.regist-btn,
-.login-btn {
+.header-nav_btn {
   display: inline-block;
   padding: 0.4em 1.6em;
   font-size: 0.8em;
@@ -72,13 +71,11 @@ header {
   border: 1px #87cefa solid;
   border-radius: 3px;
   transition: 0.4s ease;
-  cursor: pointer;
 }
 
-.regist-btn:hover,
-.login-btn:hover {
-  background-color: #87cefa;
+.header-nav_btn:hover {
   color: #fff;
+  background: #87cefa;
 }
 
 .logout-btn {
@@ -212,119 +209,117 @@ footer {
   font-size: 10px;
 }
 
-  /* ==========================================
+/* ==========================================
    prototypes-show
    ========================================== */
-.prototype-show-details{
+.prototype-show-details {
   max-width: 1440px;
-  width:100%;
+  width: 100%;
   height: auto;
   background-color: #ffffff;
-  display:flex;
+  display: flex;
   flex-flow: column;
   text-align: center;
   align-items: center;
   margin: 0 auto;
 }
 
-.prototype-show-header{
-  display:flex;
+.prototype-show-header {
+  display: flex;
   flex-flow: column;
-  gap:16px;
+  gap: 16px;
 }
 
-.prototype-show-title{
+.prototype-show-title {
   font-weight: 700;
   font-size: 24px;
   line-height: 100%;
-  color:#3b4043;
+  color: #3b4043;
 }
 
-.prototype-show-author{
+.prototype-show-author {
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-underline-offset: 0%;
-  text-decoration-thickness:0%;
+  text-decoration-thickness: 0%;
   color: #999999;
 }
 
-.prototype-show-button-section{
+.prototype-show-button-section {
   display: inline-flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
-  gap:8px;
+  gap: 8px;
 }
 
-.prototype-show-btn{
-  height:24px;
+.prototype-show-btn {
+  height: 24px;
   border-radius: 3px;
   border: 1px solid #999999;
   padding: 5px 20px;
   font-weight: 400;
   font-size: 12px;
   line-height: 1;
-  
+
   background-color: #ffffff;
-  color:#999999;
-  cursor: pointer;   
+  color: #999999;
+  cursor: pointer;
 }
 
 .prototype-show-content-button-edit:hover,
-.prototype-show-content-button-delete:hover{
-  color:#ffffff;
+.prototype-show-content-button-delete:hover {
+  color: #ffffff;
   background-color: #999999;
   transition: 0.5s;
 }
 
-
-.prototype-show-image{
+.prototype-show-image {
   padding: 16px 0;
-
 }
 
-.prototype-show-description{
-  max-width:1024px;
-  width:100%;
-  margin:0 auto;
-  display:flex;
+.prototype-show-description {
+  max-width: 1024px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
   flex-flow: column;
-  gap:8px;
+  gap: 8px;
 }
 
-.prototype-show-info-label{
+.prototype-show-info-label {
   font-weight: 700;
   font-size: 20px;
   line-height: 100%;
-  color: #3B4043;
+  color: #3b4043;
   padding-bottom: 8px;
 }
 
-.prototype-show-info-text{
+.prototype-show-info-text {
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  color: #3B4043;
+  color: #3b4043;
   margin-bottom: 8px;
 }
 
-.prototype-show-comment-section{
+.prototype-show-comment-section {
   padding: 20px;
-  display:flex;
+  display: flex;
   flex-flow: column;
-  gap:40px;
+  gap: 40px;
   background-color: #f6f6f6;
-  max-width:1024px;
-  width:100%;
-  margin:28px auto 40px;
+  max-width: 1024px;
+  width: 100%;
+  margin: 28px auto 40px;
   text-align: left;
   align-self: stretch;
 }
 
-.prototype-show-comment-form{
-  display:flex;
+.prototype-show-comment-form {
+  display: flex;
   flex-flow: column;
   align-items: flex-start;
   gap: 10px;
@@ -336,67 +331,67 @@ footer {
   margin-bottom:10px;
 }
 
-.prototype-show-comment-label{
+.prototype-show-comment-label {
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
   color: #000000;
 }
 
-.prototype-show-comment-input{
-  border:1px solid #767676;
+.prototype-show-comment-input {
+  border: 1px solid #767676;
   border-radius: 2px;
   width:100%;
   max-width:200px;
   padding: 1px 2px;
 }
 
-.prototype-show-comment-button{
+.prototype-show-comment-button {
   padding: 5px 20px 6px;
   width: 96px;
   height: 31px;
-  background-color: #87CEFA;
+  background-color: #87cefa;
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
   border: none;
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
-  color:#ffffff
+  color: #ffffff;
 }
 
 .prototype-show-comment-button:hover {
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-    cursor: pointer;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  cursor: pointer;
 }
 
-.prototype-show-comments{
-  display:flex;
+.prototype-show-comments {
+  display: flex;
   flex-flow: column;
   gap: 5px;
 }
 
-.prototype-show-comment{
-  display:flex;
-  gap:6px;
+.prototype-show-comment {
+  display: flex;
+  gap: 6px;
   list-style-type: none;
-  align-items: center; 
+  align-items: center;
 }
 
 .prototype-show-comment::before {
-  content: "";            /* 空の要素を作る */
-  width: 6px;             /* 四角の幅 */
-  height: 6px;            /* 四角の高さ */
+  content: ""; /* 空の要素を作る */
+  width: 6px; /* 四角の幅 */
+  height: 6px; /* 四角の高さ */
   background-color: #3b4043; /* 四角の色 */
-  flex-shrink: 0;         /* 四角が潰れないように固定 */
+  flex-shrink: 0; /* 四角が潰れないように固定 */
 }
 
-.prototype-show-comment-text{
+.prototype-show-comment-text {
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  }
-.prototype-show-comment-user{
+}
+.prototype-show-comment-user {
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
@@ -404,12 +399,67 @@ footer {
   text-decoration-style: solid;
   text-underline-offset: 0%;
   color: #999999;
-  }
-
-
+}
 
 /* ==========================================
-   ログイン画面
+   ユーザー登録ページ
+   ========================================== */
+
+.register-new_user {
+  display: block;
+  margin-top: 0em;
+  unicode-bidi: isolate;
+}
+
+.register-field {
+  margin: 10px 0;
+}
+
+.register-textarea {
+  width: 50%;
+}
+.register-inner {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+.register-actions {
+  margin-bottom: 40px;
+}
+
+.register-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #fff;
+  text-decoration: none;
+  user-select: none;
+  background: #87cefa;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+}
+
+.register-btn:hover {
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.register-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1024px) {
+  .register-inner {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+/* ==========================================
+   ログインページ
    ========================================== */
 
 .login-inner {
