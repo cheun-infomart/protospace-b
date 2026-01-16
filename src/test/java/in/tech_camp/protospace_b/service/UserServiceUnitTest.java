@@ -5,39 +5,70 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.argThat;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.factory.UserFactory;
 import in.tech_camp.protospace_b.repository.UserRepository;
 
-@ExtendWith(MockitoExtension.class)
+
+
+@ExtendWith(MockitoExtension.class) // Mockitoを使用するための設定
 @ActiveProfiles("test")
 public class UserServiceUnitTest {
-  @Mock
-  private UserRepository userRepository;
-  
-  @InjectMocks
-  private UserService userService;
 
-  private UserEntity mockUser;
+    @Mock
+    private UserRepository userRepository; // 偽物のリポジトリを作成
 
-  @BeforeEach
-  public void setUp() {
-    mockUser = UserFactory.createMockUser();
-  }
+    @Mock
+    private PasswordEncoder passwordEncoder; // 偽物のエンコーダーを作成
 
-  @Test
-  public void ユーザー詳細データを持ってこれてるか() {
-    when(userRepository.findByIdWithProto(1)).thenReturn(mockUser);
+    @InjectMocks
+    private UserService userService; // 上記のモックを注入したUserServiceを作成
 
-    UserEntity result = userService.findUserDetail(1);
+    private UserEntity mockUser;
 
-    assertThat(result, is(mockUser));
-    assertThat(result.getName(), is("TestName"));
-  }
+    @BeforeEach
+    public void setUp() {
+      mockUser = UserFactory.createMockUser();
+    }
+
+    @Test
+    public void ユーザー登録時にパスワードが暗号化されて保存されること() {
+        // 1. 準備 (Given)
+        UserEntity user = new UserEntity();
+        user.setPassword("rawPassword"); // 暗号化前のパスワードをセット
+        
+        // モックの挙動を設定：「rawPassword」をエンコードしたら「encodedPassword」を返すと定義
+        when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
+
+        // 2. 実行 (When)
+        userService.createUserWithEncryptedPassword(user);
+
+        // 3. 検証 (Then)
+        // PasswordEncoderのencodeメソッドが、引数 "rawPassword" で呼ばれたか確認
+        verify(passwordEncoder, times(1)).encode("rawPassword");
+
+        // UserRepositoryのinsertメソッドが、パスワードが書き換わったUserオブジェクトで呼ばれたか確認
+        // ここで user.getPassword() が "encodedPassword" になっているかを検証することと同じ意味になります
+        verify(userRepository, times(1)).insert(argThat(u -> u.getPassword().equals("encodedPassword")));
+    }
+
+    @Test
+    public void ユーザー詳細データを持ってこれてるか() {
+      when(userRepository.findByIdWithProto(1)).thenReturn(mockUser);
+
+      UserEntity result = userService.findUserDetail(1);
+
+      assertThat(result, is(mockUser));
+      assertThat(result.getName(), is("TestName"));
+    }
 }
