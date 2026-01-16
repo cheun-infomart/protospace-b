@@ -9,6 +9,13 @@ import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
@@ -26,8 +32,15 @@ import in.tech_camp.protospace_b.validation.ValidationOrder;
 @Controller
 @AllArgsConstructor
 public class PrototypeController {
-  private final PrototypeService prototypeService;
   private final PrototypeRepository prototypeRepository;
+  private final PrototypeService prototypeService;
+  
+  @GetMapping("/")
+  public String showPrototypes(Model model) {
+    List<PrototypeEntity> prototypes = prototypeRepository.findAll();
+    model.addAttribute("prototypes", prototypes);
+    return "index";
+  } 
 
   // プロトタイプ投稿画面表示
   @GetMapping("/prototypes/new")
