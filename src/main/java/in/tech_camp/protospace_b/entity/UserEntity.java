@@ -13,6 +13,6 @@ public class UserEntity {
   private String department;
   private String position;
   private String password;
-
   private List<PrototypeEntity> prototypes;
+  private List<CommentEntity> comments;
 }

@@ -1,33 +1,26 @@
 package in.tech_camp.protospace_b.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import in.tech_camp.protospace_b.repository.PrototypeRepository;
-import lombok.AllArgsConstructor;
-
 import java.util.List;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import in.tech_camp.protospace_b.entity.PrototypeEntity;
-import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
+import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
@@ -97,6 +90,8 @@ public class PrototypeController {
         return "redirect:/";
       }
       model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", new CommentForm());
+      model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";
   }
 }

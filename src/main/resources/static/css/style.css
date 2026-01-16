@@ -325,6 +325,12 @@ footer {
   gap: 10px;
 }
 
+.prototype-show-errormessage{
+  font-weight:700;
+  font-size:20px;
+  margin-bottom:10px;
+}
+
 .prototype-show-comment-label {
   font-weight: 400;
   font-size: 14px;
@@ -335,8 +341,9 @@ footer {
 .prototype-show-comment-input {
   border: 1px solid #767676;
   border-radius: 2px;
-  width: 100%;
-  max-width: 200px;
+  width:100%;
+  max-width:200px;
+  padding: 1px 2px;
 }
 
 .prototype-show-comment-button {

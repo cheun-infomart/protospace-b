@@ -18,16 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
-import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.factory.UserFactory;
+import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class UserControllerUnitTest {
-  @Mock
-  private UserService userService;
 
     @Mock
     private UserService userService; 
@@ -47,10 +45,6 @@ public class UserControllerUnitTest {
     public void setUp() {
         mockUser = UserFactory.createMockUser();
     }
-    
-
-    @InjectMocks
-    private UserController userController;
 
     //新規登録
     @Test
@@ -133,12 +127,6 @@ public class UserControllerUnitTest {
     @Test
     public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
         String result = userController.showLogin();
-        assertThat(result,is("users/login"));
-  
-
-    @Test
-    public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
-        String result = userController.showLogin();
 
         assertThat(result,is("users/login"));
     }
@@ -174,5 +162,5 @@ public class UserControllerUnitTest {
       assertThat(model.getAttribute("user"), is(mockUser));
       assertThat(model.getAttribute("prototypes"), is(mockUser.getPrototypes()));
     }
-  }
+  
 }

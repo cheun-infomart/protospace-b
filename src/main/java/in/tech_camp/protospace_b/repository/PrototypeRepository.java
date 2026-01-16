@@ -3,6 +3,7 @@ package in.tech_camp.protospace_b.repository;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Options;
@@ -30,9 +31,12 @@ public interface PrototypeRepository {
   List<PrototypeEntity> findAll();
   
   @Select("SELECT * FROM prototypes WHERE id = #{id}")
-  @Results(value={
+  @Results(value = {
+    @Result(property = "id", column = "id"),
     @Result(property = "user", column = "user_id",
-      one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById"))
+      one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findUserById")),
+    @Result(property = "comments", column = "id",
+      many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })
   PrototypeEntity findById(Integer id);
    
