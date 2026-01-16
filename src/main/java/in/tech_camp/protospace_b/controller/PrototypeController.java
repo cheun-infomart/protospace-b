@@ -1,27 +1,27 @@
 package in.tech_camp.protospace_b.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import in.tech_camp.protospace_b.repository.PrototypeRepository;
-import lombok.AllArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
+import lombok.AllArgsConstructor;
+
 
 @Controller
 @AllArgsConstructor
@@ -85,5 +85,27 @@ public class PrototypeController {
       }
       model.addAttribute("prototype", prototype);
       return "prototypes/show";
+  }
+
+  // プロトタイプ削除
+  @PostMapping("/prototypes/{prototypeId}/delete")
+  public String deletePrototype(@PathVariable("prototypeId") Integer prototypeId, Authentication authentication) {
+    // ログインしていない場合はログイン画面にリダイレクト
+    if (authentication == null || !authentication.isAuthenticated()) {
+        return "redirect:/users/login";
+    }
+    // IDが不正な数値の場合やnullの場合は最初に弾く
+    if (prototypeId == null || prototypeId <= 0) {
+      return "redirect:/";
+    }
+
+    try {
+      CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      prototypeService.deletePrototype(prototypeId, userDetails);
+    } catch (Exception e) {
+      System.out.println("削除失敗：" + e.getMessage());
+      return "redirect:/";
+    }
+    return "redirect:/";
   }
 }
