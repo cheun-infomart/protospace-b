@@ -4,9 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,14 +16,23 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
+import in.tech_camp.protospace_b.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class UserControllerUnitTest {
   @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserService userService; 
+
+    @Mock
+    private BindingResult bindingResult; 
+    
 
     @InjectMocks
     private UserController userController;
@@ -43,7 +53,6 @@ public class UserControllerUnitTest {
       userForm.setPassword("password123");
       userForm.setPasswordConfirmation("password123");
       
-      BindingResult bindingResult = mock(BindingResult.class);
       Model model = new ExtendedModelMap();
 
       // hasErrors()がtrueを返すように設定（失敗ルートを通すため）
@@ -54,6 +63,29 @@ public class UserControllerUnitTest {
 
       // 3. 検証
       assertThat(result, is("users/register"));
+    }
+
+    @Test
+    public void ユーザー登録中に例外が発生した場合は登録画面にリダイレクトされる() {
+      // 準備: バリデーションエラーがない状態を作る
+      UserForm form = new UserForm();
+
+      // --- ここを追加 ---
+      form.setPassword("password123");
+      form.setPasswordConfirmation("password123");
+
+      // BindingResultの mock を用意し、hasErrors() が false を返すようにする
+      when(bindingResult.hasErrors()).thenReturn(false);
+    
+      // any() を使うことで引数の内容に関わらず例外を発生させます
+      doThrow(new RuntimeException("DBエラー等")).when(userService).createUserWithEncryptedPassword(any(UserEntity.class));
+
+      // 実行
+      Model model = new ExtendedModelMap();
+      String result = userController.createUser(form, bindingResult, model);
+
+      // 検証: 返り値がリダイレクト先と一致するか
+      assertThat(result, is("redirect:users/register"));
     }
 
     //メールアドレスの一意性
@@ -69,8 +101,6 @@ public class UserControllerUnitTest {
         // 2. モックの設定
         when(userRepository.existsByEmail("already@exists.com")).thenReturn(true);
 
-        // BindingResultのモックを作成（Mockito.mockを使用）
-        BindingResult bindingResult = mock(BindingResult.class);
         // rejectValueされた時に hasErrors() が true を返すように設定
         when(bindingResult.hasErrors()).thenReturn(true); 
         

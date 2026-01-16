@@ -63,7 +63,7 @@ public class UserController {
       userService.createUserWithEncryptedPassword(userEntity);
     } catch (Exception e) {
       System.out.println("エラー：" + e);
-      return "redirect:users/login";
+      return "redirect:users/register";
     }
 
     //新規登録成功時、ログイン画面に遷移
