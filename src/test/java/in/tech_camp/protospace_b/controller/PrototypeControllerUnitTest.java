@@ -26,8 +26,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
+import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
@@ -108,8 +110,6 @@ public class PrototypeControllerUnitTest {
       Integer prototypeId = 1;
       prototype.setId(prototypeId);
 
-
-
       when(prototypeRepository.findById(1)).thenReturn(prototype);
       String result = prototypeController.showPrototypeDetail(1, model);
 
@@ -135,6 +135,38 @@ public class PrototypeControllerUnitTest {
       when(prototypeRepository.findById(1)).thenReturn(null);
       String result = prototypeController.showPrototypeDetail(1, model);
       assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするとレスポンスにコメント投稿フォームが存在する(){
+
+      CommentForm commentForm = new CommentForm();
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(1);
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      prototypeController.showPrototypeDetail(1, model);
+      assertThat(model.getAttribute("commentForm"), is(commentForm));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするとレスポンスに投稿済みのコメント含まれている(){
+      CommentEntity comment1 = new CommentEntity();
+      comment1.setId(1);
+      comment1.setText("コメント1");
+      
+      CommentEntity comment2 = new CommentEntity();
+      comment2.setId(2);
+      comment2.setText("コメント2");
+
+      List<CommentEntity> expectedCommentList = Arrays.asList(comment1,comment2);
+      
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(1);
+      prototype.setComments(expectedCommentList);
+
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      prototypeController.showPrototypeDetail(1, model);
+      assertThat(model.getAttribute("comments"), is(expectedCommentList));
     }
   }
 
