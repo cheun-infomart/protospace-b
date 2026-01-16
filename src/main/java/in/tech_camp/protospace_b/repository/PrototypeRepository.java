@@ -15,6 +15,8 @@ import in.tech_camp.protospace_b.entity.PrototypeEntity;
 
 @Mapper
 public interface PrototypeRepository {
+  @Select("SELECT * FROM prototypes WHERE user_id = #{userId}")
+  List<PrototypeEntity> findByUserId(Integer userId);
   
   @Select("SELECT p.*, u.name AS user_name FROM prototypes p INNER JOIN users u ON p.user_id = u.id")
   @Results(value = {
@@ -36,7 +38,7 @@ public interface PrototypeRepository {
     @Result(property = "comments", column = "id",
       many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })
-   PrototypeEntity findById(Integer id);
+  PrototypeEntity findById(Integer id);
    
   @Insert("INSERT into prototypes (name, catch_copy, concept, image, user_id) VALUES (#{name}, #{catchCopy}, #{concept}, #{image}, #{user.id})")
   @Options(useGeneratedKeys = true, keyProperty = "id")

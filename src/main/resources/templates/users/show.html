@@ -8,7 +8,8 @@
     <header th:replace="~{common/header :: header}"></header>
     <main class="user-show-container">
       <section class="user-show-info">
-        <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h1>
+        <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h2>
+        <!-- ユーザーデータテーブル -->
         <table class="user-show-info-table">
           <tr>
             <th>名前</th>
@@ -34,17 +35,23 @@
 
       <section class="user-show-prototype-section">
         <h1 th:text="${user.name} + 'さんのプロトタイプ'">名前さんのプロトタイプ</h1>
+        <!-- ユーザー個人のPrototype一覧 -->
+        <!-- ユーザー個人のPrototype一覧 -->
+        <!-- ユーザー個人のPrototype一覧 -->
         <div class="user-show-prototype-grid">
           <div th:each="prototype : ${prototypes}" class="user-show-prototype-card">
             <div class="user-show-card-image">
-              <img th:src="@{/uploads/{name}(name=${prototype.image})}" alt="img" />
+              <!-- Prototype詳細ページリンク -->
+              <a th:href="@{/prototypes/{prototypeId}(prototypeId=${prototype.id})}"
+                ><img th:src="@{${prototype.image}}" alt="img"
+              /></a>
             </div>
             <div class="user-show-card-content">
               <h3 th:text="${prototype.name}" class="user-show-card-title">プロトタイプタイトル</h3>
               <p th:text="${prototype.catchCopy}"></p>
               <div class="user-show-card-footer">
                 <a
-                  th:href="@{/user/{id}(id=${user.id})}"
+                  th:href="@{/users/{id}(id=${user.id})}"
                   th:text="|by ${user.name}|"
                   class="user-show-author-link"
                   >by 名前</a

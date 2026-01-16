@@ -21,4 +21,11 @@ public class UserService {
       // 保存（Repositoryにinsertメソッドが必要です）
       userRepository.insert(user);
   }
+
+  public UserEntity findUserDetail(Integer id) {
+    UserEntity user = userRepository.findByIdWithProto(id);
+    
+    return user;
+    
+  }
 }
