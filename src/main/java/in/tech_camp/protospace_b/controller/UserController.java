@@ -10,21 +10,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping; // 追加
+import org.springframework.web.bind.annotation.RequestParam;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam; // 追加
-
-import in.tech_camp.protospace_b.entity.UserEntity;
-import in.tech_camp.protospace_b.repository.UserRepository;
-import in.tech_camp.protospace_b.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor; // 追加
 
 @Controller
 @AllArgsConstructor

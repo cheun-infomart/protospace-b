@@ -1,4 +1,4 @@
-package in.tech_camp.service;
+package in.tech_camp.protospace_b.service;
 
 import java.io.IOException;
 
@@ -25,7 +25,6 @@ import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.repository.UserRepository;
-import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
 public class PrototypeServiceUnitTest {
