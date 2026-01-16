@@ -37,7 +37,9 @@
         <div class="user-show-prototype-grid">
           <div th:each="prototype : ${prototypes}" class="user-show-prototype-card">
             <div class="user-show-card-image">
-              <img th:src="@{/uploads/{name}(name=${prototype.image})}" alt="img" />
+              <a th:href="@{/prototypes/{prototypeId}(prototypeId=${prototype.id})}"
+                ><img th:src="@{${prototype.image}}" alt="img"
+              /></a>
             </div>
             <div class="user-show-card-content">
               <h3 th:text="${prototype.name}" class="user-show-card-title">プロトタイプタイトル</h3>
