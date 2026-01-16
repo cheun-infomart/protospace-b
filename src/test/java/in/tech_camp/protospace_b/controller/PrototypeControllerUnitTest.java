@@ -1,5 +1,8 @@
 package in.tech_camp.protospace_b.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
@@ -63,45 +66,84 @@ public class PrototypeControllerUnitTest {
     model = new ExtendedModelMap();
     testForm = PrototypeFormFactory.createPrototype();
   }
+  
+  @Nested
+  class プロトタイプ一覧表示機能{
+    
+    @Test
+    public void プロトタイプ一覧にリクエストするとプロトタイプ一覧のビューファイルがレスポンスで返ってくる(){
+      String result = prototypeController.showPrototypes(model);
+      assertThat(result,is("index"));
+    }
 
+    @Test
+    public void プロトタイプ一覧機能にリクエストするとレスポンスに投稿済みのプロトタイプがすべて含まれること(){
+      PrototypeEntity prototype1 = new PrototypeEntity();
+      prototype1.setId(1);
+      prototype1.setName("プロトタイプ名1");
+      prototype1.setCatchCopy("キャチコピー1");
+      prototype1.setConcept("コンセプト1");
+      prototype1.setImage("sample1.png");
+
+      PrototypeEntity prototype2 = new PrototypeEntity();
+      prototype2.setId(2);
+      prototype2.setName("プロトタイプ名2");
+      prototype2.setCatchCopy("キャチコピー2");
+      prototype2.setConcept("コンセプト2");
+      prototype2.setImage("sample2.png");
+
+      // テストデータをexpectedPrototypeListに格納
+      List<PrototypeEntity> expectedPrototypeList = Arrays.asList(prototype1, prototype2);
+
+      // findAllメソッド呼び出し時expectedPrototypeListを返す
+      when(prototypeRepository.findAll()).thenReturn(expectedPrototypeList);
+
+      // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
+      prototypeController.showPrototypes(model);
+
+      // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
+      assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
+    }
+  }
+  
   @Nested
   class プロトタイプ詳細機能 {
+  
+    @Test
+    public void 詳細機能にリクエストするとプロトタイプ詳細表示のビューファイルがレスポンスで返ってくる(){
+      PrototypeEntity prototype = new PrototypeEntity();
+      Integer prototypeId = 1;
+      prototype.setId(prototypeId);
 
-  @Test
-  public void 詳細機能にリクエストするとプロトタイプ詳細表示のビューファイルがレスポンスで返ってくる(){
-    PrototypeEntity prototype = new PrototypeEntity();
-    Integer prototypeId = 1;
-    prototype.setId(prototypeId);
 
 
-    
-    when(prototypeRepository.findById(1)).thenReturn(prototype);
-    String result = prototypeController.showPrototypeDetail(1, model);
-    
-    assertThat(result, is("prototypes/show"));
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      String result = prototypeController.showPrototypeDetail(1, model);
+
+      assertThat(result, is("prototypes/show"));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするとレスポンスにプロトタイプが存在する(){
+      PrototypeEntity prototype = new PrototypeEntity();
+      Integer prototypeId = 1;
+      prototype.setId(prototypeId);
+
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      String result = prototypeController.showPrototypeDetail(1, model);
+
+      assertThat(result, is("prototypes/show"));
+
+      assertThat(model.getAttribute("prototype"), is(prototype));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
+      when(prototypeRepository.findById(1)).thenReturn(null);
+      String result = prototypeController.showPrototypeDetail(1, model);
+      assertThat(result, is("redirect:/"));
+    }
   }
-
-  @Test
-  public void 詳細機能にリクエストするとレスポンスにプロトタイプが存在する(){
-    PrototypeEntity prototype = new PrototypeEntity();
-    Integer prototypeId = 1;
-    prototype.setId(prototypeId);
-    
-    when(prototypeRepository.findById(1)).thenReturn(prototype);
-    String result = prototypeController.showPrototypeDetail(1, model);
-    
-    assertThat(result, is("prototypes/show"));
-
-    assertThat(model.getAttribute("prototype"), is(prototype));
-  }
-
-  @Test
-  public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
-    when(prototypeRepository.findById(1)).thenReturn(null);
-    String result = prototypeController.showPrototypeDetail(1, model);
-    assertThat(result, is("redirect:/"));
-  }
-}
 
 
   @Nested
