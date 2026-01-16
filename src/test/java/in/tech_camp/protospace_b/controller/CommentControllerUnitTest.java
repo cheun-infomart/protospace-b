@@ -85,7 +85,7 @@ public class CommentControllerUnitTest {
     class 投稿に失敗する場合{
 
       @Test
-      public void textを空にして投稿した場合投稿できうにそのページに留まること(){
+      public void textを空にして投稿した場合プロトタイプ詳細ページに留まること(){
         
         Integer prototypeId = 1;
 
