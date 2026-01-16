@@ -5,27 +5,40 @@
   </head>
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    
+
     <!--詳細エリア-->
     <div class="prototype-show-details">
       <div class="prototype-show-container">
         <div class="prototype-show-header">
-            <h3 class="prototype-show-title" th:text="${prototype.name}"></h3>
-            <a href="#" class="prototype-show-author" th:text="'by ' + ${prototype.user.name}"></a>
+          <h3 class="prototype-show-title" th:text="${prototype.name}"></h3>
+          <a
+            th:href="@{/users/{id}(id=${prototype.user.id})}"
+            class="prototype-show-author"
+            th:text="'by ' + ${prototype.user.name}"
+          ></a>
 
           <!--ログイン状態かつ自分の投稿かでボタンの表示変更-->
-          <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}">
+          <div
+            th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
+          >
             <div class="prototype-show-button-section">
               <a href="#" class="prototype-show-btn">編集する</a>
-              <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
-                <input type="submit" class="prototype-show-btn" value="削除する">
-              </form> 
+              <form
+                th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
+                th:method="post"
+              >
+                <input type="submit" class="prototype-show-btn" value="削除する" />
+              </form>
             </div>
           </div>
         </div>
         <!-- メイン画像 -->
         <div class="prototype-show-image">
-          <img th:src="@{${prototype.image}}" alt="メッセージ画像" style="width: 324px; height: 324px;" />
+          <img
+            th:src="@{${prototype.image}}"
+            alt="メッセージ画像"
+            style="width: 324px; height: 324px"
+          />
         </div>
       </div>
 
@@ -43,24 +56,28 @@
         <div class="prototype-show-comment-section">
           <form class="prototype-show-comment-form">
             <label for="comment" class="prototype-show-comment-label">コメント</label>
-            <input class="prototype-show-comment-input" type="text" id="comment">
-            <input class="prototype-show-comment-button" type="submit" value="送信する">
+            <input class="prototype-show-comment-input" type="text" id="comment" />
+            <input class="prototype-show-comment-button" type="submit" value="送信する" />
           </form>
 
           <ul class="prototype-show-comments">
             <li class="prototype-show-comment">
-              <span class="prototype-show-comment-text">テキストテキストテキストテキストテキストテキスト</span>
+              <span class="prototype-show-comment-text"
+                >テキストテキストテキストテキストテキストテキスト</span
+              >
               <a href="#" class="prototype-show-comment-user">コメントユーザー名</a>
             </li>
             <li class="prototype-show-comment">
-              <span class="prototype-show-comment-text">テキストテキストテキストテキストテキスト</span>
+              <span class="prototype-show-comment-text"
+                >テキストテキストテキストテキストテキスト</span
+              >
               <a href="#" class="prototype-show-comment-user">コメントユーザー名2</a>
             </li>
           </ul>
         </div>
       </div>
-    </div> 
-    
+    </div>
+
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
 </html>
