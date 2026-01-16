@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
@@ -80,10 +81,14 @@ public class PrototypeController {
   @GetMapping("/prototypes/{prototypeId}")
   public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
       PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+      CommentForm commentForm = new CommentForm();
+
       if(prototype == null){
         return "redirect:/";
       }
       model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", commentForm);
+      model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";
   }
 }
