@@ -1,9 +1,9 @@
 package in.tech_camp.protospace_b.repository;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Many;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Options;
@@ -32,7 +32,7 @@ public interface PrototypeRepository {
   @Results(value = {
     @Result(property = "id", column = "id"),
     @Result(property = "user", column = "user_id",
-      one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById")),
+      one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findUserById")),
     @Result(property = "comments", column = "id",
       many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })

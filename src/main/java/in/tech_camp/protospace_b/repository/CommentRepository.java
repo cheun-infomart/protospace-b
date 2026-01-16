@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -18,8 +17,6 @@ public interface  CommentRepository {
   @Results(value ={
     @Result(property = "user.id", column = "user_id"),
     @Result(property = "user.name", column = "user_name"),
-    @Result(property = "prototype", column = "prototype_id",
-      one = @One(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findById"))
     })
     List<CommentEntity> findByPrototypeId(Integer prototypeId);
 
