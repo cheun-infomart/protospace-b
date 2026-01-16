@@ -1,4 +1,4 @@
-package in.tech_camp.service;
+package in.tech_camp.protospace_b.service;
 
 import java.io.IOException;
 
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,11 +22,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.ImageUrl;
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.repository.UserRepository;
-import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
 public class PrototypeServiceUnitTest {
@@ -62,10 +63,10 @@ public class PrototypeServiceUnitTest {
 			user.setEmail("test@example.com");
 
 			// 画像処理モックを用意
-			when(multipartFile.isEmpty()).thenReturn(false);
-			when(multipartFile.getOriginalFilename()).thenReturn("test.png");
-			when(multipartFile.getInputStream()).thenReturn(new java.io.ByteArrayInputStream(new byte[0]));
-			when(imageUrl.getImageUrl()).thenReturn(System.getProperty("java.io.tmpdir"));
+			lenient().when(multipartFile.isEmpty()).thenReturn(false);
+			lenient().when(multipartFile.getOriginalFilename()).thenReturn("test.png");
+			lenient().when(multipartFile.getInputStream()).thenReturn(new java.io.ByteArrayInputStream(new byte[0]));
+			lenient().when(imageUrl.getImageUrl()).thenReturn(System.getProperty("java.io.tmpdir"));
     }
 
 	@Nested
@@ -139,4 +140,85 @@ public class PrototypeServiceUnitTest {
 			}
 		}
 	}
+
+	@Nested
+  class プロトタイプ削除機能 {
+
+    @Mock
+    private CustomUserDetails customUserDetails;
+
+    @Nested
+    class 正常に削除される場合 {
+
+      @Test
+      public void ログインユーザー自身の投稿であれば削除処理が実行される() {
+        Integer prototypeId = 1;
+        Integer userId = 100;
+
+        // プロトタイプの所有者をセット
+        UserEntity owner = new UserEntity();
+        owner.setId(userId);
+        prototype.setUser(owner);
+
+        // モックの設定
+        when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
+        when(customUserDetails.getId()).thenReturn(userId); // IDを一致させる
+
+        prototypeService.deletePrototype(prototypeId, customUserDetails);
+
+        // リポジトリのdeleteByIdが1回呼ばれたか検証
+        verify(prototypeRepository, times(1)).deleteById(prototypeId);
+      }
+    }
+
+    @Nested
+    class エラーになる場合 {
+
+			@Test
+      public void 削除対象のプロトタイプが存在しない場合はRuntimeExceptionが発生する() {
+        Integer prototypeId = 1;
+        when(prototypeRepository.findById(prototypeId)).thenReturn(null);
+
+        RuntimeException exception = org.junit.jupiter.api.Assertions.assertThrows(
+          RuntimeException.class, 
+          () -> {
+              prototypeService.deletePrototype(prototypeId, customUserDetails);
+          }
+        );
+
+        // エラーメッセージの確認
+        assertThat(exception.getMessage(), is("削除対象が見つかりません"));
+        // 削除処理が呼ばれていないことを確認
+        verify(prototypeRepository, never()).deleteById(any());
+      }
+
+      @Test
+      public void 他人の投稿を削除しようとした場合はRuntimeExceptionが発生する() {
+        Integer prototypeId = 1;
+        Integer myId = 100;
+        Integer otherId = 999;
+
+        // プロトタイプ(ID:1)の所有者は他人(ID:999)にする
+        UserEntity otherUser = new UserEntity();
+        otherUser.setId(otherId);
+        prototype.setUser(otherUser);
+
+        // モックの設定
+        when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
+        when(customUserDetails.getId()).thenReturn(myId); // IDをmyIdの100にする（所有者と不一致）
+
+        RuntimeException exception = org.junit.jupiter.api.Assertions.assertThrows(
+          RuntimeException.class, 
+          () -> {
+              prototypeService.deletePrototype(prototypeId, customUserDetails);
+          }
+        );
+
+        // エラーメッセージの確認
+        assertThat(exception.getMessage(), is("削除権限がありません"));
+        // 削除処理が呼ばれていないことを確認
+        verify(prototypeRepository, never()).deleteById(any());
+      }
+    }
+  }
 }
