@@ -78,4 +78,10 @@
 
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
+  <script th:inline="javascript" th:if="${errorMessage}">
+    /*<![CDATA[*/
+    const message = /*[[${errorMessage}]]*/ "error";
+    alert(message);
+    /*]]>*/
+  </script>
 </html>

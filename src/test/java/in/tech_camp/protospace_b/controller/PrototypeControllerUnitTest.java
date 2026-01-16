@@ -22,6 +22,7 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
@@ -40,6 +41,9 @@ public class PrototypeControllerUnitTest {
 
   @Mock
   private BindingResult bindingResult;
+
+  @Mock
+  private RedirectAttributes redirectAttributes;
 
   @Mock
   private MultipartFile multipartFile;
@@ -204,9 +208,9 @@ public class PrototypeControllerUnitTest {
     when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
     Model model = new ExtendedModelMap();
 
-    String result = prototypeController.editPrototype(1, model);
+    String result = prototypeController.editPrototype(1, authentication, redirectAttributes, model);
     //修正画面に代わっているか
-    assertThat(result, is("prototype/edit"));
+    assertThat(result, is("prototypes/edit"));
     //modelにフォームの情報が入っているか
     assertThat(model.getAttribute("prototypeForm"), is(testForm));
     }

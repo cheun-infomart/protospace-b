@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
@@ -76,19 +78,32 @@ public class PrototypeController {
 
   //Prototypeの編集画面に移動
   @GetMapping("/prototypes/{id}/edit")
-  public String editPrototype(@PathVariable("id") Integer id, Model model) {
+  public String editPrototype(@PathVariable("id") Integer id, Authentication authentication, RedirectAttributes redirectAttributes, Model model) {
+    try {
+    PrototypeEntity prototype = prototypeService.findPrototypeById(id);
 
     PrototypeForm form = prototypeService.getPrototypeForm(id);
+    Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
+    if (!prototype.getUser().getId().equals(currentUserId)) {
+  
+      redirectAttributes.addFlashAttribute("errorMessage", "権限がありません.");
+      return "redirect:/";
+    }
 
     model.addAttribute("prototypeForm", form);
     model.addAttribute("id", id);
     
     return "prototypes/edit";
+    } catch (RuntimeException e) {
+      redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+      return "redirect:/";
+    }
+    
   }
   
   @PostMapping("/prototypes/{id}/update")
-  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
+  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
     //TODO: process POST request
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());

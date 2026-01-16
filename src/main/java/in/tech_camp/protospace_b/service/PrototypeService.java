@@ -97,4 +97,13 @@ public class PrototypeService {
 
 	}
 
+	public PrototypeEntity findPrototypeById(Integer id) {
+		PrototypeEntity prototype = prototypeRepository.findById(id);
+
+		if (prototype == null) {
+        throw new RuntimeException("Prototype ID：" + id + "が存在しません。");
+    }
+		return prototype;
+	}
+
 }
