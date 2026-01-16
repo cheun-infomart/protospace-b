@@ -84,7 +84,7 @@ public class PrototypeController {
     model.addAttribute("prototypeForm", form);
     model.addAttribute("id", id);
     
-    return "prototype/edit";
+    return "prototypes/edit";
   }
   
   @PostMapping("/prototypes/{id}/update")
@@ -96,7 +96,7 @@ public class PrototypeController {
 
       model.addAttribute("prototypeForm", prototypeForm);
       model.addAttribute("id", id);
-      return "prototype/edit";
+      return "prototypes/edit";
     }
 
     try {
@@ -107,7 +107,7 @@ public class PrototypeController {
       return "redirect:/prototypes/" + id + "/edit";
     }
     
-    return "redirect:/";
+    return "redirect:/prototypes/" + id;
   }
   
   //プロトタイプ詳細画面への遷移

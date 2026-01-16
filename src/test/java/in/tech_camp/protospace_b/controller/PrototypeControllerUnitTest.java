@@ -211,13 +211,13 @@ public class PrototypeControllerUnitTest {
     assertThat(model.getAttribute("prototypeForm"), is(testForm));
     }
     @Test
-    public void updatePrototype_Success_Test() {
+    public void 編集機能が問題なく実行されたか() {
     when(bindingResult.hasErrors()).thenReturn(false);
     Model model = new ExtendedModelMap();
     //updateメソッド実行
     String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
     //問題なくupdateされredirectになっているか
-    assertThat(result, is("redirect:/"));
+    assertThat(result, is("redirect:/prototypes/1"));
     }
   }
 }
