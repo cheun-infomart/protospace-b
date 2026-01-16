@@ -2,6 +2,7 @@ package in.tech_camp.protospace_b.controller;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
+import in.tech_camp.protospace_b.factory.UserFactory;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 
@@ -25,13 +27,26 @@ import in.tech_camp.protospace_b.service.UserService;
 @ActiveProfiles("test")
 public class UserControllerUnitTest {
   @Mock
-    private UserRepository userRepository;
+  private UserService userService;
 
     @Mock
     private UserService userService; 
 
     @Mock
     private BindingResult bindingResult; 
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserController userController;
+
+    private UserEntity mockUser;
+
+    @BeforeEach
+    public void setUp() {
+        mockUser = UserFactory.createMockUser();
+    }
     
 
     @InjectMocks
@@ -119,6 +134,13 @@ public class UserControllerUnitTest {
     public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
         String result = userController.showLogin();
         assertThat(result,is("users/login"));
+  
+
+    @Test
+    public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
+        String result = userController.showLogin();
+
+        assertThat(result,is("users/login"));
     }
 
     @Test
@@ -137,4 +159,20 @@ public class UserControllerUnitTest {
       // Modelの中に "loginError" という名前でメッセージが格納されているか確認
       assertThat(model.getAttribute("loginError"), is("メールアドレスまたはパスワードが無効です。"));
     }
+
+    @Test
+    public void 詳細ページに移動したら適切なView画面が表示される() {
+      //userService実行時、mockUserオブジェクト収得
+      when(userService.findUserDetail(mockUser.getId())).thenReturn(mockUser);
+      //model定義
+      Model model = new ExtendedModelMap();
+      //Controller実行とresultにその結果を入れる
+      String result = userController.showUserDetail(mockUser.getId(), model);
+      // 結果View画面が詳細ページなのか確認
+      assertThat(result, is("users/show"));
+      // ページにmodelがちゃんと渡されてるか確認
+      assertThat(model.getAttribute("user"), is(mockUser));
+      assertThat(model.getAttribute("prototypes"), is(mockUser.getPrototypes()));
+    }
+  }
 }

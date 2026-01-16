@@ -1,5 +1,8 @@
 package in.tech_camp.protospace_b.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -10,11 +13,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
+import in.tech_camp.protospace_b.factory.UserFactory;
 import in.tech_camp.protospace_b.repository.UserRepository;
 
+
+
 @ExtendWith(MockitoExtension.class) // Mockitoを使用するための設定
+@ActiveProfiles("test")
 public class UserServiceUnitTest {
 
     @Mock
@@ -25,6 +33,13 @@ public class UserServiceUnitTest {
 
     @InjectMocks
     private UserService userService; // 上記のモックを注入したUserServiceを作成
+
+    private UserEntity mockUser;
+
+    @BeforeEach
+    public void setUp() {
+      mockUser = UserFactory.createMockUser();
+    }
 
     @Test
     public void ユーザー登録時にパスワードが暗号化されて保存されること() {
@@ -45,5 +60,15 @@ public class UserServiceUnitTest {
         // UserRepositoryのinsertメソッドが、パスワードが書き換わったUserオブジェクトで呼ばれたか確認
         // ここで user.getPassword() が "encodedPassword" になっているかを検証することと同じ意味になります
         verify(userRepository, times(1)).insert(argThat(u -> u.getPassword().equals("encodedPassword")));
+    }
+
+    @Test
+    public void ユーザー詳細データを持ってこれてるか() {
+      when(userRepository.findByIdWithProto(1)).thenReturn(mockUser);
+
+      UserEntity result = userService.findUserDetail(1);
+
+      assertThat(result, is(mockUser));
+      assertThat(result.getName(), is("TestName"));
     }
 }

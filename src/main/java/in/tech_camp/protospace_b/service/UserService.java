@@ -22,4 +22,11 @@ public class UserService {
   private String encodePassword(String password) {
     return passwordEncoder.encode(password);
   }
+
+  public UserEntity findUserDetail(Integer id) {
+    UserEntity user = userRepository.findByIdWithProto(id);
+    
+    return user;
+    
+  }
 }

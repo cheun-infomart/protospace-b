@@ -4,13 +4,15 @@
     <header th:fragment="header">
       <nav class="header-nav">
         <div class="header-logo">
-          <img th:src="@{/images/Logo.png}" alt="Logo" />
+          <a th:href="@{/}"><img th:src="@{/images/Logo.png}" alt="Logo" /></a>
         </div>
         <div class="header-menus">
           <div class="user_nav grid-6" th:if="${#authorization.expression('isAuthenticated()')}">
             <form th:action="@{/logout}" method="post" style="display: inline-block">
               <!-- <input class="logout-btn" type="submit" value="ログアウト" /> -->
-              <a class="logout-btn" rel="nofollow" data-method="delete" href="/logout">ログアウト</a>
+              <a class="logout-btn" rel="nofollow" data-method="delete" href="/logout"
+                >ログアウト</a
+              >
             </form>
 
             <a class="new_proto-post" th:href="@{/prototypes/new}">New Proto</a>
