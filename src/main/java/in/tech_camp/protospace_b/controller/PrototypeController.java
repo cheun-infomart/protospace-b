@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
@@ -26,9 +27,17 @@ import lombok.AllArgsConstructor;
 @Controller
 @AllArgsConstructor
 public class PrototypeController {
-  private final PrototypeService prototypeService;
   private final PrototypeRepository prototypeRepository;
   
+  private final PrototypeService prototypeService;
+  
+  @GetMapping("/")
+  public String showPrototypes(Model model) {
+    List<PrototypeEntity> prototypes = prototypeRepository.findAll();
+    model.addAttribute("prototypes", prototypes);
+    return "index";
+  } 
+
   // プロトタイプ投稿画面表示
   @GetMapping("/prototypes/new")
   public String showPrototypeNew(Model model) {
@@ -133,6 +142,8 @@ public class PrototypeController {
         return "redirect:/";
       }
       model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", new CommentForm());
+      model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";
   }
 }

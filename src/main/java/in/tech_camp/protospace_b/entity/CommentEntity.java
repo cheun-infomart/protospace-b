@@ -8,7 +8,7 @@ import lombok.Data;
 public class CommentEntity {
   private Integer id;
   private String text;
-  private Integer userId;
-  private Integer prototypeId;
+  private UserEntity user;
+  private PrototypeEntity prototype;
   private Timestamp createdAt;
 }
