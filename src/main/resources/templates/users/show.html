@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
   <head>
     <th:block th:replace="~{common/head :: head}"></th:block>
@@ -34,9 +34,9 @@
       </section>
 
       <section class="user-show-prototype-section">
-        <h1 th:text="${user.name} + 'さんのプロトタイプ'">名前さんのプロトタイプ</h1>
-        <!-- ユーザー個人のPrototype一覧 -->
-        <!-- ユーザー個人のPrototype一覧 -->
+        <h2 class="user-show-prototype-name" th:text="${user.name} + 'さんのプロトタイプ'">
+          名前さんのプロトタイプ
+        </h2>
         <!-- ユーザー個人のPrototype一覧 -->
         <div class="user-show-prototype-grid">
           <div th:each="prototype : ${prototypes}" class="user-show-prototype-card">
