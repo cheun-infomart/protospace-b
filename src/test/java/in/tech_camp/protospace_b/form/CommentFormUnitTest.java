@@ -1,9 +1,8 @@
 package in.tech_camp.protospace_b.form;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ public class CommentFormUnitTest {
         commentForm.setText("");
         Set<ConstraintViolation<CommentForm>> violations = validator.validate(commentForm, ValidationPriority1.class);
         assertEquals(1, violations.size());
-        assertEquals("Comment can't be blank", violations.iterator().next().getMessage());
+        assertEquals("コメント入力は必須です", violations.iterator().next().getMessage());
       }
     }
   
