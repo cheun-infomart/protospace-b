@@ -36,8 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 
+
+
 # アップロードした画像（uploads直下の画像ファイル）は無視する
 src/main/resources/static/uploads/*
+uploads/*
 
 # ただし.gitkeepは管理対象にする（uploadsディレクトリをgitにあげるため）
 !src/main/resources/static/uploads/.gitkeep
