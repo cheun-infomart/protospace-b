@@ -36,6 +36,10 @@ public class PrototypeService {
 	String uploadDir = imageUrl.getImageUrl();
 	String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_" + imageFile.getOriginalFilename();
 	Path imagePath = Paths.get(uploadDir, fileName);
+
+	if (!Files.exists(imagePath)) {
+        Files.createDirectories(imagePath);
+    }
 	
 	// 基本は同じファイル名にならないが、念のため同じファイル名でも保存できるように設定(テスト対策の意味も含めて)
 	Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
