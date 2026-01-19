@@ -255,18 +255,38 @@ footer {
   gap: 8px;
 }
 
+.prototype-show-button-section form {
+  margin: 0;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
 .prototype-show-btn {
-  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 32px;
+  padding: 0 20px;          
+  line-height: 32px;        
+  box-sizing: border-box;    
+  
+  appearance: none;
+  -webkit-appearance: none;  
+
   border-radius: 3px;
   border: 1px solid #999999;
-  padding: 5px 20px;
   font-weight: 400;
   font-size: 12px;
-  line-height: 1;
 
   background-color: #ffffff;
   color: #999999;
   cursor: pointer;
+  
+  /* aタグの場合のずれ防止 */
+  vertical-align: middle;
+  text-align: center;
 }
 
 .prototype-show-content-button-edit:hover,
