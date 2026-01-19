@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
@@ -19,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
@@ -27,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
@@ -36,6 +40,7 @@ import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ActiveProfiles("test")
 public class PrototypeControllerUnitTest {
   @Mock
@@ -55,6 +60,9 @@ public class PrototypeControllerUnitTest {
 
   @Mock
   private Authentication authentication;
+
+  @Mock
+  private CustomUserDetails customUserDetails;
 
   @InjectMocks
   private PrototypeController prototypeController;
@@ -276,18 +284,108 @@ public class PrototypeControllerUnitTest {
   }
 
   @Nested
+  class プロトタイプ削除機能 {
+
+    @Test
+    public void 削除リクエストが呼ばれた場合自分の投稿であれば削除されトップページにリダイレクトする() {
+      Integer prototypeId = 1;
+      Integer userId = 100;
+      when(authentication.isAuthenticated()).thenReturn(true);
+
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(prototypeId);
+      in.tech_camp.protospace_b.entity.UserEntity owner = new in.tech_camp.protospace_b.entity.UserEntity();
+      owner.setId(userId);
+      prototype.setUser(owner);
+
+      // モック設定
+      when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
+      when(authentication.getPrincipal()).thenReturn(customUserDetails);
+      when(customUserDetails.getId()).thenReturn(userId);
+
+      String result = prototypeController.deletePrototype(prototypeId, authentication);
+
+      assertThat(result, is("redirect:/"));
+      Mockito.verify(prototypeService).deletePrototype(eq(prototypeId), eq(customUserDetails));
+    }
+
+    @Test
+    public void 未ログインの場合はログイン画面にリダイレクトされる() {
+      // 未ログイン状態を作る（authenticationがfalseを返す）
+      Integer prototypeId = 1;
+      when(authentication.isAuthenticated()).thenReturn(false);
+
+      String result = prototypeController.deletePrototype(prototypeId, authentication);
+
+      assertThat(result, is("redirect:/users/login"));
+      
+      // サービスやリポジトリが呼ばれていないことを確認
+      Mockito.verifyNoInteractions(prototypeService);
+      Mockito.verifyNoInteractions(prototypeRepository);
+    }
+
+    @Test
+    public void 不正なIDの場合はリダイレクトされる() {
+      Integer invalidId = 0;
+      when(authentication.isAuthenticated()).thenReturn(true);
+
+      String result = prototypeController.deletePrototype(invalidId, authentication);
+
+      assertThat(result, is("redirect:/"));
+
+      // ガード句で弾かれるためリポジトリもサービスも呼び出していないことを検証
+      Mockito.verifyNoInteractions(prototypeRepository);
+      Mockito.verifyNoInteractions(prototypeService);
+    }
+
+    @Test
+    public void 他人の投稿を削除しようとした場合はServiceからのエラーをキャッチしてトップページにリダイレクトする() {
+      Integer prototypeId = 1;
+      when(authentication.isAuthenticated()).thenReturn(true);
+      
+      // Serviceは例外を投げる
+      Mockito.doThrow(new RuntimeException("削除権限がありません"))
+            .when(prototypeService).deletePrototype(eq(prototypeId), any());
+
+      String result = prototypeController.deletePrototype(prototypeId, authentication);
+
+      // コントローラーがcatchブロックに入り、リダイレクトを返しているか検証
+      assertThat(result, is("redirect:/"));
+      
+      // サービス自体は呼ばれたことを確認する（呼ばれた後にユーザー検証するため）
+      Mockito.verify(prototypeService).deletePrototype(eq(prototypeId), any());
+    }
+  }
+
+  @Nested
   class プロトタイプ編集機能 {
     @Test
     public void ゲットメソッドでView画面表示できる() {
-    when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
-    Model model = new ExtendedModelMap();
+      Integer userId = 100;
+      Integer prototypeId = 1;
 
-    String result = prototypeController.editPrototype(1, authentication, redirectAttributes, model);
-    //修正画面に代わっているか
-    assertThat(result, is("prototypes/edit"));
-    //modelにフォームの情報が入っているか
-    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(prototypeId);
+      in.tech_camp.protospace_b.entity.UserEntity owner = new in.tech_camp.protospace_b.entity.UserEntity();
+      owner.setId(userId);
+      prototype.setUser(owner);
+
+      // 権限チェック用のEntity取得
+      when(prototypeService.findPrototypeById(prototypeId)).thenReturn(prototype);
+      // フォーム表示用のデータ取得
+      when(prototypeService.getPrototypeForm(prototypeId)).thenReturn(testForm);
+      // ログインユーザー情報の取得
+      when(authentication.getPrincipal()).thenReturn(customUserDetails);
+      when(customUserDetails.getId()).thenReturn(userId);
+
+      Model model = new ExtendedModelMap();
+
+      String result = prototypeController.editPrototype(prototypeId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("prototypes/edit"));
+      assertThat(model.getAttribute("prototypeForm"), is(testForm));
     }
+
     @Test
     public void 編集機能が問題なく実行されたか() {
     when(bindingResult.hasErrors()).thenReturn(false);
@@ -299,5 +397,3 @@ public class PrototypeControllerUnitTest {
     }
   }
 }
-
- 

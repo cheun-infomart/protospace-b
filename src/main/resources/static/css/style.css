@@ -116,43 +116,43 @@ main {
   display: block;
   unicode-bidi: isolate;
 }
-.prototype-index-content{
+.prototype-index-content {
   width: 1024px;
   margin: 0 auto;
 }
-.prototype-index-greeting{
+.prototype-index-greeting {
   margin-bottom: 20px;
 }
-.prototype-index-greeting_link{
+.prototype-index-greeting_link {
   text-decoration: underline;
 }
-.prototype-index-card_wrapper{
+.prototype-index-card_wrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   min-height: calc(100vh - 161px);
 }
-.prototype-index-card{
+.prototype-index-card {
   width: calc((100% - 50px) / 3);
   margin-bottom: 40px;
 }
-#prototype_link{
+#prototype_link {
   display: block;
 }
-.prototype-index-card_img{
+.prototype-index-card_img {
   margin-bottom: 16px;
 }
-.prototype-index-card_title{
+.prototype-index-card_title {
   display: block;
   font-size: 20px;
   margin-bottom: 8px;
   font-weight: bold;
 }
-.prototype-index-card_summary{
+.prototype-index-card_summary {
   font-size: 16px;
 }
-.prototype-index-card_user{
+.prototype-index-card_user {
   display: block;
   font-size: 12px;
   color: #999;
@@ -161,33 +161,33 @@ main {
 }
 
 /* 1024px以下の表示 */
-@media(max-width: 1024px){
-  .prototype-index-content{
+@media (max-width: 1024px) {
+  .prototype-index-content {
     width: 90%;
     margin: 0 auto;
   }
-  .prototype-index-card{
+  .prototype-index-card {
     width: 48%;
     margin-bottom: 40px;
   }
-  .prototype-index-card_title{
+  .prototype-index-card_title {
     font-size: 18px;
   }
-  .prototype-index-card_summary{
+  .prototype-index-card_summary {
     font-size: 14px;
   }
 }
 
 /* 599px以下の表示 */
-@media(max-width: 599px){
-  .prototype-index-card{
+@media (max-width: 599px) {
+  .prototype-index-card {
     width: 100%;
     margin-bottom: 60px;
   }
-  .prototype-index-card_title{
+  .prototype-index-card_title {
     font-size: 16px;
   }
-  .prototype-index-card_summary{
+  .prototype-index-card_summary {
     font-size: 12px;
   }
 }
@@ -325,10 +325,9 @@ footer {
   gap: 10px;
 }
 
-.prototype-show-errormessage{
-  font-weight:700;
-  font-size:20px;
-  margin-bottom:10px;
+.prototype-show-errormessage {
+  color: #ff4d4f;
+  font-size: 0.85rem;
 }
 
 .prototype-show-comment-label {
@@ -341,8 +340,8 @@ footer {
 .prototype-show-comment-input {
   border: 1px solid #767676;
   border-radius: 2px;
-  width:100%;
-  max-width:200px;
+  width: 100%;
+  max-width: 200px;
   padding: 1px 2px;
 }
 
@@ -351,7 +350,9 @@ footer {
   width: 96px;
   height: 31px;
   background-color: #87cefa;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 3px 0 rgba(0, 0, 0, 0.14),
+    0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
   border: none;
   font-weight: 400;
@@ -361,7 +362,9 @@ footer {
 }
 
 .prototype-show-comment-button:hover {
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 6px 0 rgba(0, 0, 0, 0.2),
+    0 1px 8px 0 rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
 
@@ -437,12 +440,16 @@ footer {
   background: #87cefa;
   border: 1px #87cefa solid;
   border-radius: 3px;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 3px 0 rgba(0, 0, 0, 0.14),
+    0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
 }
 
 .register-btn:hover {
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 6px 0 rgba(0, 0, 0, 0.2),
+    0 1px 8px 0 rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
 
@@ -494,7 +501,9 @@ footer {
   background: #87cefa;
   border: 1px #87cefa solid;
   border-radius: 3px;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 3px 0 rgba(0, 0, 0, 0.14),
+    0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
 }
 
@@ -559,7 +568,9 @@ footer {
   background: #87cefa;
   border: 1px #87cefa solid;
   border-radius: 3px;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 3px 0 rgba(0, 0, 0, 0.14),
+    0 1px 2px 0 rgba(0, 0, 0, 0.12);
   transition: 0.2s ease;
 }
 

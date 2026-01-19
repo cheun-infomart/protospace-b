@@ -1,5 +1,7 @@
 package in.tech_camp.protospace_b.repository;
 
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
@@ -45,6 +47,9 @@ public interface PrototypeRepository {
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insert(PrototypeEntity prototype);
 
+  @Delete("DELETE FROM prototypes WHERE id = #{id}")
+  void deleteById(Integer id);
+  
   @Update("UPDATE prototypes SET name=#{name}, catch_copy=#{catchCopy}, " +
           "concept=#{concept}, image=#{image} WHERE id=#{id}")
   void update(PrototypeEntity prototype);

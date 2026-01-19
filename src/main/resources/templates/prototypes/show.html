@@ -29,7 +29,11 @@
                 th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
                 th:method="post"
               >
-                <input type="submit" class="prototype-show-btn" value="削除する" />
+                <input
+                  type="submit"
+                  class="prototype-show-btn"
+                  value="削除する"
+                />
               </form>
             </div>
           </div>
@@ -47,11 +51,17 @@
       <div class="prototype-show-description">
         <div class="prototype-show-info-group">
           <h3 class="prototype-show-info-label">キャッチコピー</h3>
-          <p class="prototype-show-info-text" th:text="${prototype.catchCopy}"></p>
+          <p
+            class="prototype-show-info-text"
+            th:text="${prototype.catchCopy}"
+          ></p>
         </div>
         <div class="prototype-show-info-group">
           <h3 class="prototype-show-info-label">コンセプト</h3>
-          <p class="prototype-show-info-text" th:text="${prototype.concept}"></p>
+          <p
+            class="prototype-show-info-text"
+            th:text="${prototype.concept}"
+          ></p>
         </div>
 
         <!--コメントエリア-->

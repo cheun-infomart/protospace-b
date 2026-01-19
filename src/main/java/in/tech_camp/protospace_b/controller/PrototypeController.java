@@ -146,4 +146,26 @@ public class PrototypeController {
       model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";
   }
+
+  // プロトタイプ削除
+  @PostMapping("/prototypes/{prototypeId}/delete")
+  public String deletePrototype(@PathVariable("prototypeId") Integer prototypeId, Authentication authentication) {
+    // ログインしていない場合はログイン画面にリダイレクト
+    if (authentication == null || !authentication.isAuthenticated()) {
+        return "redirect:/users/login";
+    }
+    // IDが不正な数値の場合やnullの場合は最初に弾く
+    if (prototypeId == null || prototypeId <= 0) {
+      return "redirect:/";
+    }
+
+    try {
+      CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      prototypeService.deletePrototype(prototypeId, userDetails);
+    } catch (Exception e) {
+      System.out.println("削除失敗：" + e.getMessage());
+      return "redirect:/";
+    }
+    return "redirect:/";
+  }
 }
