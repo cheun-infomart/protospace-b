@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.ImageUrl;
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.PrototypeForm;
@@ -36,6 +37,10 @@ public class PrototypeService {
 	String uploadDir = imageUrl.getImageUrl();
 	String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_" + imageFile.getOriginalFilename();
 	Path imagePath = Paths.get(uploadDir, fileName);
+
+	if (!Files.exists(imagePath)) {
+        Files.createDirectories(imagePath);
+    }
 	
 	// 基本は同じファイル名にならないが、念のため同じファイル名でも保存できるように設定(テスト対策の意味も含めて)
 	Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
@@ -66,6 +71,23 @@ public class PrototypeService {
 
 		// DBへ保存
 		prototypeRepository.insert(prototype);
+	}
+
+	// 削除機能
+	public void deletePrototype(Integer prototypeId, CustomUserDetails userDetails) {
+    // 対象の取得
+    PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+    
+    // nullチェック（なければ例外を投げる）
+    if (prototype == null) {
+        throw new RuntimeException("削除対象が見つかりません");
+    }
+    // ログインユーザーかつプロトタイプのユーザーかどうかチェックし、異なる場合はエラーを投げる
+    if (!prototype.getUser().getId().equals(userDetails.getId())) {
+        throw new RuntimeException("削除権限がありません");
+    }
+    // 削除処理実行
+    prototypeRepository.deleteById(prototypeId);
 	}
 
 	public PrototypeForm getPrototypeForm(Integer id) {
