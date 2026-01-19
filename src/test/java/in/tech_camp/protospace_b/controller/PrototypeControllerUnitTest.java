@@ -361,14 +361,29 @@ public class PrototypeControllerUnitTest {
   class プロトタイプ編集機能 {
     @Test
     public void ゲットメソッドでView画面表示できる() {
-    when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
-    Model model = new ExtendedModelMap();
+      Integer userId = 100;
+      Integer prototypeId = 1;
 
-    String result = prototypeController.editPrototype(1, authentication, redirectAttributes, model);
-    //修正画面に代わっているか
-    assertThat(result, is("prototypes/edit"));
-    //modelにフォームの情報が入っているか
-    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(prototypeId);
+      in.tech_camp.protospace_b.entity.UserEntity owner = new in.tech_camp.protospace_b.entity.UserEntity();
+      owner.setId(userId);
+      prototype.setUser(owner);
+
+      // 権限チェック用のEntity取得
+      when(prototypeService.findPrototypeById(prototypeId)).thenReturn(prototype);
+      // フォーム表示用のデータ取得
+      when(prototypeService.getPrototypeForm(prototypeId)).thenReturn(testForm);
+      // ログインユーザー情報の取得
+      when(authentication.getPrincipal()).thenReturn(customUserDetails);
+      when(customUserDetails.getId()).thenReturn(userId);
+
+      Model model = new ExtendedModelMap();
+
+      String result = prototypeController.editPrototype(prototypeId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("prototypes/edit"));
+      assertThat(model.getAttribute("prototypeForm"), is(testForm));
     }
 
     @Test
