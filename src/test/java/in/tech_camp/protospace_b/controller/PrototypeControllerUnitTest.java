@@ -25,6 +25,7 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -47,6 +48,9 @@ public class PrototypeControllerUnitTest {
   private BindingResult bindingResult;
 
   @Mock
+  private RedirectAttributes redirectAttributes;
+
+  @Mock
   private MultipartFile multipartFile;
 
   @Mock
@@ -57,9 +61,12 @@ public class PrototypeControllerUnitTest {
 
   private Model model;
 
+  private PrototypeForm testForm;
+
   @BeforeEach
   public void setUp(){
     model = new ExtendedModelMap();
+    testForm = PrototypeFormFactory.createPrototype();
   }
   
   @Nested
@@ -267,4 +274,30 @@ public class PrototypeControllerUnitTest {
       }
     }
   }
+
+  @Nested
+  class プロトタイプ編集機能 {
+    @Test
+    public void ゲットメソッドでView画面表示できる() {
+    when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
+    Model model = new ExtendedModelMap();
+
+    String result = prototypeController.editPrototype(1, authentication, redirectAttributes, model);
+    //修正画面に代わっているか
+    assertThat(result, is("prototypes/edit"));
+    //modelにフォームの情報が入っているか
+    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+    }
+    @Test
+    public void 編集機能が問題なく実行されたか() {
+    when(bindingResult.hasErrors()).thenReturn(false);
+    Model model = new ExtendedModelMap();
+    //updateメソッド実行
+    String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
+    //問題なくupdateされredirectになっているか
+    assertThat(result, is("redirect:/prototypes/1"));
+    }
+  }
 }
+
+ 

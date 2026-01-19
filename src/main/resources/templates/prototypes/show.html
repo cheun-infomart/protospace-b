@@ -22,7 +22,9 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
           >
             <div class="prototype-show-button-section">
-              <a href="#" class="prototype-show-btn">編集する</a>
+              <a th:href="@{/prototypes/{id}/edit(id=${prototype.id})}" class="prototype-show-btn"
+                >編集する</a
+              >
               <form
                 th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
                 th:method="post"
@@ -82,4 +84,10 @@
 
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
+  <script th:inline="javascript" th:if="${errorMessage}">
+    /*<![CDATA[*/
+    const message = /*[[${errorMessage}]]*/ "error";
+    alert(message);
+    /*]]>*/
+  </script>
 </html>
