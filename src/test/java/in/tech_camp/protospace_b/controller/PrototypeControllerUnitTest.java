@@ -28,10 +28,13 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
+import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
+import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
@@ -50,6 +53,9 @@ public class PrototypeControllerUnitTest {
   private BindingResult bindingResult;
 
   @Mock
+  private RedirectAttributes redirectAttributes;
+
+  @Mock
   private MultipartFile multipartFile;
 
   @Mock
@@ -63,9 +69,12 @@ public class PrototypeControllerUnitTest {
 
   private Model model;
 
+  private PrototypeForm testForm;
+
   @BeforeEach
   public void setUp(){
     model = new ExtendedModelMap();
+    testForm = PrototypeFormFactory.createPrototype();
   }
   
   @Nested
@@ -116,8 +125,6 @@ public class PrototypeControllerUnitTest {
       Integer prototypeId = 1;
       prototype.setId(prototypeId);
 
-
-
       when(prototypeRepository.findById(1)).thenReturn(prototype);
       String result = prototypeController.showPrototypeDetail(1, model);
 
@@ -143,6 +150,38 @@ public class PrototypeControllerUnitTest {
       when(prototypeRepository.findById(1)).thenReturn(null);
       String result = prototypeController.showPrototypeDetail(1, model);
       assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするとレスポンスにコメント投稿フォームが存在する(){
+
+      CommentForm commentForm = new CommentForm();
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(1);
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      prototypeController.showPrototypeDetail(1, model);
+      assertThat(model.getAttribute("commentForm"), is(commentForm));
+    }
+
+    @Test
+    public void 詳細機能にリクエストするとレスポンスに投稿済みのコメント含まれている(){
+      CommentEntity comment1 = new CommentEntity();
+      comment1.setId(1);
+      comment1.setText("コメント1");
+      
+      CommentEntity comment2 = new CommentEntity();
+      comment2.setId(2);
+      comment2.setText("コメント2");
+
+      List<CommentEntity> expectedCommentList = Arrays.asList(comment1,comment2);
+      
+      PrototypeEntity prototype = new PrototypeEntity();
+      prototype.setId(1);
+      prototype.setComments(expectedCommentList);
+
+      when(prototypeRepository.findById(1)).thenReturn(prototype);
+      prototypeController.showPrototypeDetail(1, model);
+      assertThat(model.getAttribute("comments"), is(expectedCommentList));
     }
   }
 
@@ -244,7 +283,7 @@ public class PrototypeControllerUnitTest {
     }
   }
 
-@Nested
+  @Nested
   class プロトタイプ削除機能 {
 
     @Test
@@ -299,22 +338,47 @@ public class PrototypeControllerUnitTest {
       Mockito.verifyNoInteractions(prototypeService);
     }
 
-  @Test
-  public void 他人の投稿を削除しようとした場合はServiceからのエラーをキャッチしてトップページにリダイレクトする() {
-    Integer prototypeId = 1;
-    when(authentication.isAuthenticated()).thenReturn(true);
-    
-    // Serviceは例外を投げる
-    Mockito.doThrow(new RuntimeException("削除権限がありません"))
-          .when(prototypeService).deletePrototype(eq(prototypeId), any());
+    @Test
+    public void 他人の投稿を削除しようとした場合はServiceからのエラーをキャッチしてトップページにリダイレクトする() {
+      Integer prototypeId = 1;
+      when(authentication.isAuthenticated()).thenReturn(true);
+      
+      // Serviceは例外を投げる
+      Mockito.doThrow(new RuntimeException("削除権限がありません"))
+            .when(prototypeService).deletePrototype(eq(prototypeId), any());
 
-    String result = prototypeController.deletePrototype(prototypeId, authentication);
+      String result = prototypeController.deletePrototype(prototypeId, authentication);
 
-    // コントローラーがcatchブロックに入り、リダイレクトを返しているか検証
-    assertThat(result, is("redirect:/"));
-    
-    // サービス自体は呼ばれたことを確認する（呼ばれた後にユーザー検証するため）
-    Mockito.verify(prototypeService).deletePrototype(eq(prototypeId), any());
+      // コントローラーがcatchブロックに入り、リダイレクトを返しているか検証
+      assertThat(result, is("redirect:/"));
+      
+      // サービス自体は呼ばれたことを確認する（呼ばれた後にユーザー検証するため）
+      Mockito.verify(prototypeService).deletePrototype(eq(prototypeId), any());
+    }
+  }
+
+  @Nested
+  class プロトタイプ編集機能 {
+    @Test
+    public void ゲットメソッドでView画面表示できる() {
+    when(prototypeService.getPrototypeForm(1)).thenReturn(testForm);
+    Model model = new ExtendedModelMap();
+
+    String result = prototypeController.editPrototype(1, authentication, redirectAttributes, model);
+    //修正画面に代わっているか
+    assertThat(result, is("prototypes/edit"));
+    //modelにフォームの情報が入っているか
+    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+    }
+
+    @Test
+    public void 編集機能が問題なく実行されたか() {
+    when(bindingResult.hasErrors()).thenReturn(false);
+    Model model = new ExtendedModelMap();
+    //updateメソッド実行
+    String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
+    //問題なくupdateされredirectになっているか
+    assertThat(result, is("redirect:/prototypes/1"));
     }
   }
 }
