@@ -37,7 +37,16 @@ public class UserController {
 
   //新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") @Validated(ValidationOrder.class) UserForm userForm, BindingResult result, Model model) {
+  public String createUser(@ModelAttribute("userForm") 
+                           @Validated({ValidationOrder.EmailSequence.class,
+                                      ValidationOrder.PasswordSequence.class,
+                                      ValidationOrder.NameSequence.class,
+                                      ValidationOrder.ProfileSequence.class,
+                                      ValidationOrder.DepartmentSequence.class,
+                                      ValidationOrder.PositionSequence.class
+                            }) UserForm userForm, 
+                            BindingResult result, 
+                            Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
