@@ -187,6 +187,55 @@ main {
   text-decoration: underline;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-content h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.modal-close-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.modal-close-btn:hover {
+  background-color: #555;
+}
+
 /* 1024px以下の表示 */
 @media (max-width: 1024px) {
   .prototype-index-content {

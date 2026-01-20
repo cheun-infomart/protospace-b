@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
   <head>
     <th:block th:replace="~{common/head :: head}"></th:block>
@@ -7,12 +7,25 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    
+
     <main class="prototype-index-main">
+      <div th:if="${param.withdraw}" id="withdrawModal" class="modal-overlay">
+        <div class="modal-content">
+          <h3>アカウント削除完了</h3>
+          <p>
+            ご利用ありがとうございました。<br />
+            アカウント削除が無事に行われました。
+          </p>
+          <button type="button" onclick="closeWithdrawModal()" class="modal-close-btn">確認</button>
+        </div>
+      </div>
       <div class="prototype-index-content">
-        <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
+        <div
+          class="prototype-index-greeting"
+          th:if="${#authorization.expression('isAuthenticated()')}"
+        >
           <span>こんにちは、</span>
-          <a 
+          <a
             class="prototype-index-greeting_link"
             th:href="@{/users/{id}(id=${#authentication?.principal.getId()})}"
             th:text="${#authentication?.principal.getName()} + 'さん'"
@@ -22,12 +35,20 @@
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
             <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
-              <img class="prototype-index-card_img"  th:src="@{${prototype.image}}">
+              <img class="prototype-index-card_img" th:src="@{${prototype.image}}" />
             </a>
             <div class="prototype-index-card_body">
-              <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
+              <a
+                class="prototype-index-card_title"
+                th:href="@{/prototypes/{id}(id=${prototype.id})}"
+                th:text="${prototype.name}"
+              ></a>
               <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
-              <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
+              <a
+                class="prototype-index-card_user"
+                th:href="@{/users/{id}(id=${prototype.user.id})}"
+                th:text="'by ' + ${prototype.user.name}"
+              ></a>
             </div>
           </div>
         </div>
@@ -35,5 +56,6 @@
     </main>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
+    <script th:src="@{/js/userDelete.js}"></script>
   </body>
 </html>
