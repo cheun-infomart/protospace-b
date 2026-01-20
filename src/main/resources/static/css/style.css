@@ -237,17 +237,17 @@ footer {
 }
 
 /* ==========================================
-   User Pages (共通: 登録・ログイン・投稿など)
+   共通
    ========================================== */
 
 /* 1024px 中央寄せコンテナ */
-.user-inner {
+.com-inner {
   width: 1024px;
   margin: 0 auto;
 }
 
 /* フォーム全体の最小高さ（フッターを下に押し出す） */
-.user-form {
+.com-form {
   min-height: calc(100vh - 161px);
 }
 
@@ -258,7 +258,7 @@ footer {
 }
 
 /* 入力項目の余白 */
-.user-field {
+.com-field {
   margin: 10px 0;
 }
 
@@ -270,7 +270,7 @@ footer {
 }
 
 /* 共通ボタン（水色・角丸・影） */
-.user-btn {
+.com-btn {
   display: inline-block;
   padding: 0.4em 1.6em;
   font-size: 0.8em;
@@ -285,13 +285,13 @@ footer {
   cursor: pointer;
 }
 
-.user-btn:hover {
+.com-btn:hover {
   background: #6fbef3;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
-.user-actions {
+.com-actions {
   margin: 0 0 40px;
 }
 
@@ -304,7 +304,7 @@ footer {
 
 /* レスポンシブ対応 */
 @media (max-width: 1024px) {
-  .user-inner {
+  .com-inner {
     width: 90%;
   }
   .title-h2 {

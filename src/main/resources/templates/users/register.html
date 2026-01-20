@@ -6,60 +6,53 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    <main class="main">
-      <!-- <div class="register-inner"> -->
-      <div class="user-inner">
-        <!-- <div class="register-form"> -->
-        <div class="user-form">
-          <!-- <h2 class="register-h2">ユーザー新規登録</h2> -->
+    <main>
+      <div class="com-inner">
+        <div class="com-form">
           <h2 class="title-h2">ユーザー新規登録</h2>
 
-          <!-- <div th:if="${errorMessages}" class="user-new-error">
-            <p th:each="error : ${errorMessages}" th:text="${error}" class="register-error"></p>
-          </div> -->
           <div th:if="${errorMessages}" class="user-new-error">
             <p th:each="error : ${errorMessages}" th:text="${error}" class="new-error"></p>
           </div>
 
-          <!-- <form class="register-new_user" th:action="@{/user}" th:object="${userForm}" method="post"> -->
           <form class="register-new_user" th:action="@{/user}" th:object="${userForm}" method="post">
-            <div class="user-field">
+            <div class="com-field">
               <label>メールアドレス</label><br />
               <input type="text" th:field="*{email}" autofocus="autofocus" />
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>パスワード(6文字以上)</label><br />
               <input type="password" th:field="*{password}" autocomplete="off" />
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>パスワード再入力</label><br />
               <input type="password" th:field="*{passwordConfirmation}" />
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>ユーザー名</label><br />
               <input type="text" th:field="*{name}" />
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>プロフィール</label><br />
               <textarea class="user-textarea" th:field="*{profile}"></textarea>
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>所属</label><br />
               <textarea class="user-textarea" th:field="*{department}"></textarea>
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label>役職</label><br />
               <textarea class="user-textarea" th:field="*{position}"></textarea>
             </div>
 
-            <div class="user-actions">
-              <input class="user-btn" type="submit" value="新規登録" data-disable-with="新規登録" />
+            <div class="com-actions">
+              <input class="com-btn" type="submit" value="新規登録" data-disable-with="新規登録" />
             </div>
           </form>
         </div>

@@ -6,31 +6,31 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    <div class="main">
-      <div class="user-inner">
-        <div class="user-form">
+    <main>
+      <div class="com-inner">
+        <div class="com-form">
           <h2 class="title-h2">ユーザーログイン</h2>
 
           <p th:if="${loginError}" class="new-error" th:text="${loginError}"></p>
 
           <form th:method="post" th:action="@{/login}" class="user">
-            <div class="user-field">
+            <div class="com-field">
               <label class="login-email">メールアドレス</label><br />
               <input type="text" id="email" name="email" autofocus="autofocus" required="required" />
             </div>
 
-            <div class="user-field">
+            <div class="com-field">
               <label class="login-password">パスワード(6文字以上)</label><br />
               <input type="password" name="password" required="required" autocomplete="off" />
             </div>
 
-            <div class="user-actions">
-              <input class="user-btn" type="submit" value="ログイン" data-disable-with="ログイン" />
+            <div class="com-actions">
+              <input class="com-btn" type="submit" value="ログイン" data-disable-with="ログイン" />
             </div>
           </form>
         </div>
       </div>
-    </div>
+    </main>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
