@@ -1,9 +1,8 @@
 package in.tech_camp.protospace_b.repository;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,7 +20,7 @@ public interface PrototypeRepository {
   @Select("SELECT * FROM prototypes WHERE user_id = #{userId}")
   List<PrototypeEntity> findByUserId(Integer userId);
   
-  @Select("SELECT p.*, u.name AS user_name FROM prototypes p INNER JOIN users u ON p.user_id = u.id")
+  @Select("SELECT p.*, u.name AS user_name FROM prototypes p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC;")
   @Results(value = {
     @Result(property="id", column="id"),
     @Result(property="name", column="name"),
@@ -53,4 +52,11 @@ public interface PrototypeRepository {
   @Update("UPDATE prototypes SET name=#{name}, catch_copy=#{catchCopy}, " +
           "concept=#{concept}, image=#{image} WHERE id=#{id}")
   void update(PrototypeEntity prototype);
+
+  @Select("SELECT * FROM prototypes WHERE name LIKE CONCAT('%', #{name}, '%') OR catch_copy LIKE CONCAT('%', #{text}, '%') OR concept LIKE CONCAT('%', #{text}, '%') ORDER BY created_at DESC")
+  @Results(value = {
+    @Result(property = "user", column = "user_id",
+            one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById"))
+  })
+  List<PrototypeEntity> findByTextContaining(String text);
 }
