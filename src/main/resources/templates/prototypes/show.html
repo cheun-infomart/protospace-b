@@ -59,6 +59,13 @@
               th:object="${commentForm}"
               class="prototype-show-comment-form"
             >
+              <div
+                th:if="${errorMessages}"
+                th:each="error : ${errorMessages}"
+                class="prototype-show-errormessage"
+              >
+                <span th:text="${error.defaultMessage}"></span>
+              </div>
               <label for="comment" class="prototype-show-comment-label">コメント</label>
               <input
                 class="prototype-show-comment-input"
@@ -66,16 +73,7 @@
                 type="text"
                 id="comment"
               />
-              <div class="comment-submit-row">
-                <input class="prototype-show-comment-button" type="submit" value="送信する" />
-                <div
-                  th:if="${errorMessages}"
-                  th:each="error : ${errorMessages}"
-                  class="prototype-show-errormessage"
-                >
-                  <span th:text="${error.defaultMessage}"></span>
-                </div>
-              </div>
+              <input class="prototype-show-comment-button" type="submit" value="送信する" />
             </form>
           </div>
           <div th:if="${#authorization.expression('!isAuthenticated()')}">

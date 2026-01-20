@@ -402,12 +402,6 @@ footer {
   padding: 1px 2px;
 }
 
-.comment-submit-row {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-}
-
 .prototype-show-comment-button {
   padding: 5px 20px 6px;
   width: 96px;
