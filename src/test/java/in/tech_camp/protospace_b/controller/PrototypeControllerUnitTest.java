@@ -416,6 +416,7 @@ public class PrototypeControllerUnitTest {
       // テストデータをexpectedPrototypeListに格納
       List<PrototypeEntity> expectedPrototypeList = Arrays.asList(prototype1, prototype2, prototype3);
 
+      when(prototypeService.convertToKatakana("プロトタイプ")).thenReturn("プロトタイプ");
       // findAllメソッド呼び出し時expectedPrototypeListを返す
       when(prototypeRepository.findByTextContaining("プロトタイプ")).thenReturn(expectedPrototypeList);
 
