@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model; // 追加
 import org.springframework.validation.BindingResult;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping; // 追加
 import org.springframework.web.bind.annotation.RequestParam;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor; // 追加
 
 @Controller
@@ -105,7 +109,10 @@ public class UserController {
 
   //ユーザー削除
   @PostMapping("/users/{id}/delete")
-  public String deleteUser(@PathVariable("id") Integer id, Authentication authentication) {
+  public String deleteUser(@PathVariable("id") Integer id, 
+                           Authentication authentication,
+                           HttpServletRequest request,
+                           HttpServletResponse response) {
       // ログインしていない場合はログイン画面にリダイレクト
     if (authentication == null || !authentication.isAuthenticated()) {
         return "redirect:/users/login";
@@ -115,6 +122,17 @@ public class UserController {
       return "redirect:/";
     }
       
+    try {
+      CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      userService.deleteUser(id, userDetails);
+
+      SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+      logoutHandler.logout(request, response, authentication);
+      
+    } catch (Exception e) {
+      System.out.println("削除失敗：" + e.getMessage());
       return "redirect:/";
+    }
+    return "redirect:/?withdraw=success";
   }
 }

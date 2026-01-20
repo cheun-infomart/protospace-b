@@ -1,5 +1,6 @@
 package in.tech_camp.protospace_b.repository;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -40,5 +41,7 @@ public interface UserRepository {
     })
     UserEntity findByIdWithProto(Integer id);
 
+  @Delete("DELETE FROM users WHERE id = #{id}")
+  void deleteById(Integer id);
 }
 
