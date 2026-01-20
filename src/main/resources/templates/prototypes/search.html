@@ -26,7 +26,7 @@
             </a>
             <div class="prototype-index-card_body">
               <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
-              <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
+              <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
               <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
             </div>
           </div>
