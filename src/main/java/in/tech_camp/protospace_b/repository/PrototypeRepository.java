@@ -17,7 +17,7 @@ import in.tech_camp.protospace_b.entity.PrototypeEntity;
 
 @Mapper
 public interface PrototypeRepository {
-  @Select("SELECT * FROM prototypes WHERE user_id = #{userId}")
+  @Select("SELECT * FROM prototypes WHERE user_id = #{userId} ORDER BY created_at DESC")
   List<PrototypeEntity> findByUserId(Integer userId);
   
   @Select("SELECT p.*, u.name AS user_name FROM prototypes p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC;")
