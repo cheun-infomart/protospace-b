@@ -1,18 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <head>
   <th:block th:replace="~{common/head :: head}"></th:block>
 </head>
 <body>
   <header th:replace="~{common/header :: header}"></header>
   <main>
-    <div class="prototype-new-inner">
-      <div class="prototype-new-form-wrapper">
-        <h2 class="prototype-new-page-heading">新規プロトタイプ投稿</h2>
-        <div
-          th:if="${errorMessages}"
-          th:each="error : ${errorMessages}"
-          class="prototype-new-error"
-        >
+    <div class="user-inner">
+      <div class="user-form">
+        <h2 class="title-h2">新規プロトタイプ投稿</h2>
+
+        <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error">
           <div th:text="${error}"></div>
         </div>
         <form
@@ -20,37 +17,34 @@
           th:method="post"
           th:object="${prototypeForm}"
           enctype="multipart/form-data"
+          class="user"
         >
-          <div class="prototype-new-field">
+          <div class="user-field">
             <label th:for="name">プロトタイプの名称</label>
             <br />
             <input type="text" th:field="*{name}" id="name" />
           </div>
 
-          <div class="prototype-new-field">
+          <div class="user-field">
             <label th:for="catchCopy">キャッチコピー</label>
             <br />
-            <textarea th:field="*{catchCopy}" id="catchCopy"></textarea>
+            <textarea class="user-textarea" th:field="*{catchCopy}" id="catchCopy"></textarea>
           </div>
 
-          <div class="prototype-new-field">
+          <div class="user-field">
             <label th:for="concept">コンセプト</label>
             <br />
-            <textarea th:field="*{concept}" id="concept"></textarea>
+            <textarea class="user-textarea" th:field="*{concept}" id="concept"></textarea>
           </div>
 
-          <div class="prototype-new-field">
+          <div class="user-field">
             <label th:for="image">プロトタイプの画像</label>
             <br />
             <input type="file" th:field="*{image}" id="image" />
           </div>
 
-          <div class="prototype-new-actions">
-            <input
-              type="submit"
-              value="保存する"
-              class="prototype-new-form-btn"
-            />
+          <div class="user-actions">
+            <input type="submit" value="保存する" class="user-btn" />
           </div>
         </form>
       </div>

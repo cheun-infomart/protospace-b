@@ -210,6 +210,82 @@ footer {
 }
 
 /* ==========================================
+   User Pages (共通: 登録・ログイン・投稿など)
+   ========================================== */
+
+/* 1024px 中央寄せコンテナ */
+.user-inner {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+/* フォーム全体の最小高さ（フッターを下に押し出す） */
+.user-form {
+  min-height: calc(100vh - 161px);
+}
+
+/* 共通見出し H2 */
+.title-h2 {
+  font-size: 30px;
+  margin-bottom: 28px;
+}
+
+/* 入力項目の余白 */
+.user-field {
+  margin: 10px 0;
+}
+
+/* テキストエリアの幅 */
+.user-textarea {
+  width: 50%;
+  /* min-height: 100px; 少し高さを出すと使いやすいです */
+  padding: 3px; /* 入力しやすく調整 */
+}
+
+/* 共通ボタン（水色・角丸・影） */
+.user-btn {
+  display: inline-block;
+  padding: 0.4em 1.6em;
+  font-size: 0.8em;
+  color: #fff;
+  background: #87cefa;
+  border: 1px #87cefa solid;
+  border-radius: 3px;
+  text-decoration: none;
+  user-select: none;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14);
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.user-btn:hover {
+  background: #6fbef3;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.user-actions {
+  margin: 0 0 40px;
+}
+
+/* エラーメッセージ（前回決めた通り） */
+.new-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1024px) {
+  .user-inner {
+    width: 90%;
+  }
+  .title-h2 {
+    font-size: 24px;
+  }
+}
+
+/* ==========================================
    prototypes-show
    ========================================== */
 .prototype-show-details {
@@ -402,196 +478,6 @@ footer {
   text-decoration-style: solid;
   text-underline-offset: 0%;
   color: #999999;
-}
-
-/* ==========================================
-   ユーザー登録ページ
-   ========================================== */
-
-.register-new_user {
-  display: block;
-  margin-top: 0em;
-  unicode-bidi: isolate;
-}
-
-.register-field {
-  margin: 10px 0;
-}
-
-.register-textarea {
-  width: 50%;
-}
-.register-inner {
-  width: 1024px;
-  margin: 0 auto;
-}
-
-.register-actions {
-  margin-bottom: 40px;
-}
-
-.register-btn {
-  display: inline-block;
-  padding: 0.4em 1.6em;
-  font-size: 0.8em;
-  color: #fff;
-  text-decoration: none;
-  user-select: none;
-  background: #87cefa;
-  border: 1px #87cefa solid;
-  border-radius: 3px;
-  box-shadow:
-    0 3px 3px 0 rgba(0, 0, 0, 0.14),
-    0 1px 2px 0 rgba(0, 0, 0, 0.12);
-  transition: 0.2s ease;
-}
-
-.register-btn:hover {
-  box-shadow:
-    0 3px 6px 0 rgba(0, 0, 0, 0.2),
-    0 1px 8px 0 rgba(0, 0, 0, 0.12);
-  cursor: pointer;
-}
-
-.register-error {
-  color: #ff4d4f;
-  font-size: 0.85rem;
-}
-
-@media (max-width: 1024px) {
-  .register-inner {
-    width: 90%;
-    margin: 0 auto;
-  }
-}
-
-/* ==========================================
-   ログインページ
-   ========================================== */
-
-.login-inner {
-  width: 1024px;
-  margin: 0 auto;
-}
-
-.login-form {
-  min-height: calc(100vh - 161px);
-}
-
-.login-h2 {
-  font-size: 30px;
-  margin-bottom: 28px;
-}
-
-.login-field {
-  margin: 10px 0;
-}
-
-.login-actions {
-  margin-bottom: 40px;
-}
-
-.login-btn {
-  display: inline-block;
-  padding: 0.4em 1.6em;
-  font-size: 0.8em;
-  color: #fff;
-  text-decoration: none;
-  user-select: none;
-  background: #87cefa;
-  border: 1px #87cefa solid;
-  border-radius: 3px;
-  box-shadow:
-    0 3px 3px 0 rgba(0, 0, 0, 0.14),
-    0 1px 2px 0 rgba(0, 0, 0, 0.12);
-  transition: 0.2s ease;
-}
-
-.login-btn:hover {
-  background: #6fbef3;
-  transform: translateY(-1px);
-}
-
-.login-error {
-  color: #ff4d4f;
-  font-size: 0.85rem;
-}
-
-@media (max-width: 1024px) {
-  .login-inner {
-    width: 90%;
-    margin: 0 auto;
-  }
-  .login-h2 {
-    font-size: 24px;
-  }
-}
-
-/* ==========================================
-  プロトタイプ投稿画面
-  ========================================== */
-
-.prototype-new-inner {
-  width: 1024px;
-  margin: 0 auto;
-}
-
-.prototype-new-form-wrapper {
-  min-height: calc(100vh - 161px);
-}
-
-.prototype-new-page-heading {
-  font-size: 30px;
-  margin-bottom: 28px;
-}
-
-.prototype-new-field {
-  margin: 10px 0;
-}
-
-.prototype-new-field input {
-  padding: 3px;
-}
-
-.prototype-new-field textarea {
-  width: 50%;
-  padding: 3px;
-}
-
-.prototype-new-form-btn {
-  display: inline-block;
-  padding: 0.4em 1.6em;
-  font-size: 0.8em;
-  color: #fff;
-  text-decoration: none;
-  user-select: none;
-  background: #87cefa;
-  border: 1px #87cefa solid;
-  border-radius: 3px;
-  box-shadow:
-    0 3px 3px 0 rgba(0, 0, 0, 0.14),
-    0 1px 2px 0 rgba(0, 0, 0, 0.12);
-  transition: 0.2s ease;
-}
-
-.prototype-new-actions {
-  margin-bottom: 40px;
-}
-
-.prototype-new-error {
-  color: #ff4d4f;
-  font-size: 0.85rem;
-}
-
-@media (max-width: 1024px) {
-  .prototype-new-inner {
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .prototype-new-page-heading {
-    font-size: 24px;
-  }
 }
 
 /* ==========================================
