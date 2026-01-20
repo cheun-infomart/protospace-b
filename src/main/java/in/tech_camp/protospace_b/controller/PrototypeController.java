@@ -49,7 +49,12 @@ public class PrototypeController {
 
   // プロトタイプ投稿保存
   @PostMapping("/prototypes")
-  public String createPrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
+  public String createPrototype(@ModelAttribute("prototypeForm") 
+                                @Validated({
+                                ValidationOrder.NameSequence.class,
+                                ValidationOrder.catchCopySequence.class, 
+                                ValidationOrder.conceptSequence.class
+                                }) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
 
     // 画像が無い場合は入力必須のエラーを返す(@NotBlankが使えないのでここで手動設定)
     if (prototypeForm.getImage().isEmpty()) {
@@ -114,7 +119,13 @@ public class PrototypeController {
   }
   
   @PostMapping("/prototypes/{id}/update")
-  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
+  public String updatePrototype(@ModelAttribute("prototypeForm") 
+                                @Validated({
+                                ValidationOrder.NameSequence.class,
+                                ValidationOrder.catchCopySequence.class, 
+                                ValidationOrder.conceptSequence.class
+                                }) PrototypeForm prototypeForm, BindingResult result, 
+                                @PathVariable("id") Integer id, Model model) {
     //TODO: process POST request
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());

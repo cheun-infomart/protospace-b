@@ -5,21 +5,22 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // 追加
-import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // 追加
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // 追加
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam; // 追加
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
-import lombok.AllArgsConstructor; // 追加
+import lombok.AllArgsConstructor;
+
 
 @Controller
 @AllArgsConstructor
@@ -37,7 +38,16 @@ public class UserController {
 
   //新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") @Validated(ValidationOrder.class) UserForm userForm, BindingResult result, Model model) {
+  public String createUser(@ModelAttribute("userForm") 
+                           @Validated({ValidationOrder.EmailSequence.class,
+                                      ValidationOrder.PasswordSequence.class,
+                                      ValidationOrder.NameSequence.class,
+                                      ValidationOrder.ProfileSequence.class,
+                                      ValidationOrder.DepartmentSequence.class,
+                                      ValidationOrder.PositionSequence.class
+                            }) UserForm userForm, 
+                            BindingResult result, 
+                            Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
@@ -101,4 +111,5 @@ public class UserController {
     } 
     return "users/show";
   }
+  
 }
