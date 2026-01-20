@@ -199,10 +199,12 @@ main {
   background-color: transparent; /* スペースが余った時に背景を白や透明にしたい場合 */
   display: block;
 }
+
 .prototype-index-card_body {
   height: 45%;
   margin-top: 16px;
 }
+
 .prototype-index-card_title {
   font-size: 20px;
   margin-bottom: 8px;
@@ -263,6 +265,16 @@ main {
     font-size: 12px;
   }
 }
+
+/* ==========================================
+   Search
+   ========================================== */
+.prototype-keyword{
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
 
 /* ==========================================
    Footer

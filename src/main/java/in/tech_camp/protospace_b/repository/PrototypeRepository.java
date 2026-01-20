@@ -53,10 +53,14 @@ public interface PrototypeRepository {
           "concept=#{concept}, image=#{image} WHERE id=#{id}")
   void update(PrototypeEntity prototype);
 
-  @Select("SELECT * FROM prototypes WHERE name LIKE CONCAT('%', #{name}, '%') OR catch_copy LIKE CONCAT('%', #{text}, '%') OR concept LIKE CONCAT('%', #{text}, '%') ORDER BY created_at DESC")
+  @Select("SELECT * FROM prototypes WHERE " +
+        "translate(name, 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん', 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲン') ILIKE CONCAT('%', #{keyword}, '%') OR " +
+        "translate(catch_copy, 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん', 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲン') ILIKE CONCAT('%', #{keyword}, '%') OR " +
+        "translate(concept, 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん', 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲン') ILIKE CONCAT('%', #{keyword}, '%') " +
+        "ORDER BY created_at DESC")
   @Results(value = {
     @Result(property = "user", column = "user_id",
             one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById"))
   })
-  List<PrototypeEntity> findByTextContaining(String text);
+  List<PrototypeEntity> findByTextContaining(String keyword);
 }

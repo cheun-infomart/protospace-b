@@ -184,9 +184,10 @@ public class PrototypeController {
 
   @GetMapping("/prototypes/search")
   public String searchPrototypes(@RequestParam("keyword") String keyword, Model model) {
-  
-    List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(keyword);
+    String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
+    List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
     model.addAttribute("prototypes", prototypes);
+    model.addAttribute("keyword", keyword);
     return "prototypes/search";
   }
   
