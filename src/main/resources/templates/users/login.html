@@ -10,24 +10,16 @@
       <div class="login-inner">
         <div class="login-form">
           <h2 class="login-h2">ユーザーログイン</h2>
-          <!-- ログインできなかった際のエラーを表示 -->
-          <p th:if="${loginError}" class="login-error" th:text="${loginError}"></p>
 
           <form th:method="post" th:action="@{/login}" class="login-new-user">
             <div class="login-field">
               <label class="login-email">メールアドレス</label><br />
-              <input
-                type="text"
-                id="email"
-                name="email"
-                autofocus="autofocus"
-                required="required"
-              />
+              <input type="text" id="email" name="email" autofocus="autofocus" />
             </div>
 
             <div class="login-field">
               <label class="login-password">パスワード(6文字以上)</label><br />
-              <input type="password" name="password" required="required" autocomplete="off" />
+              <input type="password" name="password" autocomplete="off" />
             </div>
 
             <div class="login-actions">
@@ -37,6 +29,8 @@
                 value="ログイン"
                 data-disable-with="ログイン"
               />
+              <!-- ログインできなかった際のエラーを表示 -->
+              <p th:if="${loginError}" class="login-error" th:text="${loginError}"></p>
             </div>
           </form>
         </div>

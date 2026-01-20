@@ -9,6 +9,17 @@
     <main class="user-show-container">
       <section class="user-show-info">
         <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h2>
+        <div class="prototype-show-button-section">
+          <a th:href="@{/users/{id}/edit(id=${user.id})}" class="prototype-show-btn"
+            >編集する</a
+          >
+          <form
+            th:action="@{/users/{id}/delete(id=${user.id})}"
+            th:method="post"
+          >
+            <input type="submit" class="prototype-show-btn" value="会員脱退" />
+          </form>
+        </div>
         <!-- ユーザーデータテーブル -->
         <table class="user-show-info-table">
           <tr>

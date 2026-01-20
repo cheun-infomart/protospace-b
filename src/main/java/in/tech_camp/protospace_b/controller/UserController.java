@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model; // 追加
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor; // 追加
+
 
 @Controller
 @AllArgsConstructor
@@ -110,4 +112,19 @@ public class UserController {
     } 
     return "users/show";
   }
+
+  @PostMapping("/users/{id}/delete")
+  public String deleteUser(@PathVariable("id") Integer id, Authentication authentication) {
+      // ログインしていない場合はログイン画面にリダイレクト
+    if (authentication == null || !authentication.isAuthenticated()) {
+        return "redirect:/users/login";
+    }
+    // IDが不正な数値の場合やnullの場合は最初に弾く
+    if (id == null || id <= 0) {
+      return "redirect:/";
+    }
+      
+      return "redirect:/";
+  }
+  
 }
