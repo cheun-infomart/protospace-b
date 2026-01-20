@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
   <head>
     <th:block th:replace="~{common/head :: head}"></th:block>
@@ -11,48 +11,93 @@
         <div class="register-form">
           <h2 class="register-h2">ユーザー新規登録</h2>
 
-          <div th:if="${errorMessages}" class="user-new-error">
+          <!-- <div th:if="${errorMessages}" class="user-new-error">
             <p th:each="error : ${errorMessages}" th:text="${error}" class="register-error"></p>
-          </div>
+          </div> -->
 
-          <form class="register-new_user" th:action="@{/user}" th:object="${userForm}" method="post">
+          <form
+            class="register-new_user"
+            th:action="@{/user}"
+            th:object="${userForm}"
+            method="post"
+          >
             <div class="register-field">
               <label>メールアドレス</label><br />
               <input type="text" th:field="*{email}" autofocus="autofocus" />
+              <p
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>パスワード(6文字以上)</label><br />
               <input type="password" th:field="*{password}" autocomplete="off" />
+              <p
+                th:if="${#fields.hasErrors('password')}"
+                th:errors="*{password}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>パスワード再入力</label><br />
               <input type="password" th:field="*{passwordConfirmation}" />
+              <p
+                th:if="${#fields.hasErrors('passwordConfirmation')}"
+                th:errors="*{passwordConfirmation}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>ユーザー名</label><br />
               <input type="text" th:field="*{name}" />
+              <p
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>プロフィール</label><br />
               <textarea class="register-textarea" th:field="*{profile}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('profile')}"
+                th:errors="*{profile}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>所属</label><br />
               <textarea class="register-textarea" th:field="*{department}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('department')}"
+                th:errors="*{department}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-field">
               <label>役職</label><br />
               <textarea class="register-textarea" th:field="*{position}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('position')}"
+                th:errors="*{position}"
+                class="register-error"
+              ></p>
             </div>
 
             <div class="register-actions">
-              <input class="register-btn" type="submit" value="新規登録" data-disable-with="新規登録" />
+              <input
+                class="register-btn"
+                type="submit"
+                value="新規登録"
+                data-disable-with="新規登録"
+              />
             </div>
           </form>
         </div>

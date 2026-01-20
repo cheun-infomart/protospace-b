@@ -7,14 +7,14 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // 追加
-import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // 追加
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // 追加
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam; // 追加
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -42,7 +42,16 @@ public class UserController {
 
   //新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") @Validated(ValidationOrder.class) UserForm userForm, BindingResult result, Model model) {
+  public String createUser(@ModelAttribute("userForm") 
+                           @Validated({ValidationOrder.EmailSequence.class,
+                                      ValidationOrder.PasswordSequence.class,
+                                      ValidationOrder.NameSequence.class,
+                                      ValidationOrder.ProfileSequence.class,
+                                      ValidationOrder.DepartmentSequence.class,
+                                      ValidationOrder.PositionSequence.class
+                            }) UserForm userForm, 
+                            BindingResult result, 
+                            Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
