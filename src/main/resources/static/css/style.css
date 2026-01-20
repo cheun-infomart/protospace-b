@@ -129,28 +129,55 @@ main {
 .prototype-index-card_wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 25px;
   align-items: center;
   min-height: calc(100vh - 161px);
 }
 .prototype-index-card {
   width: calc((100% - 50px) / 3);
-  margin-bottom: 40px;
+  height: 460px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 #prototype_link {
   display: block;
+  height: 55%;
+  flex-shrink: 0;
 }
 .prototype-index-card_img {
-  margin-bottom: 16px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 画像を伸ばさず、比率を維持して収める */
+  object-position: center; /* 余ったスペース（margin分）を上下左右均等に配分 */
+  background-color: transparent; /* スペースが余った時に背景を白や透明にしたい場合 */
+  display: block;
+}
+.prototype-index-card_body {
+  height: 45%;
+  margin-top: 16px;
 }
 .prototype-index-card_title {
-  display: block;
   font-size: 20px;
   margin-bottom: 8px;
   font-weight: bold;
+  display: -webkit-box; /* 特殊なFlexbox形式にする */
+  -webkit-line-clamp: 1; /* 表示したい行数） */
+  -webkit-box-orient: vertical; /* 並べる方向を指定 */
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
 }
 .prototype-index-card_summary {
   font-size: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 50px;
+  line-height: 25px;
+  margin-bottom: 8px;
 }
 .prototype-index-card_user {
   display: block;
@@ -331,18 +358,38 @@ footer {
   gap: 8px;
 }
 
+.prototype-show-button-section form {
+  margin: 0;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
 .prototype-show-btn {
-  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 32px;
+  padding: 0 20px;
+  line-height: 32px;
+  box-sizing: border-box;
+
+  appearance: none;
+  -webkit-appearance: none;
+
   border-radius: 3px;
   border: 1px solid #999999;
-  padding: 5px 20px;
   font-weight: 400;
   font-size: 12px;
-  line-height: 1;
 
   background-color: #ffffff;
   color: #999999;
   cursor: pointer;
+
+  /* aタグの場合のずれ防止 */
+  vertical-align: middle;
+  text-align: center;
 }
 
 .prototype-show-content-button-edit:hover,
@@ -353,7 +400,17 @@ footer {
 }
 
 .prototype-show-image {
+  width: 400px;
+  height: 400px;
   padding: 16px 0;
+  margin: 0 auto;
+}
+
+.prototype-show-image img {
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+  height: 100%;
 }
 
 .prototype-show-description {
@@ -486,7 +543,7 @@ footer {
 
 .user-show-container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 0 20px 80px;
 }
@@ -529,60 +586,12 @@ footer {
   padding: 16px 8px;
 }
 
-.user-show-prototype-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 30px;
+.user-show-prototype-name {
   width: 100%;
-}
-
-.user-show-prototype-card {
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.user-show-card-image img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-}
-
-.user-show-card-content {
-  padding: 20px 0 0 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-.user-show-card-title {
-  font-size: 1.05rem;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
   color: #333;
-  width: 100%;
   text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-show-card-content p {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 20px;
-  flex: 1;
-  text-align: left;
-  width: 100%;
-}
-
-.user-show-card-footer {
-  text-align: right;
 }
 
 .user-show-author-link {
@@ -593,4 +602,49 @@ footer {
 
 .user-show-author-link:hover {
   color: #666;
+}
+
+/* 1024px以下の表示 */
+@media (max-width: 1024px) {
+  .user-show-container {
+    width: 95%;
+    margin: 0 auto;
+  }
+  .user-show-info-table,
+  .user-show-h2 {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .user-show-h2 {
+    font-size: 1.3rem;
+  }
+
+  .user-show-info-table th {
+    width: 35%;
+  }
+}
+
+/* 599px以下の表示 */
+@media (max-width: 599px) {
+  .user-show-container {
+    padding: 0 15px 40px;
+  }
+
+  .user-show-info-table,
+  .user-show-h2 {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .user-show-h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  .user-show-info-table th,
+  .user-show-info-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
 }
