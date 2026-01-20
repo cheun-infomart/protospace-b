@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
@@ -23,6 +24,7 @@ import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
+
 
 @Controller
 @AllArgsConstructor
@@ -179,4 +181,14 @@ public class PrototypeController {
     }
     return "redirect:/";
   }
+
+  @GetMapping("/prototypes/search")
+  public String searchPrototypes(@RequestParam("keyword") String keyword, Model model) {
+    String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
+    List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
+    model.addAttribute("prototypes", prototypes);
+    model.addAttribute("keyword", keyword);
+    return "prototypes/search";
+  }
+  
 }
