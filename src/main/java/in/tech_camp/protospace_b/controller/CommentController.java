@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -32,7 +30,7 @@ public class CommentController {
 
   @PostMapping("/prototypes/{prototypeId}/comment")
   public String createComment(@PathVariable("prototypeId") Integer prototypeId,
-                              @ModelAttribute("commentForm") @Validated(ValidationOrder.class) CommentForm commentForm,
+                              @ModelAttribute("commentForm") @Validated(ValidationOrder.textSequence.class) CommentForm commentForm,
                               BindingResult result,
                               @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
   

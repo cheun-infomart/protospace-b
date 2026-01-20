@@ -545,6 +545,8 @@ footer {
 }
 
 .login-actions {
+  display: flex;
+  gap: 15px;
   margin-bottom: 40px;
 }
 
