@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
@@ -50,6 +51,9 @@ public class PrototypeControllerUnitTest {
   private PrototypeService prototypeService;  
 
   @Mock
+  private in.tech_camp.protospace_b.repository.LikeRepository likeRepository;
+
+  @Mock
   private BindingResult bindingResult;
 
   @Mock
@@ -82,7 +86,7 @@ public class PrototypeControllerUnitTest {
     
     @Test
     public void プロトタイプ一覧にリクエストするとプロトタイプ一覧のビューファイルがレスポンスで返ってくる(){
-      String result = prototypeController.showPrototypes(model);
+      String result = prototypeController.showPrototypes(model, authentication);
       assertThat(result,is("index"));
     }
 
@@ -108,8 +112,14 @@ public class PrototypeControllerUnitTest {
       // findAllメソッド呼び出し時expectedPrototypeListを返す
       when(prototypeRepository.findAll()).thenReturn(expectedPrototypeList);
 
+      // いいねカウントのモック設定
+      when(likeRepository.countByPrototypeId(anyInt())).thenReturn(5);
+      
+      // ログイン中ユーザーのいいねチェック (0 = 未いいねとして返す)
+      when(likeRepository.countByUserAndPrototype(any(), anyInt())).thenReturn(0);
+
       // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
-      prototypeController.showPrototypes(model);
+      prototypeController.showPrototypes(model, authentication);
 
       // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
       assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
