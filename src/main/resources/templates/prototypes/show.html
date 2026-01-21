@@ -58,7 +58,10 @@
               method="post"
               th:object="${commentForm}"
               class="prototype-show-comment-form"
+              id="comment-form"
             >
+            
+            <div id="prototype-show-errormessage">
               <div
                 th:if="${errorMessages}"
                 th:each="error : ${errorMessages}"
@@ -66,12 +69,14 @@
               >
                 <span th:text="${error.defaultMessage}"></span>
               </div>
+            </div>
+
               <label for="comment" class="prototype-show-comment-label">コメント</label>
               <input
                 class="prototype-show-comment-input"
                 th:field="*{text}"
                 type="text"
-                id="comment"
+                id="comment-text"
               />
               <input class="prototype-show-comment-button" type="submit" value="送信する" />
             </form>
@@ -97,6 +102,7 @@
     </div>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
+    <script th:src="@{/js/comment.js}"></script>
   </body>
   <script th:inline="javascript" th:if="${errorMessage}">
     /*<![CDATA[*/
