@@ -25,47 +25,45 @@ import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
 
-
 @Controller
 @AllArgsConstructor
 public class PrototypeController {
   private final PrototypeRepository prototypeRepository;
-  
+
   private final PrototypeService prototypeService;
-  
+
   @GetMapping("/")
   public String showPrototypes(Model model) {
     List<PrototypeEntity> prototypes = prototypeRepository.findAll();
     model.addAttribute("prototypes", prototypes);
     return "index";
-  } 
+  }
 
   // プロトタイプ投稿画面表示
   @GetMapping("/prototypes/new")
   public String showPrototypeNew(Model model) {
     model.addAttribute("prototypeForm", new PrototypeForm());
-      return "prototypes/new";
+    return "prototypes/new";
   }
 
   // プロトタイプ投稿保存
   @PostMapping("/prototypes")
-  public String createPrototype(@ModelAttribute("prototypeForm") 
-                                @Validated({
-                                ValidationOrder.NameSequence.class,
-                                ValidationOrder.catchCopySequence.class, 
-                                ValidationOrder.conceptSequence.class
-                                }) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
+  public String createPrototype(@ModelAttribute("prototypeForm") @Validated({
+      ValidationOrder.NameSequence.class,
+      ValidationOrder.catchCopySequence.class,
+      ValidationOrder.conceptSequence.class
+  }) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
 
     // 画像が無い場合は入力必須のエラーを返す(@NotBlankが使えないのでここで手動設定)
     if (prototypeForm.getImage().isEmpty()) {
-        result.rejectValue("image", "error.image", "プロトタイプの画像は必須です");
+      result.rejectValue("image", "error.image", "プロトタイプの画像は必須です");
     }
 
     // バリデーションエラーがあった場合、新規投稿画面にとどまる
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
-              .map(DefaultMessageSourceResolvable::getDefaultMessage)
-              .collect(Collectors.toList());
+          .map(DefaultMessageSourceResolvable::getDefaultMessage)
+          .collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("prototypeForm", prototypeForm);
       return "prototypes/new";
@@ -92,43 +90,44 @@ public class PrototypeController {
     }
   }
 
-  //Prototypeの編集画面に移動
+  // Prototypeの編集画面に移動
   @GetMapping("/prototypes/{id}/edit")
-  public String editPrototype(@PathVariable("id") Integer id, Authentication authentication, RedirectAttributes redirectAttributes, Model model) {
+  public String editPrototype(@PathVariable("id") Integer id, Authentication authentication,
+      RedirectAttributes redirectAttributes, Model model) {
     try {
-    PrototypeEntity prototype = prototypeService.findPrototypeById(id);
+      PrototypeEntity prototype = prototypeService.findPrototypeById(id);
 
-    PrototypeForm form = prototypeService.getPrototypeForm(id);
-    Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+      PrototypeForm form = prototypeService.getPrototypeForm(id);
+      Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
-    if (!prototype.getUser().getId().equals(currentUserId)) {
-  
-      redirectAttributes.addFlashAttribute("errorMessage", "権限がありません.");
-      return "redirect:/";
-    }
+      if (!prototype.getUser().getId().equals(currentUserId)) {
 
-    model.addAttribute("prototypeForm", form);
-    model.addAttribute("id", id);
-    
-    return "prototypes/edit";
+        redirectAttributes.addFlashAttribute("errorMessage", "権限がありません.");
+        return "redirect:/";
+      }
+
+      model.addAttribute("prototypeForm", form);
+      model.addAttribute("id", id);
+
+      return "prototypes/edit";
     } catch (RuntimeException e) {
       redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
       return "redirect:/";
     }
-    
+
   }
-  
+
   @PostMapping("/prototypes/{id}/update")
-  public String updatePrototype(@ModelAttribute("prototypeForm") 
-                                @Validated({
-                                ValidationOrder.NameSequence.class,
-                                ValidationOrder.catchCopySequence.class, 
-                                ValidationOrder.conceptSequence.class
-                                }) PrototypeForm prototypeForm, BindingResult result, 
-                                @PathVariable("id") Integer id, Model model) {
-    //TODO: process POST request
+  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated({
+      ValidationOrder.NameSequence.class,
+      ValidationOrder.catchCopySequence.class,
+      ValidationOrder.conceptSequence.class
+  }) PrototypeForm prototypeForm, BindingResult result,
+      @PathVariable("id") Integer id, Model model) {
+    // TODO: process POST request
     if (result.hasErrors()) {
-      List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+      List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+          .collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
 
       model.addAttribute("prototypeForm", prototypeForm);
@@ -143,21 +142,21 @@ public class PrototypeController {
       System.out.println("えらー：" + e);
       return "redirect:/prototypes/" + id + "/edit";
     }
-    
+
     return "redirect:/prototypes/" + id;
   }
-  
-  //プロトタイプ詳細画面への遷移
+
+  // プロトタイプ詳細画面への遷移
   @GetMapping("/prototypes/{prototypeId}")
   public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
-      PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
-      if(prototype == null){
-        return "redirect:/";
-      }
-      model.addAttribute("prototype", prototype);
-      model.addAttribute("commentForm", new CommentForm());
-      model.addAttribute("comments",prototype.getComments());
-      return "prototypes/show";
+    PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+    if (prototype == null) {
+      return "redirect:/";
+    }
+    model.addAttribute("prototype", prototype);
+    model.addAttribute("commentForm", new CommentForm());
+    model.addAttribute("comments", prototype.getComments());
+    return "prototypes/show";
   }
 
   // プロトタイプ削除
@@ -165,7 +164,7 @@ public class PrototypeController {
   public String deletePrototype(@PathVariable("prototypeId") Integer prototypeId, Authentication authentication) {
     // ログインしていない場合はログイン画面にリダイレクト
     if (authentication == null || !authentication.isAuthenticated()) {
-        return "redirect:/users/login";
+      return "redirect:/users/login";
     }
     // IDが不正な数値の場合やnullの場合は最初に弾く
     if (prototypeId == null || prototypeId <= 0) {
@@ -184,11 +183,11 @@ public class PrototypeController {
 
   @GetMapping("/prototypes/search")
   public String searchPrototypes(@RequestParam("keyword") String keyword, Model model) {
-    String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
+    String KatakanaKeyword = prototypeService.convertToKatakana(keyword);
     List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
     model.addAttribute("prototypes", prototypes);
     model.addAttribute("keyword", keyword);
     return "prototypes/search";
   }
-  
+
 }

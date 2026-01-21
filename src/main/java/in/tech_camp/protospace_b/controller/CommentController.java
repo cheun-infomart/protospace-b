@@ -19,7 +19,6 @@ import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
 
-
 @Controller
 @AllArgsConstructor
 public class CommentController {
@@ -30,35 +29,35 @@ public class CommentController {
 
   @PostMapping("/prototypes/{prototypeId}/comment")
   public String createComment(@PathVariable("prototypeId") Integer prototypeId,
-                              @ModelAttribute("commentForm") @Validated(ValidationOrder.textSequence.class) CommentForm commentForm,
-                              BindingResult result,
-                              @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-  
-  PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
-  
-  if(result.hasErrors()){
-    model.addAttribute ("errorMessages", result.getAllErrors());
-    model.addAttribute("prototype", prototype);
-    model.addAttribute("commentForm", commentForm);
-    model.addAttribute("comments",prototype.getComments());
-    return "prototypes/show";
-  }
+      @ModelAttribute("commentForm") @Validated(ValidationOrder.textSequence.class) CommentForm commentForm,
+      BindingResult result,
+      @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
 
-  CommentEntity comment = new CommentEntity();
-  comment.setText((commentForm.getText()));
-  comment.setPrototype(prototype);
-  comment.setUser(userRepository.findById(currentUser.getId()));
+    PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
 
-  try {
-    commentRepository.insert(comment);
-  } catch (Exception e) {
-    model.addAttribute("prototype", prototype);
-    model.addAttribute("commentForm", commentForm);
-    model.addAttribute("comments",prototype.getComments());
-    System.out.println("エラー:" + e);
-    return "prototypes/show";
-  }
+    if (result.hasErrors()) {
+      model.addAttribute("errorMessages", result.getAllErrors());
+      model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", commentForm);
+      model.addAttribute("comments", prototype.getComments());
+      return "prototypes/show";
+    }
 
-  return "redirect:/prototypes/" + prototypeId;
+    CommentEntity comment = new CommentEntity();
+    comment.setText((commentForm.getText()));
+    comment.setPrototype(prototype);
+    comment.setUser(userRepository.findById(currentUser.getId()));
+
+    try {
+      commentRepository.insert(comment);
+    } catch (Exception e) {
+      model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", commentForm);
+      model.addAttribute("comments", prototype.getComments());
+      System.out.println("エラー:" + e);
+      return "prototypes/show";
+    }
+
+    return "redirect:/prototypes/" + prototypeId;
   }
 }

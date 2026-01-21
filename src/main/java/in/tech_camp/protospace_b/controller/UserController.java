@@ -19,8 +19,9 @@ import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-
 
 @Controller
 @AllArgsConstructor
@@ -29,25 +30,24 @@ public class UserController {
   private final UserRepository userRepository;
   private final UserService userService;
 
-  //新規登録
+  // 新規登録
   @GetMapping("/users/register")
-  public String showRegister(Model model){
+  public String showRegister(Model model) {
     model.addAttribute("userForm", new UserForm());
     return "users/register";
   }
 
-  //新規登録バリデーションチェック
+  // 新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") 
-                           @Validated({ValidationOrder.EmailSequence.class,
-                                      ValidationOrder.PasswordSequence.class,
-                                      ValidationOrder.NameSequence.class,
-                                      ValidationOrder.ProfileSequence.class,
-                                      ValidationOrder.DepartmentSequence.class,
-                                      ValidationOrder.PositionSequence.class
-                            }) UserForm userForm, 
-                            BindingResult result, 
-                            Model model) {
+  public String createUser(@ModelAttribute("userForm") @Validated({ ValidationOrder.EmailSequence.class,
+      ValidationOrder.PasswordSequence.class,
+      ValidationOrder.NameSequence.class,
+      ValidationOrder.ProfileSequence.class,
+      ValidationOrder.DepartmentSequence.class,
+      ValidationOrder.PositionSequence.class
+  }) UserForm userForm,
+      BindingResult result,
+      Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
@@ -55,8 +55,8 @@ public class UserController {
 
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
-              .map(DefaultMessageSourceResolvable::getDefaultMessage)
-              .collect(Collectors.toList());
+          .map(DefaultMessageSourceResolvable::getDefaultMessage)
+          .collect(Collectors.toList());
 
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("userForm", userForm);
@@ -78,38 +78,42 @@ public class UserController {
       return "redirect:users/register";
     }
 
-    //新規登録成功時、ログイン画面に遷移
+    // 新規登録成功時、ログイン画面に遷移
     return "redirect:users/login";
   }
 
-  //ログイン成功
+  // ログイン成功
   @GetMapping("/users/login")
-  public String showLogin(){
-      return "users/login";
+  public String showLogin() {
+    return "users/login";
   }
 
-  //ログイン失敗
+  // 途中でログイン
   @GetMapping("/login")
-  public String showLoginWithError(@RequestParam(value = "error") String error, Model model) {
+  public String showLogin(@RequestParam(value = "error", required = false) String error, HttpServletRequest request,
+      HttpSession session,
+      Model model) {
+    // headerにRefererが付いた以前のセッションを持ってくる
+    String referrer = request.getHeader("Referer");
+    if (referrer != null && !referrer.contains("/login")) {
+      session.setAttribute("prevPage", referrer);
+    }
     if (error != null) {
       model.addAttribute("loginError", "メールアドレスまたはパスワードが無効です。");
     }
     return "users/login";
   }
 
-
-
-
-  //詳細ページ
+  // 詳細ページ
   @GetMapping("/users/{id}")
   public String showUserDetail(@PathVariable("id") Integer id, Model model) {
 
     UserEntity user = userService.findUserDetail(id);
     if (user != null) {
-        model.addAttribute("user", user);
-        model.addAttribute("prototypes", user.getPrototypes());
-    } 
+      model.addAttribute("user", user);
+      model.addAttribute("prototypes", user.getPrototypes());
+    }
     return "users/show";
   }
-  
+
 }
