@@ -406,4 +406,38 @@ public class PrototypeControllerUnitTest {
     assertThat(result, is("redirect:/prototypes/1"));
     }
   }
+
+  @Nested
+  class プロトタイプ検索機能{
+    @Test
+    public void 検索キーワードを入力すると対象のプロトタイプが表示されるか(){
+      PrototypeEntity prototype1 = new PrototypeEntity();
+      prototype1.setId(1);
+      prototype1.setName("プロトタイプな名前");
+
+      PrototypeEntity prototype2 = new PrototypeEntity();
+      prototype2.setId(2);
+      prototype2.setCatchCopy("これはプロトタイプです");
+
+      PrototypeEntity prototype3 = new PrototypeEntity();
+      prototype3.setId(3);
+      prototype3.setConcept("プロトタイプという概念");
+
+      // テストデータをexpectedPrototypeListに格納
+      List<PrototypeEntity> expectedPrototypeList = Arrays.asList(prototype1, prototype2, prototype3);
+
+      when(prototypeService.convertToKatakana("プロトタイプ")).thenReturn("プロトタイプ");
+      // findAllメソッド呼び出し時expectedPrototypeListを返す
+      when(prototypeRepository.findByTextContaining("プロトタイプ")).thenReturn(expectedPrototypeList);
+
+      // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
+      String result= prototypeController.searchPrototypes("プロトタイプ", model);
+
+      //　対象のビューが表示されるか
+      assertThat(result, is("prototypes/search"));
+
+      // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
+      assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
+    }
+  }
 }

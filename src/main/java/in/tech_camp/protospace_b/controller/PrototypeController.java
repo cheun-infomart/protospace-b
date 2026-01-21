@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
@@ -24,6 +25,7 @@ import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
+
 
 @Controller
 @AllArgsConstructor
@@ -70,7 +72,12 @@ public class PrototypeController {
 
   // プロトタイプ投稿保存
   @PostMapping("/prototypes")
-  public String createPrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
+  public String createPrototype(@ModelAttribute("prototypeForm") 
+                                @Validated({
+                                ValidationOrder.NameSequence.class,
+                                ValidationOrder.catchCopySequence.class, 
+                                ValidationOrder.conceptSequence.class
+                                }) PrototypeForm prototypeForm, BindingResult result, Model model, Authentication authentication) {
 
     // 画像が無い場合は入力必須のエラーを返す(@NotBlankが使えないのでここで手動設定)
     if (prototypeForm.getImage().isEmpty()) {
@@ -135,7 +142,13 @@ public class PrototypeController {
   }
   
   @PostMapping("/prototypes/{id}/update")
-  public String updatePrototype(@ModelAttribute("prototypeForm") @Validated(ValidationOrder.class) PrototypeForm prototypeForm, BindingResult result, @PathVariable("id") Integer id, Model model) {
+  public String updatePrototype(@ModelAttribute("prototypeForm") 
+                                @Validated({
+                                ValidationOrder.NameSequence.class,
+                                ValidationOrder.catchCopySequence.class, 
+                                ValidationOrder.conceptSequence.class
+                                }) PrototypeForm prototypeForm, BindingResult result, 
+                                @PathVariable("id") Integer id, Model model) {
     //TODO: process POST request
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
@@ -191,4 +204,14 @@ public class PrototypeController {
     }
     return "redirect:/";
   }
+
+  @GetMapping("/prototypes/search")
+  public String searchPrototypes(@RequestParam("keyword") String keyword, Model model) {
+    String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
+    List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
+    model.addAttribute("prototypes", prototypes);
+    model.addAttribute("keyword", keyword);
+    return "prototypes/search";
+  }
+  
 }
