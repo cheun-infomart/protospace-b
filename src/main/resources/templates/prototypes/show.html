@@ -10,7 +10,7 @@
     <div class="prototype-show-details">
       <div class="prototype-show-container">
         <div class="prototype-show-header">
-          <h3 class="prototype-show-title" th:text="${prototype.name}"></h3>
+          <h3 class="title-h2" th:text="${prototype.name}"></h3>
           <a
             th:href="@{/users/{id}(id=${prototype.user.id})}"
             class="prototype-show-author"
@@ -22,13 +22,8 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
           >
             <div class="prototype-show-button-section">
-              <a th:href="@{/prototypes/{id}/edit(id=${prototype.id})}" class="prototype-show-btn"
-                >編集する</a
-              >
-              <form
-                th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
-                th:method="post"
-              >
+              <a th:href="@{/prototypes/{id}/edit(id=${prototype.id})}" class="prototype-show-btn">編集する</a>
+              <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
                 <input type="submit" class="prototype-show-btn" value="削除する" />
               </form>
             </div>
@@ -53,6 +48,10 @@
         <!--コメントエリア-->
         <div class="prototype-show-comment-section">
           <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error">
+              <div th:text="${error.defaultMessage}"></div>
+            </div>
+
             <form
               th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
               method="post"
@@ -61,16 +60,6 @@
               id="comment-form"
             >
             
-            <div id="prototype-show-errormessage">
-              <div
-                th:if="${errorMessages}"
-                th:each="error : ${errorMessages}"
-                class="prototype-show-errormessage"
-              >
-                <span th:text="${error.defaultMessage}"></span>
-              </div>
-            </div>
-
               <label for="comment" class="prototype-show-comment-label">コメント</label>
               <input
                 class="prototype-show-comment-input"
@@ -78,7 +67,7 @@
                 type="text"
                 id="comment-text"
               />
-              <input class="prototype-show-comment-button" type="submit" value="送信する" />
+              <input class="comu-btn" type="submit" value="送信する" />
             </form>
           </div>
           <div th:if="${#authorization.expression('!isAuthenticated()')}">

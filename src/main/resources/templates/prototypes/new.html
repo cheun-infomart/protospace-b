@@ -5,62 +5,57 @@
 <body>
   <header th:replace="~{common/header :: header}"></header>
   <main>
-    <div class="prototype-new-inner">
-      <div class="prototype-new-form-wrapper">
-        <h2 class="prototype-new-page-heading">新規プロトタイプ投稿</h2>
+    <div class="com-inner">
+      <div class="com-form">
+        <h2 class="title-h2">新規プロトタイプ投稿</h2>
 
-        <form
-          th:action="@{/prototypes}"
-          th:method="post"
-          th:object="${prototypeForm}"
-          enctype="multipart/form-data"
-        >
-          <div class="prototype-new-field">
+        <form th:action="@{/prototypes}" th:method="post" th:object="${prototypeForm}" enctype="multipart/form-data">
+          <div class="com-field">
             <label th:for="name">プロトタイプの名称</label>
             <br />
             <input type="text" th:field="*{name}" id="name" />
             <p
               th:if="${#fields.hasErrors('name')}"
               th:errors="*{name}"
-              class="prototype-new-error"
+              class="new-error"
             ></p>
           </div>
 
-          <div class="prototype-new-field">
+          <div class="com-field">
             <label th:for="catchCopy">キャッチコピー</label>
             <br />
-            <textarea th:field="*{catchCopy}" id="catchCopy"></textarea>
+            <textarea class="user-textarea" th:field="*{catchCopy}" id="catchCopy"></textarea>
             <p
               th:if="${#fields.hasErrors('name')}"
               th:errors="*{name}"
-              class="prototype-new-error"
+              class="new-error"
             ></p>
           </div>
 
-          <div class="prototype-new-field">
+          <div class="com-field">
             <label th:for="concept">コンセプト</label>
             <br />
-            <textarea th:field="*{concept}" id="concept"></textarea>
+            <textarea class="user-textarea" th:field="*{concept}" id="concept"></textarea>
             <p
               th:if="${#fields.hasErrors('name')}"
               th:errors="*{name}"
-              class="prototype-new-error"
+              class="new-error"
             ></p>
           </div>
 
-          <div class="prototype-new-field">
+          <div class="com-field">
             <label th:for="image">プロトタイプの画像</label>
             <br />
             <input type="file" th:field="*{image}" id="image" />
             <p
               th:if="${#fields.hasErrors('image')}"
               th:errors="*{image}"
-              class="prototype-new-error"
+              class="new-error"
             ></p>
           </div>
 
-          <div class="prototype-new-actions">
-            <input type="submit" value="保存する" class="prototype-new-form-btn" />
+          <div class="com-actions">
+            <input type="submit" value="保存する" class="com-btn" />
           </div>
         </form>
       </div>
