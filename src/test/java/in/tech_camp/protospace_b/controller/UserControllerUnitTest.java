@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -35,6 +36,9 @@ public class UserControllerUnitTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private Authentication authentication;
 
     @InjectMocks
     private UserController userController;
@@ -155,7 +159,7 @@ public class UserControllerUnitTest {
       //model定義
       Model model = new ExtendedModelMap();
       //Controller実行とresultにその結果を入れる
-      String result = userController.showUserDetail(mockUser.getId(), model);
+      String result = userController.showUserDetail(mockUser.getId(), model, authentication);
       // 結果View画面が詳細ページなのか確認
       assertThat(result, is("users/show"));
       // ページにmodelがちゃんと渡されてるか確認

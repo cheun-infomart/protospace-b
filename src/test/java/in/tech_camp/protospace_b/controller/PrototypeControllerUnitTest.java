@@ -136,7 +136,7 @@ public class PrototypeControllerUnitTest {
       prototype.setId(prototypeId);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
 
       assertThat(result, is("prototypes/show"));
     }
@@ -148,7 +148,7 @@ public class PrototypeControllerUnitTest {
       prototype.setId(prototypeId);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
 
       assertThat(result, is("prototypes/show"));
 
@@ -158,7 +158,7 @@ public class PrototypeControllerUnitTest {
     @Test
     public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
       when(prototypeRepository.findById(1)).thenReturn(null);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(result, is("redirect:/"));
     }
 
@@ -169,7 +169,7 @@ public class PrototypeControllerUnitTest {
       PrototypeEntity prototype = new PrototypeEntity();
       prototype.setId(1);
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      prototypeController.showPrototypeDetail(1, model);
+      prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(model.getAttribute("commentForm"), is(commentForm));
     }
 
@@ -190,7 +190,7 @@ public class PrototypeControllerUnitTest {
       prototype.setComments(expectedCommentList);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      prototypeController.showPrototypeDetail(1, model);
+      prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(model.getAttribute("comments"), is(expectedCommentList));
     }
   }
@@ -431,7 +431,7 @@ public class PrototypeControllerUnitTest {
       when(prototypeRepository.findByTextContaining("プロトタイプ")).thenReturn(expectedPrototypeList);
 
       // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
-      String result= prototypeController.searchPrototypes("プロトタイプ", model);
+      String result= prototypeController.searchPrototypes("プロトタイプ", model, authentication);
 
       //　対象のビューが表示されるか
       assertThat(result, is("prototypes/search"));
