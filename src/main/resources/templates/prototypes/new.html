@@ -9,32 +9,49 @@
       <div class="com-form">
         <h2 class="title-h2">新規プロトタイプ投稿</h2>
 
-        <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error">
-          <div th:text="${error}"></div>
-        </div>
         <form th:action="@{/prototypes}" th:method="post" th:object="${prototypeForm}" enctype="multipart/form-data">
           <div class="com-field">
             <label th:for="name">プロトタイプの名称</label>
             <br />
             <input type="text" th:field="*{name}" id="name" />
+            <p
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}"
+              class="new-error"
+            ></p>
           </div>
 
           <div class="com-field">
             <label th:for="catchCopy">キャッチコピー</label>
             <br />
             <textarea class="user-textarea" th:field="*{catchCopy}" id="catchCopy"></textarea>
+            <p
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}"
+              class="new-error"
+            ></p>
           </div>
 
           <div class="com-field">
             <label th:for="concept">コンセプト</label>
             <br />
             <textarea class="user-textarea" th:field="*{concept}" id="concept"></textarea>
+            <p
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}"
+              class="new-error"
+            ></p>
           </div>
 
           <div class="com-field">
             <label th:for="image">プロトタイプの画像</label>
             <br />
             <input type="file" th:field="*{image}" id="image" />
+            <p
+              th:if="${#fields.hasErrors('image')}"
+              th:errors="*{image}"
+              class="new-error"
+            ></p>
           </div>
 
           <div class="com-actions">

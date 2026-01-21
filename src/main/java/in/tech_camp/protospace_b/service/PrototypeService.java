@@ -128,4 +128,18 @@ public class PrototypeService {
 		return prototype;
 	}
 
+	public String convertToKatakana(String input) {
+    if (input == null) return null;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < input.length(); i++) {
+        char c = input.charAt(i);
+        // ひらがなの範囲 (ぁ: 0x3041 〜 ん: 0x3093) をカタカナへ変換
+        if (c >= 0x3041 && c <= 0x3093) {
+            sb.append((char) (c + 0x60));
+        } else {
+            sb.append(c);
+        }
+    }
+    return sb.toString();
+}
 }
