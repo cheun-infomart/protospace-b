@@ -15,4 +15,6 @@ public class PrototypeEntity {
   private Timestamp createdAt;
   private UserEntity user;
   private List<CommentEntity> comments;
+  private Integer LikeCount;
+  private Boolean isLiked;
 }
