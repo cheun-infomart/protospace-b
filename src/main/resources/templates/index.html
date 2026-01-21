@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
   <head>
     <th:block th:replace="~{common/head :: head}"></th:block>
@@ -7,12 +7,15 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    
+
     <main class="prototype-index-main">
       <div class="prototype-index-content">
-        <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
+        <div
+          class="prototype-index-greeting"
+          th:if="${#authorization.expression('isAuthenticated()')}"
+        >
           <span>こんにちは、</span>
-          <a 
+          <a
             class="prototype-index-greeting_link"
             th:href="@{/users/{id}(id=${#authentication?.principal.getId()})}"
             th:text="${#authentication?.principal.getName()} + 'さん'"
@@ -21,13 +24,81 @@
         </div>
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
-            <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
-              <img class="prototype-index-card_img"  th:src="@{${prototype.image}}">
+            <a
+              th:href="@{/prototypes/{id}(id=${prototype.id})}"
+              id="prototype_link"
+            >
+              <img
+                class="prototype-index-card_img"
+                th:src="@{${prototype.image}}"
+              />
             </a>
             <div class="prototype-index-card_body">
-              <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
-              <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
-              <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
+              <a
+                class="prototype-index-card_title"
+                th:href="@{/prototypes/{id}(id=${prototype.id})}"
+                th:text="${prototype.name}"
+              ></a>
+              <a
+                class="prototype-index-card_summary"
+                th:text="${prototype.catchCopy}"
+              ></a>
+              <a
+                class="prototype-index-card_user"
+                th:href="@{/users/{id}(id=${prototype.user.id})}"
+                th:text="'by ' + ${prototype.user.name}"
+              ></a>
+              <div
+                class="like-container"
+                th:if="${#authorization.expression('isAuthenticated()')}"
+              >
+                <button
+                  type="button"
+                  class="like-btn"
+                  th:data-prototype-id="${prototype.id}"
+                  style="
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    padding: 0;
+                  "
+                >
+                  <span
+                    class="material-symbols-outlined like-icon"
+                    th:data-is-liked="${prototype.isLiked}"
+                    th:style="${prototype.isLiked == true} ? 'font-variation-settings: \'FILL\' 1; color: #e0245e; font-size: 20px;' : 'font-variation-settings: \'FILL\' 0; color: #657786; font-size: 20px;'"
+                  >
+                    favorite
+                  </span>
+                  <span
+                    class="like-count"
+                    style="margin-left: 4px; color: #657786; font-size: 14px"
+                    th:text="${prototype.likeCount}"
+                    >0</span
+                  >
+                </button>
+              </div>
+
+              <div
+                class="like-container"
+                th:unless="${#authorization.expression('isAuthenticated()')}"
+                style="display: flex; align-items: center"
+              >
+                <span
+                  class="material-symbols-outlined like-icon"
+                  th:data-is-liked="${prototype.isLiked}"
+                  th:style="${prototype.isLiked == true} ? 'font-variation-settings: \'FILL\' 1; color: #e0245e; font-size: 20px;' : 'font-variation-settings: \'FILL\' 0; color: #657786; font-size: 20px;'"
+                >
+                  favorite</span
+                >
+                <span
+                  style="margin-left: 4px; color: #657786; font-size: 14px"
+                  th:text="${prototype.likeCount}"
+                  >0</span
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -35,5 +106,6 @@
     </main>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
+    <script th:src="@{/js/like.js}"></script>
   </body>
 </html>
