@@ -26,6 +26,8 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                                                 .requestMatchers("/css/**", "/images/**", "/uploads/**", "/",
                                                                 "/users/register", "/users/login",
+                                                                "/.well-known/**",
+                                                                "/favicon.ico",
                                                                 "/prototypes/{id:[0-9]+}", "/users/{id:[0-9]+}",
                                                                 "/prototypes/search/**")
                                                 .permitAll()

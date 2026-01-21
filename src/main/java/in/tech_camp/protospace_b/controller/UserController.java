@@ -82,26 +82,28 @@ public class UserController {
     return "redirect:users/login";
   }
 
-  // ログイン成功
-  @GetMapping("/users/login")
-  public String showLogin() {
-    return "users/login";
-  }
-
   // 途中でログイン
-  @GetMapping("/login")
+  @GetMapping("/users/login")
   public String showLogin(@RequestParam(value = "error", required = false) String error, HttpServletRequest request,
       HttpSession session,
       Model model) {
-    // headerにRefererが付いた以前のセッションを持ってくる
+
+    // headerにReferer:URLのデータ（以前のセッションURL）を持ってくる
     String referrer = request.getHeader("Referer");
-    if (referrer != null && !referrer.contains("/login")) {
+
+    // refererを持っていてloginページのままの場合refererデータ持ち続ける（ログイン失敗にRefererデータがなくなることを防止）
+    if (isPageValid(referrer)) {
       session.setAttribute("prevPage", referrer);
     }
+    // フォームエラー表示
     if (error != null) {
       model.addAttribute("loginError", "メールアドレスまたはパスワードが無効です。");
     }
     return "users/login";
+  }
+
+  private boolean isPageValid(String ref) {
+    return ref != null && !ref.contains("/users/login") && !ref.contains("/users/register");
   }
 
   // 詳細ページ

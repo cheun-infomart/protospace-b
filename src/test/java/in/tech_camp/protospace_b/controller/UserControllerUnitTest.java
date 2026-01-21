@@ -135,7 +135,11 @@ public class UserControllerUnitTest {
   // ログイン
   @Test
   public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
-    String result = userController.showLogin();
+    // テスト用の空のModelオブジェクトを作成
+    Model model = new ExtendedModelMap();
+    // URLパラメータ ?error= の値を想定したダミー文字列
+    String errorParam = "false";
+    String result = userController.showLogin(errorParam, request, session, model);
 
     assertThat(result, is("users/login"));
   }

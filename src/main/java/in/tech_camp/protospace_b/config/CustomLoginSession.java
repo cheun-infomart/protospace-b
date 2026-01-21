@@ -25,8 +25,13 @@ public class CustomLoginSession extends SimpleUrlAuthenticationSuccessHandler {
     // ログインが必要な画面に飛んだ時、requestを記憶する
     SavedRequest savedRequest = requestCache.getRequest(request, response);
     if (savedRequest != null) {
-      getRedirectStrategy().sendRedirect(request, response, savedRequest.getRedirectUrl());
-      return;
+      String targetUrl = savedRequest.getRedirectUrl();
+      if (targetUrl.contains("/error") || targetUrl.contains(".well-known") || targetUrl.contains("/favicon.ico")) {
+        requestCache.removeRequest(request, response);
+      } else {
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        return;
+      }
     }
 
     // 直接ログインボタンを押した場合
