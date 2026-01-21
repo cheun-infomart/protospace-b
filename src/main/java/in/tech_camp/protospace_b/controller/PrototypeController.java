@@ -19,6 +19,7 @@ import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
@@ -30,10 +31,32 @@ public class PrototypeController {
   private final PrototypeRepository prototypeRepository;
   
   private final PrototypeService prototypeService;
+  private final LikeRepository likeRepository;
   
   @GetMapping("/")
-  public String showPrototypes(Model model) {
+  public String showPrototypes(Model model, Authentication authentication) {
     List<PrototypeEntity> prototypes = prototypeRepository.findAll();
+
+    // ログイン中のユーザーIDを取得（未ログインならnull）
+    Integer currentUserId = null;
+    if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+        currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+    }
+
+    // 各プロトタイプに「いいね」情報をセット
+    for (PrototypeEntity prototype : prototypes) {
+      // いいね総数をセット
+      prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+      
+      // 自分がいいね済みかチェックしてセット
+      if (currentUserId != null) {
+          int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+          prototype.setIsLiked(likeCheck > 0);
+      } else {
+          prototype.setIsLiked(false);
+      }
+    }
+
     model.addAttribute("prototypes", prototypes);
     return "index";
   } 
