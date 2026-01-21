@@ -48,8 +48,10 @@
         <!--コメントエリア-->
         <div class="prototype-show-comment-section">
           <div th:if="${#authorization.expression('isAuthenticated()')}">
-            <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error">
-              <div th:text="${error.defaultMessage}"></div>
+            <div id="error-container">
+              <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
+                <span th:text="${error.defaultMessage}"></span>
+              </div>
             </div>
 
             <form

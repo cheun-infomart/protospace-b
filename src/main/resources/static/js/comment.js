@@ -3,7 +3,7 @@ window.addEventListener('load',()=>{
    const commentList = document.querySelector('.prototype-show-comments'); // クラス名に合わせて修正
    const commentInput = document.getElementById('comment-text');
 
-   const errorContainer = document.getElementById('prototype-show-errormessage');
+   const errorContainer = document.getElementById('error-container');
    if(!commentForm) return ;
 
    commentForm.addEventListener('submit', async(e) =>{
@@ -35,11 +35,11 @@ window.addEventListener('load',()=>{
             const msg = await response.text();
 
             errorContainer.innerHTML=`
-            <div class="prototype-show-errormessage">
+            <div class="new-error">
                <span>${msg}</span>
             </div>`;
          }
-         
+
       }catch(error){
          console.error('通信に失敗しました',error);
       }
