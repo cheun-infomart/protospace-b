@@ -7,6 +7,51 @@
   <body>
     <header th:replace="~{common/header :: header}"></header>
     <main class="user-show-container">
+      <div
+        id="confirmModal"
+        class="modal-overlay"
+        style="display: none"
+        onclick="closeOnOverlayClick(event, 'confirmModal')"
+      >
+        <div class="modal-content" onclick="event.stopPropagation()">
+          <h3>ほんとにアカウントを削除しますか？</h3>
+          <p>
+            削除すると、これまでに投稿したプロトタイプや<br />
+            コメントなどの<strong>データはすべて削除され、復元できません。</strong>
+          </p>
+          <div class="modal-footer">
+            <button type="button" onclick="closeModal('confirmModal')" class="modal-close-btn">
+              戻る
+            </button>
+            <form
+              th:action="@{/users/{id}/delete(id=${user.id})}"
+              method="post"
+              style="display: inline"
+            >
+              <button type="submit" class="modal-close-btn">削除する</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div
+        th:if="${param.withdraw}"
+        id="successModal"
+        class="modal-overlay"
+        onclick="handleSuccessClose()"
+      >
+        <div class="modal-content" onclick="event.stopPropagation()">
+          <h3>アカウント削除完了</h3>
+          <p>
+            ご利用ありがとうございました。<br />
+            アカウント削除が無事に行われました。
+          </p>
+          <button type="button" onclick="handleSuccessClose()" class="modal-close-btn">
+            トップページへ
+          </button>
+        </div>
+      </div>
+
       <section class="user-show-info">
         <div class="user-show-info-head">
           <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h2>
@@ -18,9 +63,9 @@
               <a th:href="@{/users/{id}/edit(id=${user.id})}" class="prototype-show-btn"
                 >編集する</a
               >
-              <form th:action="@{/users/{id}/delete(id=${user.id})}" th:method="post">
-                <input type="submit" class="prototype-show-btn" value="アカウント削除" />
-              </form>
+              <button type="button" class="prototype-show-btn" onclick="openWithdrawModal()">
+                アカウント削除
+              </button>
             </div>
           </div>
         </div>

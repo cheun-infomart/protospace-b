@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -33,25 +34,24 @@ public class UserController {
   private final UserRepository userRepository;
   private final UserService userService;
 
-  //新規登録
+  // 新規登録
   @GetMapping("/users/register")
-  public String showRegister(Model model){
+  public String showRegister(Model model) {
     model.addAttribute("userForm", new UserForm());
     return "users/register";
   }
 
-  //新規登録バリデーションチェック
+  // 新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") 
-                           @Validated({ValidationOrder.EmailSequence.class,
-                                      ValidationOrder.PasswordSequence.class,
-                                      ValidationOrder.NameSequence.class,
-                                      ValidationOrder.ProfileSequence.class,
-                                      ValidationOrder.DepartmentSequence.class,
-                                      ValidationOrder.PositionSequence.class
-                            }) UserForm userForm, 
-                            BindingResult result, 
-                            Model model) {
+  public String createUser(@ModelAttribute("userForm") @Validated({ ValidationOrder.EmailSequence.class,
+      ValidationOrder.PasswordSequence.class,
+      ValidationOrder.NameSequence.class,
+      ValidationOrder.ProfileSequence.class,
+      ValidationOrder.DepartmentSequence.class,
+      ValidationOrder.PositionSequence.class
+  }) UserForm userForm,
+      BindingResult result,
+      Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
@@ -59,8 +59,8 @@ public class UserController {
 
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
-              .map(DefaultMessageSourceResolvable::getDefaultMessage)
-              .collect(Collectors.toList());
+          .map(DefaultMessageSourceResolvable::getDefaultMessage)
+          .collect(Collectors.toList());
 
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("userForm", userForm);
@@ -82,17 +82,17 @@ public class UserController {
       return "redirect:users/register";
     }
 
-    //新規登録成功時、ログイン画面に遷移
+    // 新規登録成功時、ログイン画面に遷移
     return "redirect:users/login";
   }
 
-  //ログイン成功
+  // ログイン成功
   @GetMapping("/users/login")
-  public String showLogin(){
-      return "users/login";
+  public String showLogin() {
+    return "users/login";
   }
 
-  //ログイン失敗
+  // ログイン失敗
   @GetMapping("/login")
   public String showLoginWithError(@RequestParam(value = "error") String error, Model model) {
     if (error != null) {
@@ -101,43 +101,41 @@ public class UserController {
     return "users/login";
   }
 
-
-
-
-  //詳細ページ
+  // 詳細ページ
   @GetMapping("/users/{id}")
   public String showUserDetail(@PathVariable("id") Integer id, Model model) {
 
     UserEntity user = userService.findUserDetail(id);
     if (user != null) {
-        model.addAttribute("user", user);
-        model.addAttribute("prototypes", user.getPrototypes());
-    } 
+      model.addAttribute("user", user);
+      model.addAttribute("prototypes", user.getPrototypes());
+    }
     return "users/show";
   }
 
-  //ユーザー削除
+  // ユーザー削除
   @PostMapping("/users/{id}/delete")
-  public String deleteUser(@PathVariable("id") Integer id, 
-                           Authentication authentication,
-                           HttpServletRequest request,
-                           HttpServletResponse response) {
-      // ログインしていない場合はログイン画面にリダイレクト
+  @ResponseBody
+  public String deleteUser(@PathVariable("id") Integer id,
+      Authentication authentication,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+    // ログインしていない場合はログイン画面にリダイレクト
     if (authentication == null || !authentication.isAuthenticated()) {
-        return "redirect:/users/login";
+      return "redirect:/users/login";
     }
     // IDが不正な数値の場合やnullの場合は最初に弾く
     if (id == null || id <= 0) {
       return "redirect:/";
     }
-      
+
     try {
       CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
       userService.deleteUser(id, userDetails);
 
       SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
       logoutHandler.logout(request, response, authentication);
-      
+
     } catch (Exception e) {
       System.out.println("削除失敗：" + e.getMessage());
       return "redirect:/";

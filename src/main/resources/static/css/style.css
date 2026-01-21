@@ -32,6 +32,15 @@ img {
   vertical-align: middle;
 }
 
+button,
+input,
+select,
+textarea,
+a {
+  font-family: inherit;
+  text-decoration: none;
+}
+
 /* ==========================================
    Header
    ========================================== */
@@ -105,10 +114,10 @@ header {
 }
 
 /*追加/検索フォーム*/
-.header-form{
-   flex: 1;            /* 余白を埋める設定 */
-  max-width: 400px;   /* 検索窓が広がりすぎないよう制限 */
-  margin: 0 20px;     /* 左右に余白を作る */
+.header-form {
+  flex: 1; /* 余白を埋める設定 */
+  max-width: 400px; /* 検索窓が広がりすぎないよう制限 */
+  margin: 0 20px; /* 左右に余白を作る */
 }
 
 .header-form form {
@@ -118,27 +127,26 @@ header {
   border: 1px solid #87cefa;
   border-radius: 4px;
   padding: 0 8px;
-  height: 32px; 
-  
+  height: 32px;
 }
 
 .search-input {
-  border: none;      
-  outline: none;    
-  background: none;  
+  border: none;
+  outline: none;
+  background: none;
   padding: 4px;
   font-size: 14px;
-  flex: 1;           
+  flex: 1;
 }
 
 .search-btn {
-  background: none;      
-  border: none;          
+  background: none;
+  border: none;
   padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #87cefa;        
+  color: #87cefa;
 }
 
 .search-btn:hover {
@@ -253,7 +261,7 @@ main {
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
 }
 
@@ -268,11 +276,19 @@ main {
   margin-bottom: 25px;
 }
 
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
 .modal-close-btn {
   background-color: #333;
   color: white;
   border: none;
-  padding: 10px 30px;
+  min-width: 140px;
+  width: auto;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
@@ -318,12 +334,11 @@ main {
 /* ==========================================
    Search
    ========================================== */
-.prototype-keyword{
+.prototype-keyword {
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 10px;
 }
-
 
 /* ==========================================
    Footer

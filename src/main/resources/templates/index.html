@@ -9,16 +9,6 @@
     <header th:replace="~{common/header :: header}"></header>
 
     <main class="prototype-index-main">
-      <div th:if="${param.withdraw}" id="withdrawModal" class="modal-overlay">
-        <div class="modal-content">
-          <h3>アカウント削除完了</h3>
-          <p>
-            ご利用ありがとうございました。<br />
-            アカウント削除が無事に行われました。
-          </p>
-          <button type="button" onclick="closeWithdrawModal()" class="modal-close-btn">確認</button>
-        </div>
-      </div>
       <div class="prototype-index-content">
         <div
           class="prototype-index-greeting"
@@ -56,6 +46,5 @@
     </main>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
-    <script th:src="@{/js/userDelete.js}"></script>
   </body>
 </html>
