@@ -60,6 +60,10 @@ public class UserController {
       BindingResult result,
       Model model) {
     userForm.validatePasswordConfirmation(result);
+    if (userForm.getImage().isEmpty()) {
+        result.rejectValue("image", "error.image", "アイコン画像は必須です");
+    }
+
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
     }
@@ -83,7 +87,7 @@ public class UserController {
     userEntity.setPassword(userForm.getPassword());
 
     try {
-      userService.createUserWithEncryptedPassword(userEntity);
+      userService.createUserWithEncryptedPassword(userEntity, userForm.getImage());
     } catch (Exception e) {
       System.out.println("エラー：" + e);
       return "redirect:users/register";

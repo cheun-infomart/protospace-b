@@ -15,7 +15,7 @@ import in.tech_camp.protospace_b.entity.UserEntity;
 public interface UserRepository {
 
   //ビューからデータ取得→エンティティに入れる
-  @Insert("INSERT INTO users (name, email, password, profile, department, position) VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position})")
+  @Insert("INSERT INTO users (name, email, password, profile, department, position, image) VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position}, #{image})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insert(UserEntity user);
 
@@ -23,17 +23,19 @@ public interface UserRepository {
   @Select("SELECT EXISTS(SELECT 1 FROM users WHERE email = #{email})")
   boolean existsByEmail(String email);
   
-  //データベースから特定のメールアドレスを持つユーザーを探してくる
+  //全データ取得
   @Select("SELECT * FROM users WHERE id = #{id}")
   UserEntity findById(Integer id);
 
-  @Select("SELECT id, name FROM users WHERE id = #{id}")
+  //必要な情報のみ取得
+  @Select("SELECT id, name, image FROM users WHERE id = #{id}")
   UserEntity findUserById(Integer id);
 
   @Select("SELECT * FROM users WHERE email = #{email}")
   UserEntity findByEmail(String email);
 
   @Select("SELECT * FROM users WHERE id = #{id}")
+<<<<<<< Updated upstream
     @Results(value = {
         @Result(property = "id", column = "id", id = true),
         @Result(property = "prototypes", column = "id", 
@@ -43,5 +45,15 @@ public interface UserRepository {
 
   @Delete("DELETE FROM users WHERE id = #{id}")
   void deleteById(Integer id);
+=======
+  @Results(value = {
+      @Result(property = "id", column = "id", id = true),
+      @Result(property = "prototypes", column = "id", 
+              many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))
+  })
+  UserEntity findByIdWithProto(Integer id);
+  
+  
+>>>>>>> Stashed changes
 }
 

@@ -243,13 +243,17 @@ main {
 }
 
 .prototype-index-card_user {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* display: block; */
   font-size: 12px;
   color: #999;
-  text-align: right;
+  /* text-align: right; */
   text-decoration: underline;
 }
 
+<<<<<<< Updated upstream
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -305,6 +309,14 @@ main {
 
 .modal-close-btn:hover {
   background-color: #555;
+=======
+.user-icon-mini {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+>>>>>>> Stashed changes
 }
 
 /* 1024px以下の表示 */
