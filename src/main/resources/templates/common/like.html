@@ -1,0 +1,58 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="like">
+      <div
+        class="like-container"
+        th:if="${#authorization.expression('isAuthenticated()')}"
+      >
+        <button
+          type="button"
+          class="like-btn"
+          th:data-prototype-id="${prototype.id}"
+          style="
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0;
+          "
+        >
+          <span
+            class="material-symbols-outlined like-icon"
+            th:data-is-liked="${prototype.isLiked}"
+            th:style="${prototype.isLiked == true} ? 'font-variation-settings: \'FILL\' 1; color: #e0245e; font-size: 20px;' : 'font-variation-settings: \'FILL\' 0; color: #657786; font-size: 20px;'"
+          >
+            favorite
+          </span>
+          <span
+            class="like-count"
+            style="margin-left: 4px; color: #657786; font-size: 14px"
+            th:text="${prototype.likeCount}"
+            >0</span
+          >
+        </button>
+      </div>
+
+      <div
+        class="like-container"
+        th:unless="${#authorization.expression('isAuthenticated()')}"
+        style="display: flex; align-items: center"
+      >
+        <span
+          class="material-symbols-outlined like-icon"
+          th:data-is-liked="${prototype.isLiked}"
+          th:style="${prototype.isLiked == true} ? 'font-variation-settings: \'FILL\' 1; color: #e0245e; font-size: 20px;' : 'font-variation-settings: \'FILL\' 0; color: #657786; font-size: 20px;'"
+        >
+          favorite</span
+        >
+        <span
+          style="margin-left: 4px; color: #657786; font-size: 14px"
+          th:text="${prototype.likeCount}"
+          >0</span
+        >
+      </div>
+    </div>
+  </body>
+</html>

@@ -105,10 +105,10 @@ header {
 }
 
 /*追加/検索フォーム*/
-.header-form{
-   flex: 1;            /* 余白を埋める設定 */
-  max-width: 400px;   /* 検索窓が広がりすぎないよう制限 */
-  margin: 0 20px;     /* 左右に余白を作る */
+.header-form {
+  flex: 1; /* 余白を埋める設定 */
+  max-width: 400px; /* 検索窓が広がりすぎないよう制限 */
+  margin: 0 20px; /* 左右に余白を作る */
 }
 
 .header-form form {
@@ -118,27 +118,26 @@ header {
   border: 1px solid #87cefa;
   border-radius: 4px;
   padding: 0 8px;
-  height: 32px; 
-  
+  height: 32px;
 }
 
 .search-input {
-  border: none;      
-  outline: none;    
-  background: none;  
+  border: none;
+  outline: none;
+  background: none;
   padding: 4px;
   font-size: 14px;
-  flex: 1;           
+  flex: 1;
 }
 
 .search-btn {
-  background: none;      
-  border: none;          
+  background: none;
+  border: none;
   padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #87cefa;        
+  color: #87cefa;
 }
 
 .search-btn:hover {
@@ -226,6 +225,14 @@ main {
   line-height: 25px;
   margin-bottom: 8px;
 }
+
+.prototype-index-user-and-like {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .prototype-index-card_user {
   display: block;
   font-size: 12px;
@@ -269,12 +276,11 @@ main {
 /* ==========================================
    Search
    ========================================== */
-.prototype-keyword{
+.prototype-keyword {
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 10px;
 }
-
 
 /* ==========================================
    Footer
@@ -395,6 +401,13 @@ footer {
   font-size: 24px;
   line-height: 100%;
   color: #3b4043;
+}
+
+.prototype-show-user-and-like {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
 .prototype-show-author {

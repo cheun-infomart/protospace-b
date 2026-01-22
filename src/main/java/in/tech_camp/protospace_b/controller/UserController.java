@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam; // 追加
 
+import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
+import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
+import org.springframework.security.core.Authentication;
 import lombok.AllArgsConstructor;
 
 
@@ -28,6 +31,7 @@ public class UserController {
 
   private final UserRepository userRepository;
   private final UserService userService;
+  private final LikeRepository likeRepository;
 
   //新規登録
   @GetMapping("/users/register")
@@ -97,15 +101,32 @@ public class UserController {
     return "users/login";
   }
 
-
-
-
   //詳細ページ
   @GetMapping("/users/{id}")
-  public String showUserDetail(@PathVariable("id") Integer id, Model model) {
+  public String showUserDetail(@PathVariable("id") Integer id, Model model, Authentication authentication) {
 
     UserEntity user = userService.findUserDetail(id);
     if (user != null) {
+        List<PrototypeEntity> prototypes = user.getPrototypes();
+
+        // 1. ログイン中のユーザーIDを取得
+        Integer currentUserId = null;
+        if (authentication != null && authentication.getPrincipal() instanceof in.tech_camp.protospace_b.config.CustomUserDetails) {
+            currentUserId = ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal()).getId();
+        }
+
+        // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
+        // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
+        for (in.tech_camp.protospace_b.entity.PrototypeEntity prototype : prototypes) {
+            prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+            
+            if (currentUserId != null) {
+                int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+                prototype.setIsLiked(likeCheck > 0);
+            } else {
+                prototype.setIsLiked(false);
+            }
+        }
         model.addAttribute("user", user);
         model.addAttribute("prototypes", user.getPrototypes());
     } 
