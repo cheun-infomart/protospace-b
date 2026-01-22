@@ -2,14 +2,20 @@ package in.tech_camp.protospace_b.controller;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,6 +50,9 @@ public class UserControllerUnitTest {
 
   @Mock
   private HttpSession session;
+
+  @Mock
+  private Model model;
 
   @InjectMocks
   private UserController userController;
@@ -175,6 +184,39 @@ public class UserControllerUnitTest {
     // ページにmodelがちゃんと渡されてるか確認
     assertThat(model.getAttribute("user"), is(mockUser));
     assertThat(model.getAttribute("prototypes"), is(mockUser.getPrototypes()));
+  }
+
+  @Nested
+  class ログインセッション {
+    @Test
+    void Refererがいると以前のページを保存() {
+      String validReferer = "http://localhost:8080/prototypes/1";
+      when(request.getHeader("Referer")).thenReturn(validReferer);
+      String viewName = userController.showLogin(null, request, session, model);
+      assertEquals("users/login", viewName);
+      verify(session, times(1)).setAttribute("prevPage", validReferer);
+    }
+
+    @Test
+    void Refererがログイン画面や新規登録画面では保存されない() {
+      String invalidReferer = "http://localhost:8080/users/login";
+      when(request.getHeader("Referer")).thenReturn(invalidReferer);
+      userController.showLogin(null, request, session, model);
+      verify(session, never()).setAttribute(anyString(), any());
+    }
+
+    @Test
+    void エラーが存在するとモデルにエラーが入る() {
+      String errorParam = "true";
+      userController.showLogin(errorParam, request, session, model);
+      verify(model, times(1)).addAttribute(eq("loginError"), anyString());
+    }
+
+    @Test
+    void エラーがnullならモデルにエラーがない() {
+      userController.showLogin(null, request, session, model);
+      verify(model, never()).addAttribute(eq("loginError"), anyString());
+    }
   }
 
 }
