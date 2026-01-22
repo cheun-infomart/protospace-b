@@ -22,7 +22,7 @@ public class CustomLoginSession extends SimpleUrlAuthenticationSuccessHandler {
       HttpServletResponse response,
       Authentication authentication) throws IOException, ServletException {
 
-    // ログインが必要な画面に飛んだ時、requestを記憶する
+    // ログインが必要な画面に移動時、requestを記憶する
     SavedRequest savedRequest = requestCache.getRequest(request, response);
     if (savedRequest != null) {
       String targetUrl = savedRequest.getRedirectUrl();
