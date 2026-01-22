@@ -24,7 +24,7 @@ window.addEventListener('load',()=>{
             const newCommentHtml = await response.text();
 
             if(commentList){
-               commentList.insertAdjacentHTML('beforeend',newCommentHtml);
+               commentList.insertAdjacentHTML('afterbegin',newCommentHtml);
             }else{
                location.reload();
             }
