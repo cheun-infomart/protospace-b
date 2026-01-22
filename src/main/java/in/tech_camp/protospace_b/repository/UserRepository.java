@@ -35,7 +35,6 @@ public interface UserRepository {
   UserEntity findByEmail(String email);
 
   @Select("SELECT * FROM users WHERE id = #{id}")
-<<<<<<< Updated upstream
     @Results(value = {
         @Result(property = "id", column = "id", id = true),
         @Result(property = "prototypes", column = "id", 
@@ -45,15 +44,5 @@ public interface UserRepository {
 
   @Delete("DELETE FROM users WHERE id = #{id}")
   void deleteById(Integer id);
-=======
-  @Results(value = {
-      @Result(property = "id", column = "id", id = true),
-      @Result(property = "prototypes", column = "id", 
-              many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))
-  })
-  UserEntity findByIdWithProto(Integer id);
-  
-  
->>>>>>> Stashed changes
 }
 

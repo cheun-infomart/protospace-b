@@ -22,7 +22,6 @@
           >
           </a>
         </div>
-<<<<<<< Updated upstream
 
         <div id="search-results">
           <h3 class="prototype-keyword" th:if="${keyword != null && !keyword.isEmpty()}" th:text="|検索結果:${keyword}|"></h3>
@@ -39,7 +38,6 @@
                   <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
                 </div>
               </div>
-=======
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
             <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
@@ -58,7 +56,6 @@
                 <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
                 <span th:text="|by ${prototype.user.name}|">by 名前</span>
               </a>
->>>>>>> Stashed changes
             </div>
           </div>
         </div>

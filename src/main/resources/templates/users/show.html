@@ -20,12 +20,8 @@
             <strong>データはすべて削除され復元できません。</strong>
           </p>
           <div class="modal-footer">
-            <button type="button" onclick="closeModal('confirmModal')" class="modal-close-btn">
-              戻る
-            </button>
-            <button type="button" th:onclick="|executeDelete(${user.id})|" class="modal-close-btn">
-              削除する
-            </button>
+            <button type="button" onclick="closeModal('confirmModal')" class="modal-close-btn">戻る</button>
+            <button type="button" th:onclick="|executeDelete(${user.id})|" class="modal-close-btn">削除する</button>
           </div>
         </div>
       </div>
@@ -37,9 +33,7 @@
             ご利用ありがとうございました。<br />
             アカウント削除が無事に行われました。
           </p>
-          <button type="button" onclick="goToIndex()" class="modal-close-btn">
-            トップページへ
-          </button>
+          <button type="button" onclick="goToIndex()" class="modal-close-btn">トップページへ</button>
         </div>
       </div>
 
@@ -51,12 +45,8 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == user.id}"
           >
             <div class="prototype-show-button-section">
-              <a th:href="@{/users/{id}/edit(id=${user.id})}" class="prototype-show-btn"
-                >編集する</a
-              >
-              <button type="button" class="prototype-show-btn" onclick="openWithdrawModal()">
-                アカウント削除
-              </button>
+              <a th:href="@{/users/{id}/edit(id=${user.id})}" class="prototype-show-btn">編集する</a>
+              <button type="button" class="prototype-show-btn" onclick="openWithdrawModal()">アカウント削除</button>
             </div>
           </div>
         </div>
@@ -101,21 +91,18 @@
               <div class="prototype-index-user-and-like">
                 <div th:replace="~{common/like :: like}"></div>
 
-<<<<<<< Updated upstream
-                <a
-                  th:href="@{/users/{id}(id=${user.id})}"
-                  th:text="|by ${user.name}|"
-                  class="prototype-index-card_user"
+                <<<<<<< Updated upstream
+                <a th:href="@{/users/{id}(id=${user.id})}" th:text="|by ${user.name}|" class="prototype-index-card_user"
                   >by 名前</a
                 >
               </div>
-=======
+              =======
               <!-- アイコン追加 -->
               <a th:href="@{/users/{id}(id=${user.id})}" class="prototype-index-card_user">
                 <img th:src="${user.image}" alt="user-icon" class="user-icon-mini" />
                 <span th:text="|by ${user.name}|">by 名前</span>
               </a>
->>>>>>> Stashed changes
+              >>>>>>> Stashed changes
             </div>
           </div>
         </div>

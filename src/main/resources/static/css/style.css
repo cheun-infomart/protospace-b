@@ -319,6 +319,14 @@ main {
 >>>>>>> Stashed changes
 }
 
+.user-icon-mini {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
 /* 1024px以下の表示 */
 @media (max-width: 1024px) {
   .prototype-index-content {
