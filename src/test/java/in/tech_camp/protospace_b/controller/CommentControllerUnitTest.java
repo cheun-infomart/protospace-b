@@ -1,6 +1,9 @@
 package in.tech_camp.protospace_b.controller;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -10,10 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -63,21 +69,28 @@ public class CommentControllerUnitTest {
         
         Integer prototypeId = 1;
         Integer userId = 10;
+        String userName = "テストネーム";
 
         CommentForm form = CommentFormFactory.createComment(); 
-
+        form.setText("テストコメント");
         when(currentUser.getId()).thenReturn(userId);
+
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        user.setName(userName);
+        when(currentUser.getUser()).thenReturn(user);
 
         PrototypeEntity prototype = new PrototypeEntity();
         prototype.setId(prototypeId);
-        UserEntity user = new UserEntity();
-        user.setId(userId);
 
         when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
         when(userRepository.findById(userId)).thenReturn(user);
 
-        String result = commentController.createComment(prototypeId, form, bindingResult, currentUser, model);
-        assertThat(result, is("redirect:/prototypes/" + prototypeId));
+        ResponseEntity<String> response = commentController.createComment(prototypeId, form, bindingResult, currentUser);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+
+        assertThat(response.getBody(), containsString(form.getText()));
+        assertThat(response.getBody(), containsString(userName));
       }
     }
 
@@ -91,15 +104,20 @@ public class CommentControllerUnitTest {
 
         CommentForm form = CommentFormFactory.createComment(); 
         form.setText("");
+        
         when(bindingResult.hasErrors()).thenReturn(true);
-    
+        
+        ObjectError error = new ObjectError("commentForm", "コメントを入力してください");
+        when(bindingResult.getAllErrors()).thenReturn(List.of(error));
+
         PrototypeEntity prototype = new PrototypeEntity();
         prototype.setId(prototypeId);
 
         when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
 
-        String result = commentController.createComment(prototypeId, form, bindingResult, currentUser, model);
-        assertThat(result, is("prototypes/show"));
+        ResponseEntity<String> response = commentController.createComment(prototypeId, form, bindingResult, currentUser);
+        assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(response.getBody(), is("コメントを入力してください"));
       }
     }
   }
