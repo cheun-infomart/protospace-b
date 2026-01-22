@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/css/**", "/images/**","/uploads/**", "/", "/users/register", "/users/login","/prototypes/{id:[0-9]+}","/users/{id:[0-9]+}","/prototypes/search/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginProcessingUrl("/login")
@@ -29,14 +30,15 @@ public class SecurityConfig {
                         .usernameParameter("email") 
                         .permitAll())
 
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"));
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/"));
 
-        return http.build();
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-    }
+                return http.build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }

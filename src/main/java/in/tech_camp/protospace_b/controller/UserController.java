@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult; // 追加
@@ -12,17 +15,22 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // 追加
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
+import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
+import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
-import lombok.AllArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor; // 追加
+import org.springframework.security.core.Authentication;
 
 
 @Controller
@@ -31,26 +39,26 @@ public class UserController {
 
   private final UserRepository userRepository;
   private final UserService userService;
+  private final LikeRepository likeRepository;
 
-  //新規登録
+  // 新規登録
   @GetMapping("/users/register")
-  public String showRegister(Model model){
+  public String showRegister(Model model) {
     model.addAttribute("userForm", new UserForm());
     return "users/register";
   }
 
-  //新規登録バリデーションチェック
+  // 新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") 
-                           @Validated({ValidationOrder.EmailSequence.class,
-                                      ValidationOrder.PasswordSequence.class,
-                                      ValidationOrder.NameSequence.class,
-                                      ValidationOrder.ProfileSequence.class,
-                                      ValidationOrder.DepartmentSequence.class,
-                                      ValidationOrder.PositionSequence.class
-                            }) UserForm userForm, 
-                            BindingResult result, 
-                            Model model) {
+  public String createUser(@ModelAttribute("userForm") @Validated({ ValidationOrder.EmailSequence.class,
+      ValidationOrder.PasswordSequence.class,
+      ValidationOrder.NameSequence.class,
+      ValidationOrder.ProfileSequence.class,
+      ValidationOrder.DepartmentSequence.class,
+      ValidationOrder.PositionSequence.class
+  }) UserForm userForm,
+      BindingResult result,
+      Model model) {
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
@@ -58,8 +66,8 @@ public class UserController {
 
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
-              .map(DefaultMessageSourceResolvable::getDefaultMessage)
-              .collect(Collectors.toList());
+          .map(DefaultMessageSourceResolvable::getDefaultMessage)
+          .collect(Collectors.toList());
 
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("userForm", userForm);
@@ -81,17 +89,17 @@ public class UserController {
       return "redirect:users/register";
     }
 
-    //新規登録成功時、ログイン画面に遷移
+    // 新規登録成功時、ログイン画面に遷移
     return "redirect:users/login";
   }
 
-  //ログイン成功
+  // ログイン成功
   @GetMapping("/users/login")
-  public String showLogin(){
-      return "users/login";
+  public String showLogin() {
+    return "users/login";
   }
 
-  //ログイン失敗
+  // ログイン失敗
   @GetMapping("/login")
   public String showLoginWithError(@RequestParam(value = "error") String error, Model model) {
     if (error != null) {
@@ -102,10 +110,30 @@ public class UserController {
 
   //詳細ページ
   @GetMapping("/users/{id}")
-  public String showUserDetail(@PathVariable("id") Integer id, Model model) {
+  public String showUserDetail(@PathVariable("id") Integer id, Model model, Authentication authentication) {
 
     UserEntity user = userService.findUserDetail(id);
     if (user != null) {
+        List<PrototypeEntity> prototypes = user.getPrototypes();
+
+        // 1. ログイン中のユーザーIDを取得
+        Integer currentUserId = null;
+        if (authentication != null && authentication.getPrincipal() instanceof in.tech_camp.protospace_b.config.CustomUserDetails) {
+            currentUserId = ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal()).getId();
+        }
+
+        // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
+        // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
+        for (in.tech_camp.protospace_b.entity.PrototypeEntity prototype : prototypes) {
+            prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+            
+            if (currentUserId != null) {
+                int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+                prototype.setIsLiked(likeCheck > 0);
+            } else {
+                prototype.setIsLiked(false);
+            }
+        }
         model.addAttribute("user", user);
         model.addAttribute("prototypes", user.getPrototypes());
     } 
@@ -166,4 +194,28 @@ public class UserController {
     }
     return "redirect:/users/" + id;
   } 
+
+  // ユーザー削除
+  @PostMapping("/users/{id}/delete")
+  @ResponseBody
+  public ResponseEntity<String> deleteUser(@PathVariable("id") Integer id,
+      Authentication authentication,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+    // ログインしていない場合はログイン画面にリダイレクト
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    try {
+      CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      userService.deleteUser(id, userDetails);
+
+      SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+      logoutHandler.logout(request, response, authentication);
+      return ResponseEntity.ok("success");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+  }
 }
