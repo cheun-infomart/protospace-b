@@ -30,14 +30,15 @@ public class SecurityConfig {
                         .usernameParameter("email") 
                         .permitAll())
 
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"));
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/"));
 
-        return http.build();
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-    }
+                return http.build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
