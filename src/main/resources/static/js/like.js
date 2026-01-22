@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const likeButtons = document.querySelectorAll(".like-btn");
+  
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest(".like-btn");
 
-  likeButtons.forEach((button) => {
-    button.addEventListener("click", async () => {
+      if (!button) return;
+
       const prototypeId = button.getAttribute("data-prototype-id");
       const icon = button.querySelector(".like-icon");
       const countSpan = button.querySelector(".like-count");
@@ -37,4 +39,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-});
+
