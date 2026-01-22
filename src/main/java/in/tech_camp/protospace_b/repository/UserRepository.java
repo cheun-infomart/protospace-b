@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 
@@ -39,7 +40,9 @@ public interface UserRepository {
                 many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))
     })
     UserEntity findByIdWithProto(Integer id);
-  
-  
+
+  // ユーザー情報更新
+  @Update("UPDATE users SET name=#{name}, profile=#{profile}, department=#{department}, position=#{position} WHERE id=#{id}")
+  void update(UserEntity user);
 }
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult; // 追加
@@ -11,9 +12,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.PostMapping; // 追加
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
@@ -97,9 +100,6 @@ public class UserController {
     return "users/login";
   }
 
-
-
-
   //詳細ページ
   @GetMapping("/users/{id}")
   public String showUserDetail(@PathVariable("id") Integer id, Model model) {
@@ -112,4 +112,58 @@ public class UserController {
     return "users/show";
   }
   
+  // ユーザー編集画面に移動
+  @GetMapping("/users/{id}/edit")
+  public String editUserDetail(@PathVariable("id") Integer id, Authentication authentication, RedirectAttributes redirectAttributes, Model model) {
+    try {
+      UserEntity user = userService.findUser(id);
+
+      UserForm form = userService.getUserForm(id);
+      Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+
+      if(!user.getId().equals(currentUserId)){
+        redirectAttributes.addFlashAttribute("errorMessage", "編集権限がありません");
+        return "redirect:/";
+      }
+      
+      model.addAttribute("userForm", form);
+      model.addAttribute("id", id);
+
+      return "users/edit";
+
+    } catch (RuntimeException e) {
+      redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+      return "redirect:/";
+    }
+  }
+
+  // ユーザー情報更新
+  @PostMapping("/users/{id}/update")
+  public String updateUserDetail(@ModelAttribute("userForm")
+                                 @Validated({ValidationOrder.NameSequence.class,
+                                      ValidationOrder.ProfileSequence.class,
+                                      ValidationOrder.DepartmentSequence.class,
+                                      ValidationOrder.PositionSequence.class
+                                 })UserForm userForm,
+                                  BindingResult result,
+                                 @PathVariable("id") Integer id,
+                                  Model model) {
+    if(result.hasErrors()){
+      List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+      model.addAttribute("errorMessages", errorMessages);
+
+      model.addAttribute("userForm", userForm);
+      model.addAttribute("id", id);
+
+      return "users/edit";
+    }
+
+    try {
+      userService.updateUser(id, userForm);
+    } catch (Exception e) {
+      System.out.println("エラー：" + e);
+      return "redirect:/users/" + id + "/edit";
+    }
+    return "redirect:/users/" + id;
+  } 
 }
