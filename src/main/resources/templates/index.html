@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
   <head>
     <th:block th:replace="~{common/head :: head}"></th:block>
@@ -7,19 +7,22 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-  
+
     <main class="prototype-index-main">
       <div class="prototype-index-content">
-        
-        <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
+        <div
+          class="prototype-index-greeting"
+          th:if="${#authorization.expression('isAuthenticated()')}"
+        >
           <span>こんにちは、</span>
-          <a 
+          <a
             class="prototype-index-greeting_link"
             th:href="@{/users/{id}(id=${#authentication?.principal.getId()})}"
             th:text="${#authentication?.principal.getName()} + 'さん'"
           >
           </a>
         </div>
+
         <div id="search-results">
           <h3 class="prototype-keyword" th:if="${keyword != null && !keyword.isEmpty()}" th:text="|検索結果:${keyword}|"></h3>
           <div class="prototype-index-card_wrapper" >
@@ -30,11 +33,14 @@
               <div class="prototype-index-card_body">
                 <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
                 <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
-                <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
+                <div class="prototype-index-user-and-like">
+                  <div th:replace="~{common/like :: like}"></div>
+                  <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
+                </div>
               </div>
             </div>
           </div>
-        
+        </div>
       </div>
     </main>
 
