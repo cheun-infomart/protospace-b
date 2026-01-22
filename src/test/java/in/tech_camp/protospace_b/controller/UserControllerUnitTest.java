@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -63,7 +62,7 @@ public class UserControllerUnitTest {
 
   @Mock
   private CustomUserDetails userDetails;
-  
+
   @Mock
   private HttpSession session;
 
@@ -102,7 +101,8 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    void エラーが存在するとモデルにエラーが入る() {String errorParam = "true";
+    void エラーが存在するとモデルにエラーが入る() {
+      String errorParam = "true";
       userController.showLogin(errorParam, request, session, model);
       verify(model, times(1)).addAttribute(eq("loginError"), anyString());
     }
@@ -192,7 +192,8 @@ public class UserControllerUnitTest {
     // ログイン
     @Test
     public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
-      String result = userController.showLogin();
+      String error = null;
+      String result = userController.showLogin(error, request, session, model);
 
       assertThat(result, is("users/login"));
     }
@@ -240,7 +241,7 @@ public class UserControllerUnitTest {
       userController.showLogin(null, request, session, model);
       verify(model, never()).addAttribute(eq("loginError"), anyString());
     }
-  
+
     @Test
     void ログインしてないと401() {
       Authentication unauthenticated = null;
