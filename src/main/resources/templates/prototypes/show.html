@@ -68,18 +68,18 @@
         <!--コメントエリア-->
         <div class="prototype-show-comment-section">
           <div th:if="${#authorization.expression('isAuthenticated()')}">
-            <div
-              th:if="${errorMessages}"
-              th:each="error : ${errorMessages}"
-              class="new-error"
-            >
-              <div th:text="${error.defaultMessage}"></div>
+            <div id="error-container">
+              <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
+                <span th:text="${error.defaultMessage}"></span>
+              </div>
             </div>
+
             <form
               th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
               method="post"
               th:object="${commentForm}"
               class="prototype-show-comment-form"
+              id="comment-form"
             >
               <label for="comment" class="prototype-show-comment-label"
                 >コメント</label
@@ -88,7 +88,7 @@
                 class="prototype-show-comment-input"
                 th:field="*{text}"
                 type="text"
-                id="comment"
+                id="comment-text"
               />
               <input class="com-btn" type="submit" value="送信する" />
             </form>
@@ -117,6 +117,7 @@
     </div>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
+    <script th:src="@{/js/comment.js}"></script>
   </body>
   <script th:inline="javascript" th:if="${errorMessage}">
     /*<![CDATA[*/
