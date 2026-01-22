@@ -1,13 +1,13 @@
 package in.tech_camp.protospace_b.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.CommentEntity;
@@ -19,7 +19,8 @@ import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import lombok.AllArgsConstructor;
 
-@Controller
+
+@RestController
 @AllArgsConstructor
 public class CommentController {
 
@@ -28,36 +29,40 @@ public class CommentController {
   private final CommentRepository commentRepository;
 
   @PostMapping("/prototypes/{prototypeId}/comment")
-  public String createComment(@PathVariable("prototypeId") Integer prototypeId,
-      @ModelAttribute("commentForm") @Validated(ValidationOrder.textSequence.class) CommentForm commentForm,
-      BindingResult result,
-      @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+  public ResponseEntity<String> createComment(@PathVariable("prototypeId") Integer prototypeId,
+                              @ModelAttribute("commentForm") @Validated(ValidationOrder.textSequence.class) CommentForm commentForm,
+                              BindingResult result,
+                              @AuthenticationPrincipal CustomUserDetails currentUser) {
+  
+  PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+  
+  if(result.hasErrors()){
+    String firstErrorMessage = result.getAllErrors().get(0).getDefaultMessage();
+    return ResponseEntity.badRequest().body(firstErrorMessage);
+  }
 
-    PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+  CommentEntity comment = new CommentEntity();
+  comment.setText(commentForm.getText());
+  comment.setPrototype(prototype);
+  comment.setUser(userRepository.findById(currentUser.getId()));
 
-    if (result.hasErrors()) {
-      model.addAttribute("errorMessages", result.getAllErrors());
-      model.addAttribute("prototype", prototype);
-      model.addAttribute("commentForm", commentForm);
-      model.addAttribute("comments", prototype.getComments());
-      return "prototypes/show";
-    }
+  try {
+    commentRepository.insert(comment);
+  } catch (Exception e) {
+    return ResponseEntity.internalServerError().body("保存に失敗しました");
+  }
 
-    CommentEntity comment = new CommentEntity();
-    comment.setText((commentForm.getText()));
-    comment.setPrototype(prototype);
-    comment.setUser(userRepository.findById(currentUser.getId()));
+  String displayName = currentUser.getUser().getName(); 
 
-    try {
-      commentRepository.insert(comment);
-    } catch (Exception e) {
-      model.addAttribute("prototype", prototype);
-      model.addAttribute("commentForm", commentForm);
-      model.addAttribute("comments", prototype.getComments());
-      System.out.println("エラー:" + e);
-      return "prototypes/show";
-    }
-
-    return "redirect:/prototypes/" + prototypeId;
+  String htmlResponse = String.format(
+        "<li class='prototype-show-comment'>" +
+        "  <span class='prototype-show-comment-text'>%s</span>" +
+        "  <a href='/users/%d' class='prototype-show-comment-user'>%s</a>" +
+        "</li>", 
+        commentForm.getText(), 
+        currentUser.getId(), 
+        displayName
+    );
+    return ResponseEntity.ok(htmlResponse);
   }
 }
