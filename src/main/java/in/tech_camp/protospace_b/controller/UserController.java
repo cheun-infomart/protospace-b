@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -116,17 +118,13 @@ public class UserController {
   // ユーザー削除
   @PostMapping("/users/{id}/delete")
   @ResponseBody
-  public String deleteUser(@PathVariable("id") Integer id,
+  public ResponseEntity<String> deleteUser(@PathVariable("id") Integer id,
       Authentication authentication,
       HttpServletRequest request,
       HttpServletResponse response) {
     // ログインしていない場合はログイン画面にリダイレクト
     if (authentication == null || !authentication.isAuthenticated()) {
-      return "redirect:/users/login";
-    }
-    // IDが不正な数値の場合やnullの場合は最初に弾く
-    if (id == null || id <= 0) {
-      return "redirect:/";
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     try {
@@ -135,11 +133,9 @@ public class UserController {
 
       SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
       logoutHandler.logout(request, response, authentication);
-
+      return ResponseEntity.ok("success");
     } catch (Exception e) {
-      System.out.println("削除失敗：" + e.getMessage());
-      return "redirect:/";
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
-    return "redirect:/?withdraw=success";
   }
 }
