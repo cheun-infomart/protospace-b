@@ -421,10 +421,10 @@ public class PrototypeControllerUnitTest {
       when(prototypeRepository.findByTextContaining("プロトタイプ")).thenReturn(expectedPrototypeList);
 
       // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
-      String result= prototypeController.searchPrototypes("プロトタイプ", model);
+      String result= prototypeController.searchPrototypes("プロトタイプ","XMLHttpRequest", model);
 
       //　対象のビューが表示されるか
-      assertThat(result, is("prototypes/search"));
+      assertThat(result, is("index :: #search-results"));
 
       // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
       assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));

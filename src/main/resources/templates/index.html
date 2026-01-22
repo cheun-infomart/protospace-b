@@ -7,7 +7,7 @@
 
   <body>
     <header th:replace="~{common/header :: header}"></header>
-    
+  
     <main class="prototype-index-main">
       <div class="prototype-index-content">
         <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
@@ -19,7 +19,7 @@
           >
           </a>
         </div>
-        <div class="prototype-index-card_wrapper">
+        <div class="prototype-index-card_wrapper" id="search-results">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
             <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
               <img class="prototype-index-card_img"  th:src="@{${prototype.image}}">
@@ -35,5 +35,6 @@
     </main>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
+    
   </body>
 </html>
