@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult; // 追加
@@ -13,7 +17,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.UserForm;
@@ -23,8 +29,9 @@ import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor; // 追加
 import org.springframework.security.core.Authentication;
-import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
@@ -142,4 +149,27 @@ public class UserController {
     return "users/show";
   }
 
+  // ユーザー削除
+  @PostMapping("/users/{id}/delete")
+  @ResponseBody
+  public ResponseEntity<String> deleteUser(@PathVariable("id") Integer id,
+      Authentication authentication,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+    // ログインしていない場合はログイン画面にリダイレクト
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    try {
+      CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      userService.deleteUser(id, userDetails);
+
+      SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+      logoutHandler.logout(request, response, authentication);
+      return ResponseEntity.ok("success");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+  }
 }
