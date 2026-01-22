@@ -86,7 +86,10 @@
       </section>
 
       <section class="user-show-prototype-section">
-        <h2 class="user-show-prototype-name" th:text="${user.name} + 'さんのプロトタイプ'">
+        <h2
+          class="user-show-prototype-name"
+          th:text="${user.name} + 'さんのプロトタイプ'"
+        >
           名前さんのプロトタイプ
         </h2>
         <!-- ユーザー個人のPrototype一覧 -->
@@ -96,21 +99,33 @@
             <a
               id="prototype_link"
               th:href="@{/prototypes/{prototypeId}(prototypeId=${prototype.id})}"
-              ><img class="prototype-index-card_img" th:src="@{${prototype.image}}" alt="img"
+              ><img
+                class="prototype-index-card_img"
+                th:src="@{${prototype.image}}"
+                alt="img"
             /></a>
 
             <div class="prototype-index-card_body">
-              <h3 th:text="${prototype.name}" class="prototype-index-card_title">
+              <h3
+                th:text="${prototype.name}"
+                class="prototype-index-card_title"
+              >
                 プロトタイプタイトル
               </h3>
-              <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
+              <p
+                class="prototype-index-card_summary"
+                th:text="${prototype.catchCopy}"
+              ></p>
+              <div class="prototype-index-user-and-like">
+                <div th:replace="~{common/like :: like}"></div>
 
-              <a
-                th:href="@{/users/{id}(id=${user.id})}"
-                th:text="|by ${user.name}|"
-                class="prototype-index-card_user"
-                >by 名前</a
-              >
+                <a
+                  th:href="@{/users/{id}(id=${user.id})}"
+                  th:text="|by ${user.name}|"
+                  class="prototype-index-card_user"
+                  >by 名前</a
+                >
+              </div>
             </div>
           </div>
         </div>

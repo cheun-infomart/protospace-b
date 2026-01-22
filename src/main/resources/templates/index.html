@@ -24,8 +24,14 @@
         </div>
         <div class="prototype-index-card_wrapper">
           <div class="prototype-index-card" th:each="prototype : ${prototypes}">
-            <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
-              <img class="prototype-index-card_img" th:src="@{${prototype.image}}" />
+            <a
+              th:href="@{/prototypes/{id}(id=${prototype.id})}"
+              id="prototype_link"
+            >
+              <img
+                class="prototype-index-card_img"
+                th:src="@{${prototype.image}}"
+              />
             </a>
             <div class="prototype-index-card_body">
               <a
@@ -33,12 +39,18 @@
                 th:href="@{/prototypes/{id}(id=${prototype.id})}"
                 th:text="${prototype.name}"
               ></a>
-              <a class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></a>
               <a
-                class="prototype-index-card_user"
-                th:href="@{/users/{id}(id=${prototype.user.id})}"
-                th:text="'by ' + ${prototype.user.name}"
+                class="prototype-index-card_summary"
+                th:text="${prototype.catchCopy}"
               ></a>
+              <div class="prototype-index-user-and-like">
+                <div th:replace="~{common/like :: like}"></div>
+                <a
+                  class="prototype-index-card_user"
+                  th:href="@{/users/{id}(id=${prototype.user.id})}"
+                  th:text="'by ' + ${prototype.user.name}"
+                ></a>
+              </div>
             </div>
           </div>
         </div>

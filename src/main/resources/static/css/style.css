@@ -234,6 +234,14 @@ main {
   line-height: 25px;
   margin-bottom: 8px;
 }
+
+.prototype-index-user-and-like {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .prototype-index-card_user {
   display: block;
   font-size: 12px;
@@ -459,6 +467,13 @@ footer {
   font-size: 24px;
   line-height: 100%;
   color: #3b4043;
+}
+
+.prototype-show-user-and-like {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
 .prototype-show-author {
