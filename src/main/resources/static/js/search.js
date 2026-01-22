@@ -1,5 +1,5 @@
 window.addEventListener('load', ()=>{
-  console.log("jsを読み込みました");
+ 
   const searchForm = document.getElementById('searchForm');
   const resultArea = document.getElementById('search-results'); 
 
