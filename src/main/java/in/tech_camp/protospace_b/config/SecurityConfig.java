@@ -32,11 +32,11 @@ public class SecurityConfig {
                                                                 "/prototypes/search/**")
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                                                .requestMatchers("/api/**").authenticated()
                                                 .anyRequest().authenticated())
                                 .formLogin(login -> login
                                                 .loginProcessingUrl("/login")
                                                 .loginPage("/users/login")
-                                                // .defaultSuccessUrl("/", true)
                                                 .failureUrl("/login?error")
                                                 .successHandler(customLoginSession)
                                                 .usernameParameter("email")

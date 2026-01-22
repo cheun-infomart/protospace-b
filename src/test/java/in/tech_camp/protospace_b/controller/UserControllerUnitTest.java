@@ -19,6 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -47,6 +48,9 @@ public class UserControllerUnitTest {
 
   @Mock
   private HttpServletRequest request;
+
+  @Mock
+  private Authentication authentication;
 
   @Mock
   private HttpSession session;

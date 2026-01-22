@@ -20,6 +20,7 @@ import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
+import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.repository.PrototypeRepository;
 import in.tech_camp.protospace_b.service.PrototypeService;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
@@ -32,9 +33,32 @@ public class PrototypeController {
 
   private final PrototypeService prototypeService;
 
+  private final LikeRepository likeRepository;
+  
   @GetMapping("/")
-  public String showPrototypes(Model model) {
+  public String showPrototypes(Model model, Authentication authentication) {
     List<PrototypeEntity> prototypes = prototypeRepository.findAll();
+
+    // ログイン中のユーザーIDを取得（未ログインならnull）
+    Integer currentUserId = null;
+    if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+        currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+    }
+
+    // 各プロトタイプに「いいね」情報をセット
+    for (PrototypeEntity prototype : prototypes) {
+      // いいね総数をセット
+      prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+      
+      // 自分がいいね済みかチェックしてセット
+      if (currentUserId != null) {
+          int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+          prototype.setIsLiked(likeCheck > 0);
+      } else {
+          prototype.setIsLiked(false);
+      }
+    }
+
     model.addAttribute("prototypes", prototypes);
     return "index";
   }
@@ -148,15 +172,33 @@ public class PrototypeController {
 
   // プロトタイプ詳細画面への遷移
   @GetMapping("/prototypes/{prototypeId}")
-  public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model) {
-    PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
-    if (prototype == null) {
-      return "redirect:/";
+  public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model, Authentication authentication) {
+      PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
+      if(prototype == null){
+        return "redirect:/";
+      }
+
+    Integer currentUserId = null;
+    if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+        currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
     }
-    model.addAttribute("prototype", prototype);
-    model.addAttribute("commentForm", new CommentForm());
-    model.addAttribute("comments", prototype.getComments());
-    return "prototypes/show";
+
+    // ★ 2. この「1つのprototype」に対していいね情報を直接セットする
+    // いいね総数をセット
+    prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+    
+    // 自分がいいね済みかチェック
+    if (currentUserId != null) {
+        int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+        prototype.setIsLiked(likeCheck > 0);
+    } else {
+        prototype.setIsLiked(false);
+    }
+
+      model.addAttribute("prototype", prototype);
+      model.addAttribute("commentForm", new CommentForm());
+      model.addAttribute("comments",prototype.getComments());
+      return "prototypes/show";
   }
 
   // プロトタイプ削除
@@ -182,9 +224,30 @@ public class PrototypeController {
   }
 
   @GetMapping("/prototypes/search")
-  public String searchPrototypes(@RequestParam("keyword") String keyword, Model model) {
-    String KatakanaKeyword = prototypeService.convertToKatakana(keyword);
+  public String searchPrototypes(@RequestParam("keyword") String keyword, Model model, Authentication authentication) {
+    String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
     List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
+
+    // ログイン中のユーザーIDを取得（未ログインならnull）
+    Integer currentUserId = null;
+    if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+        currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+    }
+
+    // 検索結果の各プロトタイプに「いいね」情報をセット
+    for (PrototypeEntity prototype : prototypes) {
+        // いいね総数をセット
+        prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+        
+        // 自分がいいね済みかチェック
+        if (currentUserId != null) {
+            int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+            prototype.setIsLiked(likeCheck > 0);
+        } else {
+            prototype.setIsLiked(false);
+        }
+    }
+
     model.addAttribute("prototypes", prototypes);
     model.addAttribute("keyword", keyword);
     return "prototypes/search";
