@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -224,7 +225,7 @@ public class PrototypeController {
   }
 
   @GetMapping("/prototypes/search")
-  public String searchPrototypes(@RequestParam("keyword") String keyword, Model model, Authentication authentication) {
+  public String searchPrototypes(@RequestParam("keyword") String keyword, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith, Model model, Authentication authentication) {
     String KatakanaKeyword= prototypeService.convertToKatakana(keyword);
     List<PrototypeEntity> prototypes = prototypeRepository.findByTextContaining(KatakanaKeyword);
 
@@ -250,7 +251,10 @@ public class PrototypeController {
 
     model.addAttribute("prototypes", prototypes);
     model.addAttribute("keyword", keyword);
-    return "prototypes/search";
+
+    if("XMLHttpRequest".equals(requestedWith)){
+      return "index :: #search-results";
+    }
+    return "index";
   }
-  
 }
