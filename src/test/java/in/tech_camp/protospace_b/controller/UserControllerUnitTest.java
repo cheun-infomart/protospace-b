@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doThrow;
@@ -39,8 +39,8 @@ import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -82,8 +82,6 @@ public class UserControllerUnitTest {
   public void setUp() {
     mockUser = UserFactory.createMockUser();
   }
-
-  // 新規登録
 
   @Nested
   class ログインセッション {
@@ -141,7 +139,7 @@ public class UserControllerUnitTest {
       when(bindingResult.hasErrors()).thenReturn(true);
 
       // 2. 実行：正しい引数で呼び出す
-      String result = userController.createUser(userForm, bindingResult, model);
+      String result = userController.createUser(userForm, bindingResult, model, request);
 
       // 3. 検証
       assertThat(result, is("users/register"));
@@ -165,7 +163,7 @@ public class UserControllerUnitTest {
 
       // 実行
       Model model = new ExtendedModelMap();
-      String result = userController.createUser(form, bindingResult, model);
+      String result = userController.createUser(form, bindingResult, model, request);
 
       // 検証: 返り値がリダイレクト先と一致するか
       assertThat(result, is("redirect:users/register"));
@@ -191,11 +189,37 @@ public class UserControllerUnitTest {
       Model model = new ExtendedModelMap();
 
       // 3. 実行
-      String viewName = userController.createUser(userForm, bindingResult, model);
+      String viewName = userController.createUser(userForm, bindingResult, model, request);
 
       // 4. 検証
       assertThat(viewName, is("users/register"));
       verify(bindingResult).rejectValue("email", "null", "メールアドレスは既に存在します");
+    }
+    @Test
+    public void ユーザー登録が成功した場合は自動ログインされトップページにリダイレクトされる() {
+      UserForm userForm = new UserForm();
+      userForm.setName("テスト太郎");
+      userForm.setEmail("test@example.com");
+      userForm.setPassword("password123");
+      userForm.setPasswordConfirmation("password123");
+
+      when(bindingResult.hasErrors()).thenReturn(false);
+      when(userRepository.existsByEmail(anyString())).thenReturn(false);
+      
+      // 自動ログイン処理に必要なHttpServletRequestからHttpSessionを取得する動きをモック化
+      when(request.getSession(true)).thenReturn(session);
+
+      Model model = new ExtendedModelMap();
+
+      String result = userController.createUser(userForm, bindingResult, model, request);
+
+      assertThat(result, is("redirect:/"));
+      
+      // ユーザー保存メソッドが呼ばれたか
+      verify(userService, times(1)).createUserWithEncryptedPassword(any(UserEntity.class));
+      
+      // セッションに認証情報（SPRING_SECURITY_CONTEXT）がセットされたか検証
+      verify(session, times(1)).setAttribute(eq("SPRING_SECURITY_CONTEXT"), any());
     }
   }
 
