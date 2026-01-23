@@ -438,7 +438,7 @@ public class UserControllerUnitTest {
       when(bindingResult.hasErrors()).thenReturn(false);
 
       // 例外を投げる
-      doThrow(new RuntimeException("DBエラー等")).when(userService).updateUser(eq(userId), any(UserForm.class));
+      doThrow(new RuntimeException("DBエラー等")).when(userService).updateUser(eq(userId), any(UserForm.class), anyInt());
 
       String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
 

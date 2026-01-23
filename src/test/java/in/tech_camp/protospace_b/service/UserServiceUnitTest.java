@@ -2,9 +2,12 @@ package in.tech_camp.protospace_b.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.factory.UserFactory;
+import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 
 
@@ -70,5 +74,88 @@ public class UserServiceUnitTest {
 
       assertThat(result, is(mockUser));
       assertThat(result.getName(), is("TestName"));
+    }
+
+    @Nested
+    public class ユーザー編集{
+      @Test
+      public void ユーザー詳細データを取得できる(){
+        Integer userId = mockUser.getId();
+        when(userRepository.findById(userId)).thenReturn(mockUser);
+
+        UserEntity result = userService.findUser(userId);
+
+        assertThat(result, is(mockUser));
+        assertThat(result.getName(), is("TestName"));
+      }
+
+      @Test
+      public void 存在するユーザーのデータを表示できる(){
+        Integer userId = mockUser.getId();
+        when(userRepository.findById(userId)).thenReturn(mockUser);
+
+        UserForm result = userService.getUserForm(userId);
+
+        assertThat(result.getName(), is("TestName"));
+        assertThat(result.getProfile(), is("TestProfile"));
+        assertThat(result.getDepartment(), is("TestDepartment"));
+        assertThat(result.getPosition(), is("TestPosition"));
+      }
+
+      @Test
+      public void 存在しないユーザーのデータを表示しようとすると例外処理を投げる(){
+        Integer userId = mockUser.getId();
+        when(userRepository.findById(userId)).thenReturn(null);
+
+        assertThrows(RuntimeException.class, ()-> userService.getUserForm(userId));
+      }
+
+      @Test
+      public void ログインユーザーと更新対象のユーザーが同一の場合に正常にユーザー情報の更新ができる(){
+        Integer userId = mockUser.getId();
+        when(userRepository.findById(userId)).thenReturn(mockUser);
+
+        UserForm form = new UserForm();
+        form.setName("新しい名前");
+        form.setProfile("新しいプロフィール");
+        form.setDepartment("新しい部署");
+        form.setPosition("新しい役職");
+
+        // 1つ目のuseId：更新対象のユーザー
+        // 3つ目のuseId：currentUserId（ログインしているユーザー）
+        userService.updateUser(userId, form, userId);
+
+        assertThat(mockUser.getName(), is("新しい名前"));
+        assertThat(mockUser.getProfile(), is("新しいプロフィール"));
+        assertThat(mockUser.getDepartment(), is("新しい部署"));
+        assertThat(mockUser.getPosition(), is("新しい役職"));
+        verify(userRepository, times(1)).update(mockUser);
+      }
+
+      @Test
+      public void 存在しないユーザーの場合例外処理を投げる(){
+        Integer userId = mockUser.getId();
+        when(userRepository.findById(userId)).thenReturn(null);
+
+        assertThrows(RuntimeException.class, ()-> {
+          userService.updateUser(userId, new UserForm(), userId);
+        });
+
+        verify(userRepository, times(0)).update(any());
+      }
+
+      @Test
+      public void ログインユーザーと編集対象のユーザーが異なる場合例外処理を投げる(){
+        Integer userId = mockUser.getId();
+        Integer wrongId = 12;
+        when(userRepository.findById(userId)).thenReturn(mockUser);
+
+        assertThrows(RuntimeException.class, ()-> {
+          userService.updateUser(userId, new UserForm(), wrongId);
+        });
+
+        verify(userRepository, times(0)).update(any());
+      }
+
     }
 }

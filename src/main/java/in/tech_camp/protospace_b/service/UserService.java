@@ -70,8 +70,18 @@ public class UserService {
 	}
 
   // 入力情報で更新
-  public void updateUser(Integer id, UserForm form){
+  public void updateUser(Integer id, UserForm form, Integer currentUserId){
     UserEntity user = userRepository.findById(id);
+
+    // nullチェック
+    if(user == null){
+      throw new RuntimeException("編集対象が見つかりません");
+    }
+
+    // ログインユーザーと編集対象のユーザーが同一でない
+    if (!user.getId().equals(currentUserId)) {
+      throw new RuntimeException("編集権限がありません");
+    }
 
     user.setName(form.getName());
     user.setProfile(form.getProfile());

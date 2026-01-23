@@ -217,7 +217,7 @@ public class UserController {
     }
 
     try {
-      userService.updateUser(id, userForm);
+      userService.updateUser(id, userForm, currentUserId);
     } catch (Exception e) {
       System.out.println("エラー：" + e);
       return "redirect:/";
