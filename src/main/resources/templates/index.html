@@ -24,27 +24,52 @@
         </div>
 
         <div id="search-results">
-          <h3 class="prototype-keyword" th:if="${keyword != null && !keyword.isEmpty()}" th:text="|検索結果:${keyword}|"></h3>
-          <div class="prototype-index-card_wrapper" >
-            <div class="prototype-index-card" th:each="prototype : ${prototypes}">
-              <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
-                <img class="prototype-index-card_img"  th:src="@{${prototype.image}}">
+          <h3
+            class="prototype-keyword"
+            th:if="${keyword != null && !keyword.isEmpty()}"
+            th:text="|検索結果:${keyword}|"
+          ></h3>
+          <div class="prototype-index-card_wrapper">
+            <div
+              class="prototype-index-card"
+              th:each="prototype : ${prototypes}"
+            >
+              <a
+                th:href="@{/prototypes/{id}(id=${prototype.id})}"
+                id="prototype_link"
+              >
+                <img
+                  class="prototype-index-card_img"
+                  th:src="@{${prototype.image}}"
+                />
               </a>
               <div class="prototype-index-card_body">
-                <a class="prototype-index-card_title" th:href="@{/prototypes/{id}(id=${prototype.id})}" th:text="${prototype.name}"></a>
-                <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
+                <a
+                  class="prototype-index-card_title"
+                  th:href="@{/prototypes/{id}(id=${prototype.id})}"
+                  th:text="${prototype.name}"
+                ></a>
+                <p
+                  class="prototype-index-card_summary"
+                  th:text="${prototype.catchCopy}"
+                ></p>
                 <div class="prototype-index-user-and-like">
                   <div th:replace="~{common/like :: like}"></div>
-                  <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
+                  <a
+                    class="prototype-index-card_user"
+                    th:href="@{/users/{id}(id=${prototype.user.id})}"
+                    th:text="'by ' + ${prototype.user.name}"
+                  ></a>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div
+        th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
+      ></div>
     </main>
-
     <footer th:replace="~{common/footer :: footer}"></footer>
-    
   </body>
 </html>
