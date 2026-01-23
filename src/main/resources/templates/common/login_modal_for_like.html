@@ -1,0 +1,23 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      th:fragment="login_modal_for_like"
+      id="login-modal-for-like"
+      class="modal-overlay"
+      style="display: none"
+    >
+      <div class="modal-content">
+        <span id="modal-close-btn" class="modal-close-btn">&times;</span>
+        <h3>いいねするには会員登録またはログインが必要です</h3>
+        <p>プロトタイプに共感したら、ログインして応援しましょう！</p>
+        <div class="modal-buttons">
+          <a th:href="@{/users/register}" class="modal-register-btn"
+            >新規登録</a
+          >
+          <a th:href="@{/users/login}" class="modal-login-btn">ログイン</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
