@@ -257,5 +257,4 @@ public class PrototypeController {
     }
     return "index";
   }
-
 }

@@ -2,6 +2,7 @@ package in.tech_camp.protospace_b.form;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import jakarta.validation.constraints.Email;
@@ -44,4 +45,6 @@ public class UserForm {
     @NotBlank(message = "役職は空白にできません", groups = ValidationOrder.Position1.class)
     private String position;
 
+    //アイコン画像
+    private MultipartFile image;
 }

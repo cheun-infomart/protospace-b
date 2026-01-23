@@ -1,5 +1,7 @@
 package in.tech_camp.protospace_b.controller;
 
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,11 +24,13 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -108,6 +112,12 @@ public class UserControllerUnitTest {
 
   @Nested
   class 新規登録 {
+
+    // テスト用の空でない画像ファイルを作成
+    private MockMultipartFile createMockImage() {
+        return new MockMultipartFile("image", "test.png", "image/png", "test data".getBytes());
+    }
+
     @Test
     public void 新規登録機能にリクエストすると新規登録画面のビューファイルがレスポンスで返ってくる() {
       Model model = new ExtendedModelMap(); // Modelを準備
@@ -117,11 +127,11 @@ public class UserControllerUnitTest {
 
     @Test
     public void 新規登録に失敗したユーザーに対してエラーメッセージを表示させる() {
-      // 1. 準備
       UserForm userForm = new UserForm();
       // テスト用に値をセット
       userForm.setPassword("password123");
       userForm.setPasswordConfirmation("password123");
+      userForm.setImage(new MockMultipartFile("image", new byte[0]));
 
       Model model = new ExtendedModelMap();
 
@@ -136,19 +146,20 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    public void ユーザー登録中に例外が発生した場合は登録画面にリダイレクトされる() {
-      // 準備: バリデーションエラーがない状態を作る
-      UserForm form = new UserForm();
+    public void ユーザー登録中に例外が発生した場合は登録画面にリダイレクトされる() throws IOException {
 
-      // --- ここを追加 ---
+      UserForm form = new UserForm();
+      // テスト用に値をセット
       form.setPassword("password123");
       form.setPasswordConfirmation("password123");
+      form.setImage(createMockImage());
 
       // BindingResultの mock を用意し、hasErrors() が false を返すようにする
       when(bindingResult.hasErrors()).thenReturn(false);
 
-      // any() を使うことで引数の内容に関わらず例外を発生させます
-      doThrow(new RuntimeException("DBエラー等")).when(userService).createUserWithEncryptedPassword(any(UserEntity.class));
+      // サービスの呼び出し引数を修正（userEntityとMultipartFileの2引数に対応）
+      doThrow(new RuntimeException("DBエラー等"))
+        .when(userService).createUserWithEncryptedPassword(any(UserEntity.class), any(MultipartFile.class));
 
       // 実行
       Model model = new ExtendedModelMap();
@@ -167,6 +178,7 @@ public class UserControllerUnitTest {
       // パスワード一致チェックを通すために同じ値を設定
       userForm.setPassword("password");
       userForm.setPasswordConfirmation("password");
+      userForm.setImage(createMockImage());
 
       // 2. モックの設定
       when(userRepository.existsByEmail("already@exists.com")).thenReturn(true);
