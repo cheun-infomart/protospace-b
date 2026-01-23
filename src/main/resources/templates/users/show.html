@@ -14,16 +14,20 @@
         onclick="closeOnOverlayClick(event, 'confirmModal')"
       >
         <div class="modal-content" onclick="event.stopPropagation()">
+          <span class="modal-close-btn" onclick="closeModal('confirmModal')"
+            >&times;</span
+          >
           <h3>本当にアカウントを削除しますか？</h3>
           <p>
             これまでに投稿したプロトタイプやコメントなどの<br />
             <strong>データはすべて削除され復元できません。</strong>
           </p>
           <div class="modal-footer">
-            <button type="button" onclick="closeModal('confirmModal')" class="modal-close-btn">
-              戻る
-            </button>
-            <button type="button" th:onclick="|executeDelete(${user.id})|" class="modal-close-btn">
+            <button
+              type="button"
+              th:onclick="|executeDelete(${user.id})|"
+              class="modal-delete-execute-btn"
+            >
               削除する
             </button>
           </div>
@@ -37,7 +41,7 @@
             ご利用ありがとうございました。<br />
             アカウント削除が無事に行われました。
           </p>
-          <button type="button" onclick="goToIndex()" class="modal-close-btn">
+          <button type="button" onclick="goToIndex()" class="modal-toppage-btn">
             トップページへ
           </button>
         </div>
@@ -45,16 +49,24 @@
 
       <section class="user-show-info">
         <div class="user-show-info-head">
-          <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">名前さんの情報</h2>
+          <h2 class="user-show-h2" th:text="${user.name} + 'さんの情報'">
+            名前さんの情報
+          </h2>
           <div
             class="user-show-button-section"
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == user.id}"
           >
             <div class="prototype-show-button-section">
-              <a th:href="@{/users/{id}/edit(id=${user.id})}" class="prototype-show-btn"
+              <a
+                th:href="@{/users/{id}/edit(id=${user.id})}"
+                class="prototype-show-btn"
                 >編集する</a
               >
-              <button type="button" class="prototype-show-btn" onclick="openWithdrawModal()">
+              <button
+                type="button"
+                class="prototype-show-btn"
+                onclick="openWithdrawModal()"
+              >
                 アカウント削除
               </button>
             </div>
@@ -86,7 +98,10 @@
       </section>
 
       <section class="user-show-prototype-section">
-        <h2 class="user-show-prototype-name" th:text="${user.name} + 'さんのプロトタイプ'">
+        <h2
+          class="user-show-prototype-name"
+          th:text="${user.name} + 'さんのプロトタイプ'"
+        >
           名前さんのプロトタイプ
         </h2>
         <!-- ユーザー個人のPrototype一覧 -->
@@ -96,14 +111,23 @@
             <a
               id="prototype_link"
               th:href="@{/prototypes/{prototypeId}(prototypeId=${prototype.id})}"
-              ><img class="prototype-index-card_img" th:src="@{${prototype.image}}" alt="img"
+              ><img
+                class="prototype-index-card_img"
+                th:src="@{${prototype.image}}"
+                alt="img"
             /></a>
 
             <div class="prototype-index-card_body">
-              <h3 th:text="${prototype.name}" class="prototype-index-card_title">
+              <h3
+                th:text="${prototype.name}"
+                class="prototype-index-card_title"
+              >
                 プロトタイプタイトル
               </h3>
-              <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
+              <p
+                class="prototype-index-card_summary"
+                th:text="${prototype.catchCopy}"
+              ></p>
               <div class="prototype-index-user-and-like">
                 <div th:replace="~{common/like :: like}"></div>
 
@@ -118,6 +142,9 @@
           </div>
         </div>
       </section>
+      <div
+        th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
+      ></div>
     </main>
     <footer th:replace="~{common/footer :: footer}"></footer>
   </body>
