@@ -21,8 +21,12 @@ function executeDelete(targetId) {
     });
 }
 
+function goToIndex() {
+  window.location.href = "/";
+}
+
 // モーダル開く
-function openWithdrawModal() {
+function openEditModal() {
   const modal = document.getElementById("confirmModal");
   if (modal) {
     modal.style.display = "flex";
@@ -51,3 +55,9 @@ function closeOnOverlayClick(event, modalId) {
     closeModal(modalId);
   }
 }
+
+//画像ファイル名の表示
+document.getElementById('image').addEventListener('change', function(e) {
+  var fileName = e.target.files[0] ? e.target.files[0].name : '選択されていません';
+  document.getElementById('file-name').textContent = fileName;
+});

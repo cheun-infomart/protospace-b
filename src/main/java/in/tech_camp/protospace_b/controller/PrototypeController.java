@@ -154,7 +154,6 @@ public class PrototypeController {
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
-
       model.addAttribute("prototypeForm", prototypeForm);
       model.addAttribute("id", id);
       return "prototypes/edit";
@@ -171,7 +170,7 @@ public class PrototypeController {
     return "redirect:/prototypes/" + id;
   }
   
-  //プロトタイプ詳細画面への遷移
+  //プロトタイプ詳細画面
   @GetMapping("/prototypes/{prototypeId}")
   public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model, Authentication authentication) {
       PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
@@ -197,6 +196,10 @@ public class PrototypeController {
     }
 
       model.addAttribute("prototype", prototype);
+
+      PrototypeForm form = prototypeService.getPrototypeForm(prototypeId);
+      model.addAttribute("prototypeForm", form);
+      
       model.addAttribute("commentForm", new CommentForm());
       model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";

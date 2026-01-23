@@ -6,8 +6,81 @@
   <body>
     <header th:replace="~{common/header :: header}"></header>
 
-    <!--詳細エリア-->
+    
     <div class="prototype-show-details">
+      <!--モーダルエリア-->
+      <div
+        id="confirmModal"
+        class="prototype-edit-modal-overlay"
+        style="display: none"
+        onclick="closeOnOverlayClick(event, 'confirmModal')"
+      >
+        <div class="prototype-edit-modal-content" onclick="event.stopPropagation()">
+          <div class="modal-title">
+            <span class="material-symbols-outlined">edit</span>
+            <h2 class="title-h2">プロトタイプ編集</h2>
+          </div>
+          <div class="modal-form">
+            <form
+              th:action="@{/prototypes/{id}/update(id=${id})}"
+              th:method="post"
+              th:object="${prototypeForm}"
+              enctype="multipart/form-data"
+            >
+              <div class="modal-field">
+                <label th:for="name">プロトタイプの名称</label>
+                <br />
+                <input type="text" th:field="*{name}" id="name" />
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="new-error"></p>
+              </div>
+
+              <div class="modal-field">
+                <label th:for="catchCopy">キャッチコピー</label>
+                <br />
+                <textarea class="user-textarea" th:field="*{catchCopy}" id="catchCopy"></textarea>
+                <p th:if="${#fields.hasErrors('catchCopy')}" th:errors="*{catchCopy}" class="new-error"></p>
+              </div>
+
+              <div class="modal-field">
+                <label th:for="concept">コンセプト</label>
+                <br />
+                <textarea class="user-textarea" th:field="*{concept}" id="concept"></textarea>
+                <p th:if="${#fields.hasErrors('concept')}" th:errors="*{concept}" class="new-error"></p>
+              </div>
+
+              <div class="modal-actions">
+                <label class="file_button">
+                  画像ファイルを選択
+                  <input type="file" th:field="*{image}" id="image" class="file_input" />
+                </label>
+                <p id="file-name" style="margin-left: 10px; font-size: 0.8em; color: #666;">選択されていません</span>
+                <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
+              </div>
+
+              <div class="modal-actions">
+                <input type="submit" value="保存する" class="modal-btn" />
+              </div>
+            </form>
+          </div>
+        </div>
+ 
+      </div>
+
+      <div id="successModal" class="modal-overlay" style="display: none">
+        <div class="modal-content">
+          <h3>アカウント削除完了</h3>
+          <p>
+            ご利用ありがとうございました。<br />
+            アカウント削除が無事に行われました。
+          </p>
+          <button type="button" onclick="goToIndex()" class="modal-close-btn">
+            トップページへ
+          </button>
+        </div>
+      </div>
+
+
+      <!--詳細エリア-->
       <div class="prototype-show-container">
         <div class="prototype-show-header">
           <h3 class="title-h2" th:text="${prototype.name}"></h3>
@@ -25,10 +98,10 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
           >
             <div class="prototype-show-button-section">
-              <a
-                th:href="@{/prototypes/{id}/edit(id=${prototype.id})}"
+              <button
                 class="prototype-show-btn"
-                >編集する</a
+                onclick="openEditModal()"
+                >編集する</button
               >
               <form
                 th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
@@ -47,7 +120,7 @@
         <div class="prototype-show-image">
           <img th:src="@{${prototype.image}}" alt="メッセージ画像" />
         </div>
-      </div>
+      
 
       <div class="prototype-show-description">
         <div class="prototype-show-info-group">
@@ -115,6 +188,7 @@
         </div>
       </div>
     </div>
+  </div>
 
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
