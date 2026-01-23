@@ -6,6 +6,16 @@
         <div class="header-logo">
           <a th:href="@{/}"><img th:src="@{/images/Logo.png}" alt="Logo" /></a>
         </div>
+      
+        <!--検索フォーム-->
+        <div class="header-form" id="header-form">
+          <form th:action="@{/prototypes/search}" method="get" id="searchForm">
+            <input type="text" name="keyword" placeholder="投稿を検索する" class="search-input" id="search-input">
+            <button type="submit" class="search-btn">
+               <span class="material-icons-outlined">search</span>
+            </button>
+          </form>          
+        </div>
 
         <!--検索フォーム-->
         <div class="header-form" id="header-form">
@@ -37,5 +47,6 @@
         </div>
       </nav>
     </header>
+    
   </body>
 </html>

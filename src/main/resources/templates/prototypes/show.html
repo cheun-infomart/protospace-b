@@ -52,7 +52,12 @@
         <div class="prototype-show-comment-section">
           <div th:if="${#authorization.expression('isAuthenticated()')}">
             <div id="error-container">
-              <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
+              <div
+                th:if="${errorMessages}"
+                th:each="error : ${errorMessages}"
+                class="new-error"
+                id="new-error"
+              >
                 <span th:text="${error.defaultMessage}"></span>
               </div>
             </div>
@@ -91,7 +96,9 @@
         </div>
       </div>
     </div>
-
+    <div
+      th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
+    ></div>
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
   </body>
