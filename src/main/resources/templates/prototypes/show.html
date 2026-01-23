@@ -63,7 +63,6 @@
             </form>
           </div>
         </div>
- 
       </div>
 
       <div id="successModal" class="modal-overlay" style="display: none">
@@ -122,74 +121,82 @@
         </div>
       
 
-      <div class="prototype-show-description">
-        <div class="prototype-show-info-group">
-          <h3 class="prototype-show-info-label">キャッチコピー</h3>
-          <p
-            class="prototype-show-info-text"
-            th:text="${prototype.catchCopy}"
-          ></p>
-        </div>
-        <div class="prototype-show-info-group">
-          <h3 class="prototype-show-info-label">コンセプト</h3>
-          <p
-            class="prototype-show-info-text"
-            th:text="${prototype.concept}"
-          ></p>
-        </div>
+        <div class="prototype-show-description">
+          <div class="prototype-show-info-group">
+            <h3 class="prototype-show-info-label">キャッチコピー</h3>
+            <p
+              class="prototype-show-info-text"
+              th:text="${prototype.catchCopy}"
+            ></p>
+          </div>
+          <div class="prototype-show-info-group">
+            <h3 class="prototype-show-info-label">コンセプト</h3>
+            <p
+              class="prototype-show-info-text"
+              th:text="${prototype.concept}"
+            ></p>
+          </div>
 
-        <!--コメントエリア-->
-        <div class="prototype-show-comment-section">
-          <div th:if="${#authorization.expression('isAuthenticated()')}">
-            <div id="error-container">
-              <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
-                <span th:text="${error.defaultMessage}"></span>
+          <!--コメントエリア-->
+          <div class="prototype-show-comment-section">
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+              <div id="error-container">
+                <div
+                  th:if="${errorMessages}"
+                  th:each="error : ${errorMessages}"
+                  class="new-error"
+                  id="new-error"
+                >
+                  <span th:text="${error.defaultMessage}"></span>
+                </div>
               </div>
+
+              <form
+                th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
+                method="post"
+                th:object="${commentForm}"
+                class="prototype-show-comment-form"
+                id="comment-form"
+              >
+                <label for="comment" class="prototype-show-comment-label"
+                  >コメント</label
+                >
+                <input
+                  class="prototype-show-comment-input"
+                  th:field="*{text}"
+                  type="text"
+                  id="comment-text"
+                />
+                <input class="com-btn" type="submit" value="送信する" />
+              </form>
+            </div>
+            <div th:if="${#authorization.expression('!isAuthenticated()')}">
+              <strong>
+                <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
+              </strong>
             </div>
 
-            <form
-              th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
-              method="post"
-              th:object="${commentForm}"
-              class="prototype-show-comment-form"
-              id="comment-form"
-            >
-              <label for="comment" class="prototype-show-comment-label"
-                >コメント</label
-              >
-              <input
-                class="prototype-show-comment-input"
-                th:field="*{text}"
-                type="text"
-                id="comment-text"
-              />
-              <input class="com-btn" type="submit" value="送信する" />
-            </form>
+            <ul class="prototype-show-comments">
+              <li th:each="comment:${comments}" class="prototype-show-comment">
+                <span
+                  class="prototype-show-comment-text"
+                  th:text="${comment.text}"
+                ></span>
+                <a
+                  th:href="@{/users/{userId}(userId=${comment.user.id})}"
+                  th:text="${comment.user.name}"
+                  class="prototype-show-comment-user"
+                ></a>
+              </li>
+            </ul>
           </div>
-          <div th:if="${#authorization.expression('!isAuthenticated()')}">
-            <strong>
-              <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
-            </strong>
-          </div>
-
-          <ul class="prototype-show-comments">
-            <li th:each="comment:${comments}" class="prototype-show-comment">
-              <span
-                class="prototype-show-comment-text"
-                th:text="${comment.text}"
-              ></span>
-              <a
-                th:href="@{/users/{userId}(userId=${comment.user.id})}"
-                th:text="${comment.user.name}"
-                class="prototype-show-comment-user"
-              ></a>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
-  </div>
 
+    <div
+      th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
+    ></div>
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
   </body>

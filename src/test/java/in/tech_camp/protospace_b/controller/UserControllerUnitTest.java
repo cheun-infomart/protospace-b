@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,6 +35,7 @@ import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import in.tech_camp.protospace_b.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,6 +63,12 @@ public class UserControllerUnitTest {
   @Mock
   private CustomUserDetails userDetails;
 
+  @Mock
+  private HttpSession session;
+
+  @Mock
+  private Model model;
+
   @InjectMocks
   private UserController userController;
 
@@ -71,6 +80,34 @@ public class UserControllerUnitTest {
   }
 
   // 新規登録
+
+  @Nested
+  class ログインセッション {
+    @Test
+    void Refererがいると以前のページを保存() {
+      String validReferer = "http://localhost:8080/prototypes/1";
+      when(request.getHeader("Referer")).thenReturn(validReferer);
+      String viewName = userController.showLogin(null, request, session, model);
+      assertEquals("users/login", viewName);
+      verify(session, times(1)).setAttribute("prevPage", validReferer);
+    }
+
+    @Test
+    void Refererがログイン画面や新規登録画面では保存されない() {
+      String invalidReferer = "http://localhost:8080/users/login";
+      when(request.getHeader("Referer")).thenReturn(invalidReferer);
+      userController.showLogin(null, request, session, model);
+      verify(session, never()).setAttribute(anyString(), any());
+    }
+
+    @Test
+    void エラーが存在するとモデルにエラーが入る() {
+      String errorParam = "true";
+      userController.showLogin(errorParam, request, session, model);
+      verify(model, times(1)).addAttribute(eq("loginError"), anyString());
+    }
+  }
+
   @Nested
   class 新規登録 {
     @Test
@@ -155,7 +192,8 @@ public class UserControllerUnitTest {
     // ログイン
     @Test
     public void ログイン機能にリクエストするとログイン画面のビューファイルがレスポンスで返ってくる() {
-      String result = userController.showLogin();
+      String error = null;
+      String result = userController.showLogin(error, request, session, model);
 
       assertThat(result, is("users/login"));
     }
@@ -166,15 +204,8 @@ public class UserControllerUnitTest {
       Model model = new ExtendedModelMap();
       // URLパラメータ ?error= の値を想定したダミー文字列
       String errorParam = "true";
-
-      // メソッドを呼び出す
-      String result = userController.showLoginWithError(errorParam, model);
-
-      // 返り値のビュー名が正しいか確認
-      assertThat(result, is("users/login"));
-
-      // Modelの中に "loginError" という名前でメッセージが格納されているか確認
-      assertThat(model.getAttribute("loginError"), is("メールアドレスまたはパスワードが無効です。"));
+      userController.showLogin(errorParam, request, session, model);
+      verify(model, times(1)).addAttribute(eq("loginError"), anyString());
     }
   }
 
@@ -197,32 +228,30 @@ public class UserControllerUnitTest {
   class ユーザー削除 {
     @Test
     void ユーザー削除成功時successと200変換() {
-
       when(authentication.isAuthenticated()).thenReturn(true);
       when(authentication.getPrincipal()).thenReturn(userDetails);
-
       ResponseEntity<String> result = userController.deleteUser(mockUser.getId(), authentication, request, response);
-
       assertEquals(HttpStatus.OK, result.getStatusCode());
       assertEquals("success", result.getBody());
-
       verify(userService, times(1)).deleteUser(mockUser.getId(), userDetails);
     }
 
     @Test
+    void エラーがnullならモデルにエラーがない() {
+      userController.showLogin(null, request, session, model);
+      verify(model, never()).addAttribute(eq("loginError"), anyString());
+    }
+
+    @Test
     void ログインしてないと401() {
-
       Authentication unauthenticated = null;
-
       ResponseEntity<String> result = userController.deleteUser(mockUser.getId(), unauthenticated, request, response);
-
       assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
       verify(userService, never()).deleteUser(anyInt(), any());
     }
 
     @Test
     void 削除処理中例外500() {
-
       when(authentication.isAuthenticated()).thenReturn(true);
       when(authentication.getPrincipal()).thenReturn(userDetails);
       doThrow(new RuntimeException("DB 削除 エラー")).when(userService).deleteUser(mockUser.getId(), userDetails);
