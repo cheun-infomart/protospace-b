@@ -15,4 +15,7 @@ public class UserEntity {
   private String password;
   private List<PrototypeEntity> prototypes;
   private List<CommentEntity> comments;
+
+  private String securityQuestion;
+  private String securityAnswer;
 }

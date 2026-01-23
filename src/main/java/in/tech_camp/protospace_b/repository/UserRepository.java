@@ -14,16 +14,19 @@ import in.tech_camp.protospace_b.entity.UserEntity;
 @Mapper
 public interface UserRepository {
 
-  //ビューからデータ取得→エンティティに入れる
-  @Insert("INSERT INTO users (name, email, password, profile, department, position) VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position})")
+  // ビューからデータ取得→エンティティに入れる
+  @Insert("""
+      INSERT INTO users (name, email, password, profile, department, position, security_question, security_answer)
+      VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position}, #{securityQuestion}, #{securityAnswer})
+      """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insert(UserEntity user);
 
-  //すでに使用されているEmailを検索
+  // すでに使用されているEmailを検索
   @Select("SELECT EXISTS(SELECT 1 FROM users WHERE email = #{email})")
   boolean existsByEmail(String email);
-  
-  //データベースから特定のメールアドレスを持つユーザーを探してくる
+
+  // データベースから特定のメールアドレスを持つユーザーを探してくる
   @Select("SELECT * FROM users WHERE id = #{id}")
   UserEntity findById(Integer id);
 
@@ -34,12 +37,10 @@ public interface UserRepository {
   UserEntity findByEmail(String email);
 
   @Select("SELECT * FROM users WHERE id = #{id}")
-    @Results(value = {
-        @Result(property = "id", column = "id", id = true),
-        @Result(property = "prototypes", column = "id", 
-                many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))
-    })
-    UserEntity findByIdWithProto(Integer id);
+  @Results(value = {@Result(property = "id", column = "id", id = true),
+      @Result(property = "prototypes", column = "id", many = @Many(
+          select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))})
+  UserEntity findByIdWithProto(Integer id);
 
   @Delete("DELETE FROM users WHERE id = #{id}")
   void deleteById(Integer id);

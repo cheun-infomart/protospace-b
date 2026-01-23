@@ -44,30 +44,37 @@ public class UserController {
   @GetMapping("/users/register")
   public String showRegister(Model model) {
     model.addAttribute("userForm", new UserForm());
+    model.addAttribute("questions", UserForm.SECURITY_QUESTIONS);
     return "users/register";
   }
 
   // 新規登録バリデーションチェック
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") @Validated({ ValidationOrder.EmailSequence.class,
-      ValidationOrder.PasswordSequence.class,
-      ValidationOrder.NameSequence.class,
-      ValidationOrder.ProfileSequence.class,
-      ValidationOrder.DepartmentSequence.class,
-      ValidationOrder.PositionSequence.class
-  }) UserForm userForm,
-      BindingResult result,
-      Model model) {
+  public String createUser(
+      @ModelAttribute("userForm") @Validated({ValidationOrder.EmailSequence.class,
+          ValidationOrder.PasswordSequence.class, ValidationOrder.NameSequence.class,
+          ValidationOrder.ProfileSequence.class, ValidationOrder.DepartmentSequence.class,
+          ValidationOrder.PositionSequence.class}) UserForm userForm,
+      BindingResult result, Model model) {
+
+
     userForm.validatePasswordConfirmation(result);
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
     }
 
     if (result.hasErrors()) {
-      List<String> errorMessages = result.getAllErrors().stream()
-          .map(DefaultMessageSourceResolvable::getDefaultMessage)
-          .collect(Collectors.toList());
+      boolean hasStep1Error = result.hasFieldErrors("email") || result.hasFieldErrors("password")
+          || result.hasFieldErrors("name") || result.hasFieldErrors("profile")
+          || result.hasFieldErrors("department") || result.hasFieldErrors("position");
 
+      int activeStep = hasStep1Error ? 1 : 2;
+
+      List<String> errorMessages = result.getAllErrors().stream()
+          .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+
+      model.addAttribute("activeStep", activeStep);
+      model.addAttribute("questions", UserForm.SECURITY_QUESTIONS);
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("userForm", userForm);
       return "users/register";
@@ -94,9 +101,8 @@ public class UserController {
 
   // 途中でログイン
   @GetMapping("/users/login")
-  public String showLogin(@RequestParam(value = "error", required = false) String error, HttpServletRequest request,
-      HttpSession session,
-      Model model) {
+  public String showLogin(@RequestParam(value = "error", required = false) String error,
+      HttpServletRequest request, HttpSession session, Model model) {
 
     // headerにReferer:URLのデータ（以前のセッションURL）を持ってくる
     String referrer = request.getHeader("Referer");
@@ -117,18 +123,15 @@ public class UserController {
     if (ref == null)
       return false;
 
-    return !ref.contains("/users/login") &&
-        !ref.contains("/users/register") &&
-        !ref.contains("/js/") &&
-        !ref.contains("/css/") &&
-        !ref.contains("/images/") &&
-        !ref.contains(".js") &&
-        !ref.contains(".css");
+    return !ref.contains("/users/login") && !ref.contains("/users/register")
+        && !ref.contains("/js/") && !ref.contains("/css/") && !ref.contains("/images/")
+        && !ref.contains(".js") && !ref.contains(".css");
   }
 
   // 詳細ページ
   @GetMapping("/users/{id}")
-  public String showUserDetail(@PathVariable("id") Integer id, Model model, Authentication authentication) {
+  public String showUserDetail(@PathVariable("id") Integer id, Model model,
+      Authentication authentication) {
 
     UserEntity user = userService.findUserDetail(id);
     if (user != null) {
@@ -136,9 +139,11 @@ public class UserController {
 
       // 1. ログイン中のユーザーIDを取得
       Integer currentUserId = null;
-      if (authentication != null
-          && authentication.getPrincipal() instanceof in.tech_camp.protospace_b.config.CustomUserDetails) {
-        currentUserId = ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal()).getId();
+      if (authentication != null && authentication
+          .getPrincipal() instanceof in.tech_camp.protospace_b.config.CustomUserDetails) {
+        currentUserId =
+            ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal())
+                .getId();
       }
 
       // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
@@ -163,9 +168,7 @@ public class UserController {
   @PostMapping("/users/{id}/delete")
   @ResponseBody
   public ResponseEntity<String> deleteUser(@PathVariable("id") Integer id,
-      Authentication authentication,
-      HttpServletRequest request,
-      HttpServletResponse response) {
+      Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
     // ログインしていない場合はログイン画面にリダイレクト
     if (authentication == null || !authentication.isAuthenticated()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
