@@ -45,6 +45,7 @@ public interface UserRepository {
   // ユーザー情報更新
   @Update("UPDATE users SET name=#{name}, profile=#{profile}, department=#{department}, position=#{position} WHERE id=#{id}")
   void update(UserEntity user);
+  
   @Delete("DELETE FROM users WHERE id = #{id}")
   void deleteById(Integer id);
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam; // 追加
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -149,7 +150,7 @@ public class UserController {
       UserForm form = userService.getUserForm(id);
       Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
-      if(!user.getId().equals(currentUserId)){
+      if(user == null || !user.getId().equals(currentUserId)){
         redirectAttributes.addFlashAttribute("errorMessage", "編集権限がありません");
         return "redirect:/";
       }
@@ -175,7 +176,17 @@ public class UserController {
                                  })UserForm userForm,
                                   BindingResult result,
                                  @PathVariable("id") Integer id,
+                                 Authentication authentication,
                                   Model model) {
+
+    UserEntity user = userService.findUser(id);
+    Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+
+    // ユーザーがnullの場合、存在しない場合を考慮
+    if(user == null || !user.getId().equals(currentUserId)){
+      return "redirect:/";
+    }
+
     if(result.hasErrors()){
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
@@ -190,7 +201,7 @@ public class UserController {
       userService.updateUser(id, userForm);
     } catch (Exception e) {
       System.out.println("エラー：" + e);
-      return "redirect:/users/" + id + "/edit";
+      return "redirect:/";
     }
     return "redirect:/users/" + id;
   } 

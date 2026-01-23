@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doThrow;
@@ -25,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -59,6 +61,9 @@ public class UserControllerUnitTest {
 
   @Mock
   private CustomUserDetails userDetails;
+
+  @Mock
+  private RedirectAttributes redirectAttributes;
 
   @InjectMocks
   private UserController userController;
@@ -229,6 +234,189 @@ public class UserControllerUnitTest {
       ResponseEntity<String> result = userController.deleteUser(mockUser.getId(), authentication, request, response);
       assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
       assertTrue(result.getBody().contains("DB 削除 エラー"));
+    }
+  }
+
+  @Nested
+  public class ユーザー情報編集 {
+    @Test
+    public void ログイン者が自分のユーザー情報編集機能にリクエストするとユーザー編集画面のビューファイルがレスポンスで返ってくる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // フォーム表示用データ取得
+      when(userService.getUserForm(userId)).thenReturn(userForm);
+      // ログインユーザー情報取得（自分のID）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      Model model = new ExtendedModelMap();
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("users/edit"));
+      assertThat(model.getAttribute("userForm"), is(userForm));
+    }
+
+    @Test
+    public void ログイン者が存在する自分以外のユーザー情報編集機能にリクエストするとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // フォーム表示用データ取得
+      when(userService.getUserForm(userId)).thenReturn(userForm);
+      // ログインユーザー情報取得（IDを3に設定）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(3);
+
+      Model model = new ExtendedModelMap();
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ログイン者が存在しないユーザーのユーザー情報編集機能にリクエストするとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+
+      // ユーザー情報取得（ユーザーはnull）
+      when(userService.findUser(userId)).thenReturn(null);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      Model model = new ExtendedModelMap();
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void 編集画面遷移時に例外が発生した場合はトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+
+      // 例外を投げる
+      when(userService.findUser(userId)).thenThrow(new RuntimeException("DBエラー等"));
+
+      Model model = new ExtendedModelMap();
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+      verify(redirectAttributes).addFlashAttribute("errorMessage", "DBエラー等");
+    }
+    
+  }
+
+  @Nested
+  public class ユーザー情報更新{
+    @Test
+    public void ログイン者が自分のユーザー情報に不備がない状態で更新すると問題なく実行される(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+      Model model = new ExtendedModelMap();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+      when(bindingResult.hasErrors()).thenReturn(false);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/users/" + userId));
+    }
+
+    @Test
+    public void ログイン者が自分のユーザー情報に不備がある状態で更新するとユーザー情報編集画面が再表示される(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+      Model model = new ExtendedModelMap();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      when(bindingResult.hasErrors()).thenReturn(true);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("users/edit"));
+    }
+
+    @Test
+    public void ログイン者が存在する自分以外のユーザー情報を更新するとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+      Model model = new ExtendedModelMap();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得（IDを3に設定）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(3);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ログイン者が存在しないユーザー情報を更新するとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+      Model model = new ExtendedModelMap();
+
+      // ユーザー情報取得（ユーザーはnull）
+      when(userService.findUser(userId)).thenReturn(null);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ユーザー更新中に例外が発生した場合はトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+      Model model = new ExtendedModelMap();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      // バリデーション通過
+      when(bindingResult.hasErrors()).thenReturn(false);
+
+      // 例外を投げる
+      doThrow(new RuntimeException("DBエラー等")).when(userService).updateUser(eq(userId), any(UserForm.class));
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
     }
   }
 }
