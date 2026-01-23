@@ -661,14 +661,6 @@ footer {
   align-items: center;
 }
 
-/* .prototype-show-comment::before {
-  content: ""; /* 空の要素を作る */
-  width: 6px; /* 四角の幅 */
-  height: 6px; /* 四角の高さ */
-  background-color: #3b4043; /* 四角の色 */
-  flex-shrink: 0; /* 四角が潰れないように固定 */
-} */
-
 .prototype-show-comment-text {
   font-weight: 400;
   font-size: 16px;

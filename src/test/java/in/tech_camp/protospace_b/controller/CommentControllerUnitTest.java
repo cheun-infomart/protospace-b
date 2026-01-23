@@ -70,6 +70,7 @@ public class CommentControllerUnitTest {
         Integer prototypeId = 1;
         Integer userId = 10;
         String userName = "テストネーム";
+        String userImage = "/uploads/test_icon.png"; 
 
         CommentForm form = CommentFormFactory.createComment(); 
         form.setText("テストコメント");
@@ -78,6 +79,7 @@ public class CommentControllerUnitTest {
         UserEntity user = new UserEntity();
         user.setId(userId);
         user.setName(userName);
+        user.setImage(userImage);
         when(currentUser.getUser()).thenReturn(user);
 
         PrototypeEntity prototype = new PrototypeEntity();
@@ -91,6 +93,7 @@ public class CommentControllerUnitTest {
 
         assertThat(response.getBody(), containsString(form.getText()));
         assertThat(response.getBody(), containsString(userName));
+        assertThat(response.getBody(), containsString(userImage));
       }
     }
 
