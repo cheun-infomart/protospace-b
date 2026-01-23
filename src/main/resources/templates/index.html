@@ -35,27 +35,12 @@
                 <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
                 <div class="prototype-index-user-and-like">
                   <div th:replace="~{common/like :: like}"></div>
-                  <a class="prototype-index-card_user" th:href="@{/users/{id}(id=${prototype.user.id})}" th:text="'by ' + ${prototype.user.name}"></a>
-                </div>
-              </div>
-        <div class="prototype-index-card_wrapper">
-          <div class="prototype-index-card" th:each="prototype : ${prototypes}">
-            <a th:href="@{/prototypes/{id}(id=${prototype.id})}" id="prototype_link">
-              <img class="prototype-index-card_img" th:src="@{${prototype.image}}" />
-            </a>
-
-            <div class="prototype-index-card_body">
-              <a
-                class="prototype-index-card_title"
-                th:href="@{/prototypes/{id}(id=${prototype.id})}"
-                th:text="${prototype.name}"
-              ></a>
-              <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
-
-              <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-index-card_user">
+                  <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-index-card_user">
                 <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
                 <span th:text="|by ${prototype.user.name}|">by 名前</span>
-              </a>
+                </div>
+                
+              </div>
             </div>
           </div>
         </div>

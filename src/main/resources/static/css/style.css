@@ -253,7 +253,6 @@ main {
   text-decoration: underline;
 }
 
-<<<<<<< Updated upstream
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -309,14 +308,6 @@ main {
 
 .modal-close-btn:hover {
   background-color: #555;
-=======
-.user-icon-mini {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 8px;
->>>>>>> Stashed changes
 }
 
 .user-icon-mini {
@@ -670,13 +661,13 @@ footer {
   align-items: center;
 }
 
-.prototype-show-comment::before {
+/* .prototype-show-comment::before {
   content: ""; /* 空の要素を作る */
   width: 6px; /* 四角の幅 */
   height: 6px; /* 四角の高さ */
   background-color: #3b4043; /* 四角の色 */
   flex-shrink: 0; /* 四角が潰れないように固定 */
-}
+} */
 
 .prototype-show-comment-text {
   font-weight: 400;

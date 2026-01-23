@@ -10,13 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // 追加
+import org.springframework.validation.BindingResult; 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.RequestParam; 
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
@@ -29,8 +29,7 @@ import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor; // 追加
-import org.springframework.security.core.Authentication;
+import lombok.AllArgsConstructor; 
 
 
 @Controller
@@ -128,7 +127,7 @@ public class UserController {
 
         // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
         // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
-        for (in.tech_camp.protospace_b.entity.PrototypeEntity prototype : prototypes) {
+        for (PrototypeEntity prototype : prototypes) {
             prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
             
             if (currentUserId != null) {

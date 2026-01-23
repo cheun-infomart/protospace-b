@@ -12,12 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-<<<<<<< Updated upstream
+import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
-=======
-import in.tech_camp.protospace_b.ImageUrl;
->>>>>>> Stashed changes
-import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import lombok.AllArgsConstructor;

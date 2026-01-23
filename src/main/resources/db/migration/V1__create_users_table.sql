@@ -5,7 +5,6 @@ CREATE TABLE users (
    profile VARCHAR(256)    NOT NULL,
    department VARCHAR(128)    NOT NULL,
    position VARCHAR(128)    NOT NULL,
-   image VARCHAR(512)    NOT NULL,
    password VARCHAR(512)    NOT NULL,
    PRIMARY KEY (id)
 );

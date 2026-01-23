@@ -11,22 +11,15 @@
       <div class="prototype-show-container">
         <div class="prototype-show-header">
           <h3 class="title-h2" th:text="${prototype.name}"></h3>
-          <<<<<<< Updated upstream
+
           <div class="prototype-show-user-and-like">
             <div th:replace="~{common/like :: like}"></div>
-            <a
-              th:href="@{/users/{id}(id=${prototype.user.id})}"
-              class="prototype-show-author"
-              th:text="'by ' + ${prototype.user.name}"
-            ></a>
+            <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-show-author">
+              <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
+              <span th:text="|by ${prototype.user.name}|">by 名前</span>
+            </a>
           </div>
 
-          =======
-          <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-show-author">
-            <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
-            <span th:text="|by ${prototype.user.name}|">by 名前</span>
-          </a>
-          >>>>>>> Stashed changes
           <!--ログイン状態かつ自分の投稿かでボタンの表示変更-->
           <div
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
@@ -84,6 +77,9 @@
 
           <ul class="prototype-show-comments">
             <li th:each="comment:${comments}" class="prototype-show-comment">
+              <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
+                <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
+              </a>
               <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
               <a
                 th:href="@{/users/{userId}(userId=${comment.user.id})}"

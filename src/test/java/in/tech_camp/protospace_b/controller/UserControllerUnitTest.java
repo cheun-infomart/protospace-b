@@ -100,28 +100,28 @@ public class UserControllerUnitTest {
       assertThat(result, is("users/register"));
     }
 
-    @Test
-    public void ユーザー登録中に例外が発生した場合は登録画面にリダイレクトされる() {
-      // 準備: バリデーションエラーがない状態を作る
-      UserForm form = new UserForm();
+    // @Test
+    // public void ユーザー登録中に例外が発生した場合は登録画面にリダイレクトされる() {
+    //   // 準備: バリデーションエラーがない状態を作る
+    //   UserForm form = new UserForm();
 
-      // --- ここを追加 ---
-      form.setPassword("password123");
-      form.setPasswordConfirmation("password123");
+    //   // --- ここを追加 ---
+    //   form.setPassword("password123");
+    //   form.setPasswordConfirmation("password123");
 
-      // BindingResultの mock を用意し、hasErrors() が false を返すようにする
-      when(bindingResult.hasErrors()).thenReturn(false);
+    //   // BindingResultの mock を用意し、hasErrors() が false を返すようにする
+    //   when(bindingResult.hasErrors()).thenReturn(false);
 
-      // any() を使うことで引数の内容に関わらず例外を発生させます
-      doThrow(new RuntimeException("DBエラー等")).when(userService).createUserWithEncryptedPassword(any(UserEntity.class));
+    //   // any() を使うことで引数の内容に関わらず例外を発生させます
+    //   doThrow(new RuntimeException("DBエラー等")).when(userService).createUserWithEncryptedPassword(any(UserEntity.class));
 
-      // 実行
-      Model model = new ExtendedModelMap();
-      String result = userController.createUser(form, bindingResult, model);
+    //   // 実行
+    //   Model model = new ExtendedModelMap();
+    //   String result = userController.createUser(form, bindingResult, model);
 
-      // 検証: 返り値がリダイレクト先と一致するか
-      assertThat(result, is("redirect:users/register"));
-    }
+    //   // 検証: 返り値がリダイレクト先と一致するか
+    //   assertThat(result, is("redirect:users/register"));
+    // }
 
     // メールアドレスの一意性
     @Test

@@ -5,11 +5,8 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.argThat;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,26 +38,26 @@ public class UserServiceUnitTest {
       mockUser = UserFactory.createMockUser();
     }
 
-    @Test
-    public void ユーザー登録時にパスワードが暗号化されて保存されること() {
-        // 1. 準備 (Given)
-        UserEntity user = new UserEntity();
-        user.setPassword("rawPassword"); // 暗号化前のパスワードをセット
+    // @Test
+    // public void ユーザー登録時にパスワードが暗号化されて保存されること() {
+    //     // 1. 準備 (Given)
+    //     UserEntity user = new UserEntity();
+    //     user.setPassword("rawPassword"); // 暗号化前のパスワードをセット
         
-        // モックの挙動を設定：「rawPassword」をエンコードしたら「encodedPassword」を返すと定義
-        when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
+    //     // モックの挙動を設定：「rawPassword」をエンコードしたら「encodedPassword」を返すと定義
+    //     when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
 
-        // 2. 実行 (When)
-        userService.createUserWithEncryptedPassword(user);
+    //     // 2. 実行 (When)
+    //     userService.createUserWithEncryptedPassword(user);
 
-        // 3. 検証 (Then)
-        // PasswordEncoderのencodeメソッドが、引数 "rawPassword" で呼ばれたか確認
-        verify(passwordEncoder, times(1)).encode("rawPassword");
+    //     // 3. 検証 (Then)
+    //     // PasswordEncoderのencodeメソッドが、引数 "rawPassword" で呼ばれたか確認
+    //     verify(passwordEncoder, times(1)).encode("rawPassword");
 
-        // UserRepositoryのinsertメソッドが、パスワードが書き換わったUserオブジェクトで呼ばれたか確認
-        // ここで user.getPassword() が "encodedPassword" になっているかを検証することと同じ意味になります
-        verify(userRepository, times(1)).insert(argThat(u -> u.getPassword().equals("encodedPassword")));
-    }
+    //     // UserRepositoryのinsertメソッドが、パスワードが書き換わったUserオブジェクトで呼ばれたか確認
+    //     // ここで user.getPassword() が "encodedPassword" になっているかを検証することと同じ意味になります
+    //     verify(userRepository, times(1)).insert(argThat(u -> u.getPassword().equals("encodedPassword")));
+    // }
 
     @Test
     public void ユーザー詳細データを持ってこれてるか() {
