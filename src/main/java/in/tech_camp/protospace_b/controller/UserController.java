@@ -157,7 +157,6 @@ public class UserController {
                 prototype.setIsLiked(false);
             }
         }
-      }
       model.addAttribute("user", user);
       model.addAttribute("prototypes", user.getPrototypes());
     }
