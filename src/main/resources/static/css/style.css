@@ -242,10 +242,13 @@ main {
 }
 
 .prototype-index-card_user {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* display: block; */
   font-size: 12px;
   color: #999;
-  text-align: right;
+  /* text-align: right; */
   text-decoration: underline;
 }
 
@@ -337,6 +340,14 @@ main {
   cursor: pointer;
   font-weight: bold;
   transition: opacity 0.2s;
+}
+
+.user-icon-mini {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
 }
 
 /* 1024px以下の表示 */
@@ -680,14 +691,6 @@ footer {
   gap: 6px;
   list-style-type: none;
   align-items: center;
-}
-
-.prototype-show-comment::before {
-  content: ""; /* 空の要素を作る */
-  width: 6px; /* 四角の幅 */
-  height: 6px; /* 四角の高さ */
-  background-color: #3b4043; /* 四角の色 */
-  flex-shrink: 0; /* 四角が潰れないように固定 */
 }
 
 .prototype-show-comment-text {

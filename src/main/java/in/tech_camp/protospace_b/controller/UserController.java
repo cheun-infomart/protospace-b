@@ -6,17 +6,20 @@ import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // 追加
+import org.springframework.validation.BindingResult; 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; // 追加
+import org.springframework.web.bind.annotation.RequestParam; 
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -58,8 +61,13 @@ public class UserController {
       ValidationOrder.PositionSequence.class
   }) UserForm userForm,
       BindingResult result,
-      Model model) {
+      Model model,
+      HttpServletRequest request) {
     userForm.validatePasswordConfirmation(result);
+    if (userForm.getImage().isEmpty()) {
+        result.rejectValue("image", "error.image", "アイコン画像は必須です");
+    }
+
     if (userRepository.existsByEmail(userForm.getEmail())) {
       result.rejectValue("email", "null", "メールアドレスは既に存在します");
     }
@@ -83,14 +91,25 @@ public class UserController {
     userEntity.setPassword(userForm.getPassword());
 
     try {
-      userService.createUserWithEncryptedPassword(userEntity);
+      userService.createUserWithEncryptedPassword(userEntity, userForm.getImage());
+      // 自動ログイン処理
+      CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+      UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+        userDetails, null, userDetails.getAuthorities());
+
+      SecurityContext context = SecurityContextHolder.createEmptyContext();
+      context.setAuthentication(token);
+      SecurityContextHolder.setContext(context);
+
+      HttpSession session = request.getSession(true);
+      session.setAttribute("SPRING_SECURITY_CONTEXT", context);
     } catch (Exception e) {
       System.out.println("エラー：" + e);
       return "redirect:users/register";
     }
 
-    // 新規登録成功時、ログイン画面に遷移
-    return "redirect:users/login";
+    // 新規登録成功時、トップページに遷移
+    return "redirect:/";
   }
 
   // 途中でログイン
@@ -142,18 +161,18 @@ public class UserController {
         currentUserId = ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal()).getId();
       }
 
-      // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
-      // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
-      for (in.tech_camp.protospace_b.entity.PrototypeEntity prototype : prototypes) {
-        prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
-
-        if (currentUserId != null) {
-          int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
-          prototype.setIsLiked(likeCheck > 0);
-        } else {
-          prototype.setIsLiked(false);
+        // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
+        // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
+        for (PrototypeEntity prototype : prototypes) {
+            prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+            
+            if (currentUserId != null) {
+                int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+                prototype.setIsLiked(likeCheck > 0);
+            } else {
+                prototype.setIsLiked(false);
+            }
         }
-      }
       model.addAttribute("user", user);
       model.addAttribute("prototypes", user.getPrototypes());
     }

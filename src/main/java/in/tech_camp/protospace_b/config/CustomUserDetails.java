@@ -22,6 +22,11 @@ public class CustomUserDetails implements UserDetails{
         return user.getName();
     }
 
+    // アイコン画像のパスを取得するメソッドを追加
+    public String getImage() {
+        return user.getImage();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();

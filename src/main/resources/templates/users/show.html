@@ -130,13 +130,10 @@
               ></p>
               <div class="prototype-index-user-and-like">
                 <div th:replace="~{common/like :: like}"></div>
-
-                <a
-                  th:href="@{/users/{id}(id=${user.id})}"
-                  th:text="|by ${user.name}|"
-                  class="prototype-index-card_user"
-                  >by 名前</a
-                >
+                <a th:href="@{/users/{id}(id=${user.id})}" class="prototype-index-card_user">
+                  <img th:src="${user.image}" alt="user-icon" class="user-icon-mini" />
+                  <span th:text="|by ${user.name}|">by 名前</span>
+                </a>
               </div>
             </div>
           </div>
