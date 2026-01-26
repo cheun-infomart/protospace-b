@@ -1,29 +1,11 @@
-function executeDelete(targetId) {
-  closeModal("confirmModal");
+// ページ読み込み時の処理
+window.addEventListener('DOMContentLoaded', () => {
+  const editModal = document.getElementById("confirmModal"); // HTML側のIDに合わせてください
 
-  fetch(`/users/${targetId}/delete`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (response.ok) {
-        document.getElementById("successModal").style.display = "flex";
-        document.body.style.overflow = "hidden";
-      } else {
-        alert("削除に失敗しました。");
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("削除に失敗しました。");
-    });
-}
-
-function goToIndex() {
-  window.location.href = "/";
-}
+  if (editModal && editModal.style.display === "flex") {
+    document.body.style.overflow = "hidden"; // 背景スクロール禁止
+  }
+});
 
 // モーダル開く
 function openEditModal() {
