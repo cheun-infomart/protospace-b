@@ -20,8 +20,7 @@ public class UserForm {
 
     // パスワード
     @NotBlank(message = "パスワードは空白にできません", groups = ValidationOrder.Password1.class)
-    @Length(min = 6, max = 128, message = "パスワードは6文字以上必要です",
-            groups = ValidationOrder.Password2.class)
+    @Length(min = 6, max = 128, message = "パスワードは6文字以上必要です", groups = ValidationOrder.Password2.class)
     private String password;
 
     private String passwordConfirmation;
@@ -54,8 +53,8 @@ public class UserForm {
     @NotBlank(message = "本人確認質問の答えを入力してください", groups = ValidationOrder.SecurityAnswer.class)
     private String securityAnswer;
 
-    public static final List<String> SECURITY_QUESTIONS = List.of("好きな食べ物は？", "出身地は？", "ペットに名前は？");
+    public static final List<String> SECURITY_QUESTIONS = List.of("好きな食べ物は？", "出身地は？", "ペットの名前は？");
 
-    //アイコン画像
+    // アイコン画像
     private MultipartFile image;
 }
