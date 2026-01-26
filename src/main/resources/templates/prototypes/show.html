@@ -13,10 +13,9 @@
         id="confirmModal"
         class="prototype-edit-modal-overlay"
         th:style="${#vars['org.springframework.validation.BindingResult.prototypeForm']?.hasErrors()} ? 'display: flex;' : 'display: none;'"
-        onclick="closeOnOverlayClick(event, 'confirmModal')"
       >
-        <div class="prototype-edit-modal-content" onclick="event.stopPropagation()">
-          <span id="modal-close-btn" class="modal-close-btn">&times;</span>
+        <div class="prototype-edit-modal-content">
+          <span class="modal-close-btn">&times;</span>
           <div class="modal-title">
             
             <span class="material-symbols-outlined">edit</span>
@@ -86,8 +85,7 @@
           >
             <div class="prototype-show-button-section">
               <button
-                class="prototype-show-btn"
-                onclick="openEditModal()"
+                class="prototype-show-btn prototype-show-btn-edit"
                 >編集する</button
               >
               <form
