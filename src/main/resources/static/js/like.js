@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("login-modal-for-like");
   const closeBtn = document.getElementById("close-login-modal");
-
+  
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".like-btn");
 
@@ -72,3 +72,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+

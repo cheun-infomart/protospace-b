@@ -52,13 +52,20 @@ public class CommentController {
     return ResponseEntity.internalServerError().body("保存に失敗しました");
   }
 
+  // currentUserから取得
+  String userImage = currentUser.getUser().getImage();
   String displayName = currentUser.getUser().getName(); 
 
   String htmlResponse = String.format(
         "<li class='prototype-show-comment'>" +
+        "  <a href='/users/%d'>" +
+        "    <img src='%s' alt='user-icon' class='user-icon-mini' />" +
+        "  </a>" +
         "  <span class='prototype-show-comment-text'>%s</span>" +
         "  <a href='/users/%d' class='prototype-show-comment-user'>%s</a>" +
         "</li>", 
+        currentUser.getId(), // アイコンのリンク用
+        userImage,           // imgタグのsrc用
         commentForm.getText(), 
         currentUser.getId(), 
         displayName
