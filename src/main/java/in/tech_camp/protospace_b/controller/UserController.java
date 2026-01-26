@@ -261,7 +261,7 @@ public class UserController {
       return "redirect:/";
     }
     return "redirect:/users/" + id;
-  } 
+  }
 
   // ユーザー削除
   @PostMapping("/users/{id}/delete")

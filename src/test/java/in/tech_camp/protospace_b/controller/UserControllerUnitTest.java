@@ -309,6 +309,12 @@ public class UserControllerUnitTest {
 
   @Nested
   public class ユーザー情報編集 {
+
+    @BeforeEach
+    public void setUp(){
+      model = new ExtendedModelMap();
+    }
+
     @Test
     public void ログイン者が自分のユーザー情報編集機能にリクエストするとユーザー編集画面のビューファイルがレスポンスで返ってくる(){
       UserEntity user = UserFactory.createMockUser();
@@ -322,8 +328,6 @@ public class UserControllerUnitTest {
       // ログインユーザー情報取得（自分のID）
       when(authentication.getPrincipal()).thenReturn(userDetails);
       when(userDetails.getId()).thenReturn(userId);
-
-      Model model = new ExtendedModelMap();
 
       String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
 
@@ -345,8 +349,6 @@ public class UserControllerUnitTest {
       when(authentication.getPrincipal()).thenReturn(userDetails);
       when(userDetails.getId()).thenReturn(3);
 
-      Model model = new ExtendedModelMap();
-
       String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
 
       assertThat(result, is("redirect:/"));
@@ -363,8 +365,6 @@ public class UserControllerUnitTest {
       when(authentication.getPrincipal()).thenReturn(userDetails);
       when(userDetails.getId()).thenReturn(userId);
 
-      Model model = new ExtendedModelMap();
-
       String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
 
       assertThat(result, is("redirect:/"));
@@ -377,8 +377,6 @@ public class UserControllerUnitTest {
 
       // 例外を投げる
       when(userService.findUser(userId)).thenThrow(new RuntimeException("DBエラー等"));
-
-      Model model = new ExtendedModelMap();
 
       String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
 
@@ -394,6 +392,7 @@ public class UserControllerUnitTest {
     @BeforeEach
     public void setUp(){
       SecurityContextHolder.setContext(securityContext);
+      model = new ExtendedModelMap();
     }
 
     @AfterEach
@@ -406,7 +405,6 @@ public class UserControllerUnitTest {
       UserEntity user = UserFactory.createMockUser();
       Integer userId = user.getId();
       UserForm userForm = UserFactory.createUser();
-      Model model = new ExtendedModelMap();
 
       // ユーザー情報取得
       when(userService.findUser(userId)).thenReturn(user);
@@ -428,7 +426,6 @@ public class UserControllerUnitTest {
       UserEntity user = UserFactory.createMockUser();
       Integer userId = user.getId();
       UserForm userForm = UserFactory.createUser();
-      Model model = new ExtendedModelMap();
 
       // ユーザー情報取得
       when(userService.findUser(userId)).thenReturn(user);
@@ -448,7 +445,6 @@ public class UserControllerUnitTest {
       UserEntity user = UserFactory.createMockUser();
       Integer userId = user.getId();
       UserForm userForm = UserFactory.createUser();
-      Model model = new ExtendedModelMap();
 
       // ユーザー情報取得
       when(userService.findUser(userId)).thenReturn(user);
@@ -466,7 +462,6 @@ public class UserControllerUnitTest {
       UserEntity user = UserFactory.createMockUser();
       Integer userId = user.getId();
       UserForm userForm = UserFactory.createUser();
-      Model model = new ExtendedModelMap();
 
       // ユーザー情報取得（ユーザーはnull）
       when(userService.findUser(userId)).thenReturn(null);
@@ -484,7 +479,6 @@ public class UserControllerUnitTest {
       UserEntity user = UserFactory.createMockUser();
       Integer userId = user.getId();
       UserForm userForm = UserFactory.createUser();
-      Model model = new ExtendedModelMap();
 
       // ユーザー情報取得
       when(userService.findUser(userId)).thenReturn(user);
