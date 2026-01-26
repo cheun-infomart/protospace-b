@@ -151,29 +151,29 @@
                 <input class="com-btn" type="submit" value="送信する" />
               </form>
             </div>
-          <div th:if="${#authorization.expression('!isAuthenticated()')}">
-            <strong>
-              <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
-            </strong>
-          </div>
+            <div th:if="${#authorization.expression('!isAuthenticated()')}">
+              <strong>
+                <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
+              </strong>
+            </div>
 
-          <ul class="prototype-show-comments">
-            <li th:each="comment:${comments}" class="prototype-show-comment">
-              <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
-                <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
-              </a>
-              <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
-              <a
-                th:href="@{/users/{userId}(userId=${comment.user.id})}"
-                th:text="${comment.user.name}"
-                class="prototype-show-comment-user"
-              ></a>
-            </li>
-          </ul>
+            <ul class="prototype-show-comments">
+              <li th:each="comment:${comments}" class="prototype-show-comment">
+                <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
+                  <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
+                </a>
+                <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+                <a
+                  th:href="@{/users/{userId}(userId=${comment.user.id})}"
+                  th:text="${comment.user.name}"
+                  class="prototype-show-comment-user"
+                ></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-
     <div
       th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
     ></div>
