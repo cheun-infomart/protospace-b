@@ -1,6 +1,7 @@
 package in.tech_camp.protospace_b.form;
 
 import java.util.List;
+
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.BindingResult;
 
@@ -52,6 +53,6 @@ public class UserForm {
     @NotBlank(message = "本人確認質問の答えを入力してください", groups = ValidationOrder.SecurityAnswer.class)
     private String securityAnswer;
 
-    public static final List<String> SECURITY_QUESTIONS = List.of("好きな食べ物は", "出身地は", "ペットに名前は");
+    public static final List<String> SECURITY_QUESTIONS = List.of("好きな食べ物は？", "出身地は？", "ペットに名前は？");
 
 }

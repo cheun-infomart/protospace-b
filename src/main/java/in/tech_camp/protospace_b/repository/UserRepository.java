@@ -5,44 +5,54 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import in.tech_camp.protospace_b.entity.UserEntity;
 
 @Mapper
 public interface UserRepository {
 
-  // ビューからデータ取得→エンティティに入れる
-  @Insert("""
-      INSERT INTO users (name, email, password, profile, department, position, security_question, security_answer)
-      VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position}, #{securityQuestion}, #{securityAnswer})
-      """)
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  void insert(UserEntity user);
+        // ビューからデータ取得→エンティティに入れる
+        @Insert("""
+                        INSERT INTO users (name, email, password, profile, department, position, security_question, security_answer)
+                        VALUES (#{name}, #{email}, #{password}, #{profile}, #{department}, #{position}, #{securityQuestion}, #{securityAnswer})
+                        """)
+        @Options(useGeneratedKeys = true, keyProperty = "id")
+        void insert(UserEntity user);
 
-  // すでに使用されているEmailを検索
-  @Select("SELECT EXISTS(SELECT 1 FROM users WHERE email = #{email})")
-  boolean existsByEmail(String email);
+        // すでに使用されているEmailを検索
+        @Select("SELECT EXISTS(SELECT 1 FROM users WHERE email = #{email})")
+        boolean existsByEmail(String email);
 
-  // データベースから特定のメールアドレスを持つユーザーを探してくる
-  @Select("SELECT * FROM users WHERE id = #{id}")
-  UserEntity findById(Integer id);
+        // データベースから特定のメールアドレスを持つユーザーを探してくる
+        @Select("SELECT * FROM users WHERE id = #{id}")
+        UserEntity findById(Integer id);
 
-  @Select("SELECT id, name FROM users WHERE id = #{id}")
-  UserEntity findUserById(Integer id);
+        @Select("SELECT id, name FROM users WHERE id = #{id}")
+        UserEntity findUserById(Integer id);
 
-  @Select("SELECT * FROM users WHERE email = #{email}")
-  UserEntity findByEmail(String email);
+        @Select("SELECT * FROM users WHERE email = #{email}")
+        UserEntity findByEmail(String email);
 
-  @Select("SELECT * FROM users WHERE id = #{id}")
-  @Results(value = {@Result(property = "id", column = "id", id = true),
-      @Result(property = "prototypes", column = "id", many = @Many(
-          select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))})
-  UserEntity findByIdWithProto(Integer id);
+        @Select("SELECT * FROM users WHERE id = #{id}")
+        @Results(value = {@Result(property = "id", column = "id", id = true),
+                        @Result(property = "prototypes", column = "id", many = @Many(
+                                        select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId"))})
+        UserEntity findByIdWithProto(Integer id);
 
-  @Delete("DELETE FROM users WHERE id = #{id}")
-  void deleteById(Integer id);
+        @Delete("DELETE FROM users WHERE id = #{id}")
+        void deleteById(Integer id);
+
+        @Select("SELECT * FROM users WHERE email = #{email} AND security_question = #{securityQuestion} AND security_answer = #{securityAnswer}")
+        UserEntity findByUserInfo(@Param("email") String email,
+                        @Param("securityQuestion") String securityQuestion,
+                        @Param("securityAnswer") String securityAnswer);
+
+        @Update("UPDATE users SET password = #{password} WHERE email = #{email}")
+        void updatePassword(@Param("email") String email, @Param("password") String password);
 }
 

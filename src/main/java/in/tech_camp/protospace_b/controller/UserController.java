@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
 import in.tech_camp.protospace_b.entity.UserEntity;
+import in.tech_camp.protospace_b.form.PasswordFindForm;
+import in.tech_camp.protospace_b.form.PasswordResetForm;
 import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.LikeRepository;
 import in.tech_camp.protospace_b.repository.UserRepository;
@@ -31,6 +34,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor; // 追加
+
 
 @Controller
 @AllArgsConstructor
@@ -124,6 +128,7 @@ public class UserController {
       return false;
 
     return !ref.contains("/users/login") && !ref.contains("/users/register")
+        && !ref.contains("/users/password/find") && !ref.contains("/users/password/reset")
         && !ref.contains("/js/") && !ref.contains("/css/") && !ref.contains("/images/")
         && !ref.contains(".js") && !ref.contains(".css");
   }
@@ -184,5 +189,77 @@ public class UserController {
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
+  }
+
+  // 本人確認ページに移動
+  @GetMapping("/users/password/find")
+  public String showPasswordFindForm(Model model) {
+    model.addAttribute("passwordFindForm", new PasswordFindForm());
+    return "users/password-find";
+  }
+
+  @PostMapping("/users/password/find")
+  public String verifyUserInfo(
+      @Validated(ValidationOrder.EmailSequence.class) @ModelAttribute PasswordFindForm form,
+      BindingResult result,
+      HttpSession session,
+      Model model) {
+
+    if (result.hasErrors()) {
+      return "users/password-find";
+    }
+
+    UserEntity user = userService.findVerifiedUser(form);
+
+    if (user != null) {
+      session.setAttribute("verifiedEmail", user.getEmail());
+      return "redirect:/users/password/reset";
+    } else {
+      model.addAttribute("errorMessage", "入力した情報が登録情報と一致しません。");
+      return "users/password-find";
+    }
+  }
+
+  // パスワード変更ページに移動
+  @GetMapping("/users/password/reset")
+  public String showPasswordResetForm(HttpSession session, Authentication aut,
+      Model model) {
+
+
+    if (aut != null && aut.isAuthenticated() && !(aut instanceof AnonymousAuthenticationToken)) {
+      return "redirect:/";
+    }
+
+    String email = (String) session.getAttribute("verifiedEmail");
+    if (email == null) {
+      return "redirect:/users/password/find";
+    }
+
+    model.addAttribute("passwordResetForm", new PasswordResetForm());
+    return "users/password-reset";
+  }
+
+  @PostMapping("/users/password/reset")
+  public String updatePassword(@Validated @ModelAttribute PasswordResetForm form,
+      BindingResult result,
+      HttpSession session,
+      Model model) {
+
+    String email = (String) session.getAttribute("verifiedEmail");
+    if (email == null) {
+      return "redirect:/users/password/find";
+    }
+
+    form.validatePasswordConfirmation(result);
+
+    if (result.hasErrors()) {
+      return "users/password-reset";
+    }
+
+    userService.updatePassword(email, form.getPassword());
+
+    session.removeAttribute("verifiedEmail");
+
+    return "redirect:/users/login?resetSuccess";
   }
 }

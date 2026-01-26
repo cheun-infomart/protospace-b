@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
+import in.tech_camp.protospace_b.form.PasswordFindForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -45,5 +47,19 @@ public class UserService {
     // 削除処理実行
     userRepository.deleteById(id);
 
+  }
+
+  public UserEntity findVerifiedUser(PasswordFindForm form) {
+    return userRepository.findByUserInfo(
+        form.getEmail(),
+        form.getSecurityQuestion(),
+        form.getSecurityAnswer());
+  }
+
+  @Transactional
+  public void updatePassword(String email, String newPassword) {
+    String encodedPassword = passwordEncoder.encode(newPassword);
+
+    userRepository.updatePassword(email, encodedPassword);
   }
 }
