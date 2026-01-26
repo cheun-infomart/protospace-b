@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
@@ -369,32 +370,6 @@ public class PrototypeControllerUnitTest {
 
   @Nested
   class プロトタイプ編集機能 {
-    @Test
-    public void ゲットメソッドでView画面表示できる() {
-      Integer userId = 100;
-      Integer prototypeId = 1;
-
-      PrototypeEntity prototype = new PrototypeEntity();
-      prototype.setId(prototypeId);
-      in.tech_camp.protospace_b.entity.UserEntity owner = new in.tech_camp.protospace_b.entity.UserEntity();
-      owner.setId(userId);
-      prototype.setUser(owner);
-
-      // 権限チェック用のEntity取得
-      when(prototypeService.findPrototypeById(prototypeId)).thenReturn(prototype);
-      // フォーム表示用のデータ取得
-      when(prototypeService.getPrototypeForm(prototypeId)).thenReturn(testForm);
-      // ログインユーザー情報の取得
-      when(authentication.getPrincipal()).thenReturn(customUserDetails);
-      when(customUserDetails.getId()).thenReturn(userId);
-
-      Model model = new ExtendedModelMap();
-
-      String result = prototypeController.editPrototype(prototypeId, authentication, redirectAttributes, model);
-
-      assertThat(result, is("prototypes/edit"));
-      assertThat(model.getAttribute("prototypeForm"), is(testForm));
-    }
 
     @Test
     public void 編集機能が問題なく実行されたか() {
@@ -402,8 +377,52 @@ public class PrototypeControllerUnitTest {
     Model model = new ExtendedModelMap();
     //updateメソッド実行
     String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
+    
     //問題なくupdateされredirectになっているか
     assertThat(result, is("redirect:/prototypes/1"));
+    }
+
+    @Test
+    public void バリデーションエラー時に詳細画面を返し詳細データが保持されていること() {
+    // 1. 準備：必要なIDやモックオブジェクト
+    Integer prototypeId = 1;
+    Integer userId = 100;
+
+    // フォーム（名前を空にしてエラー想定のデータを作成）
+    PrototypeForm testForm = new PrototypeForm();
+    testForm.setName(""); 
+
+    // 詳細画面の再表示に必要なエンティティ
+    PrototypeEntity prototype = new PrototypeEntity();
+    prototype.setId(prototypeId);
+    UserEntity owner = new UserEntity();
+    owner.setId(userId);
+    prototype.setUser(owner);
+
+    // 依存サービス・リポジトリの挙動設定
+    when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
+    when(bindingResult.hasErrors()).thenReturn(true); // エラーがある状態をシミュレート
+
+    Model model = new ExtendedModelMap();
+
+    // 2. 実行：コントローラーのメソッドを直接叩く
+    String result = prototypeController.updatePrototype(
+        testForm, 
+        bindingResult, 
+        prototypeId, 
+        model
+    );
+
+    // 3. 検証
+    // View名が詳細画面（show）になっているか
+    assertThat(result, is("prototypes/show"));
+
+    // モーダル内で表示し続けるためにフォームと詳細データがModelに入っているか
+    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+    assertThat(model.getAttribute("prototype"), is(prototype));
+    
+    // エラーメッセージが生成されているか
+    assertThat(model.containsAttribute("errorMessages"), is(true));
     }
   }
 
