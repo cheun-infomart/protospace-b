@@ -220,7 +220,7 @@ public class UserController {
 
   @PostMapping("/users/password/find")
   public String verifyUserInfo(
-      @Validated(ValidationOrder.EmailSequence.class) @ModelAttribute PasswordFindForm form,
+      @Validated(ValidationOrder.EmailSequence.class) @ModelAttribute("passwordFindForm") PasswordFindForm form,
       BindingResult result,
       HttpSession session,
       Model model) {
@@ -259,7 +259,8 @@ public class UserController {
   }
 
   @PostMapping("/users/password/reset")
-  public String updatePassword(@Validated @ModelAttribute PasswordResetForm form,
+  public String updatePassword(
+      @Validated(ValidationOrder.PasswordSequence.class) @ModelAttribute("passwordResetForm") PasswordResetForm form,
       BindingResult result,
       HttpSession session,
       Model model) {
