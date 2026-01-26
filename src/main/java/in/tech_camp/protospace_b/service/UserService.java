@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
-import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.form.PasswordFindForm;
+import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -129,6 +129,7 @@ public class UserService {
     user.setPosition(form.getPosition());
 
     userRepository.update(user);
+  }
   // 本人確認
   public UserEntity findVerifiedUser(PasswordFindForm form) {
     return userRepository.findByUserInfo(
