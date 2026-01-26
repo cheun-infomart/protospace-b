@@ -61,7 +61,9 @@ public class UserController {
       ValidationOrder.NameSequence.class,
       ValidationOrder.ProfileSequence.class,
       ValidationOrder.DepartmentSequence.class,
-      ValidationOrder.PositionSequence.class
+      ValidationOrder.PositionSequence.class,
+      ValidationOrder.SecurityQuestion.class,
+      ValidationOrder.SecurityAnswer.class
   }) UserForm userForm,
       BindingResult result,
       Model model,
