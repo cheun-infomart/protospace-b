@@ -77,7 +77,7 @@ public class UserController {
 
     if (result.hasErrors()) {
       boolean hasStep1Error = result.hasFieldErrors("email") || result.hasFieldErrors("password")
-          || result.hasFieldErrors("name") || result.hasFieldErrors("profile")
+          || result.hasFieldErrors("name") || result.hasFieldErrors("profile") || result.hasFieldErrors("image")
           || result.hasFieldErrors("department") || result.hasFieldErrors("position");
 
       int activeStep = hasStep1Error ? 1 : 2;
