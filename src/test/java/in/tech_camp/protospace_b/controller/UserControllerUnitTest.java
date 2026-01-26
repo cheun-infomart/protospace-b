@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +26,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -68,10 +73,14 @@ public class UserControllerUnitTest {
   private CustomUserDetails userDetails;
 
   @Mock
+  private RedirectAttributes redirectAttributes;
   private HttpSession session;
 
   @Mock
   private Model model;
+
+  @Mock
+  private SecurityContext securityContext;
 
   @InjectMocks
   private UserController userController;
@@ -298,6 +307,197 @@ public class UserControllerUnitTest {
       ResponseEntity<String> result = userController.deleteUser(mockUser.getId(), authentication, request, response);
       assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
       assertTrue(result.getBody().contains("DB 削除 エラー"));
+    }
+  }
+
+  @Nested
+  public class ユーザー情報編集 {
+
+    @BeforeEach
+    public void setUp(){
+      model = new ExtendedModelMap();
+    }
+
+    @Test
+    public void ログイン者が自分のユーザー情報編集機能にリクエストするとユーザー編集画面のビューファイルがレスポンスで返ってくる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // フォーム表示用データ取得
+      when(userService.getUserForm(userId)).thenReturn(userForm);
+      // ログインユーザー情報取得（自分のID）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("users/edit"));
+      assertThat(model.getAttribute("userForm"), is(userForm));
+    }
+
+    @Test
+    public void ログイン者が存在する自分以外のユーザー情報編集機能にリクエストするとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // フォーム表示用データ取得
+      when(userService.getUserForm(userId)).thenReturn(userForm);
+      // ログインユーザー情報取得（IDを3に設定）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(3);
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ログイン者が存在しないユーザーのユーザー情報編集機能にリクエストするとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+
+      // ユーザー情報取得（ユーザーはnull）
+      when(userService.findUser(userId)).thenReturn(null);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void 編集画面遷移時に例外が発生した場合はトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+
+      // 例外を投げる
+      when(userService.findUser(userId)).thenThrow(new RuntimeException("DBエラー等"));
+
+      String result = userController.editUserDetail(userId, authentication, redirectAttributes, model);
+
+      assertThat(result, is("redirect:/"));
+      verify(redirectAttributes).addFlashAttribute("errorMessage", "DBエラー等");
+    }
+    
+  }
+
+  @Nested
+  public class ユーザー情報更新{
+
+    @BeforeEach
+    public void setUp(){
+      SecurityContextHolder.setContext(securityContext);
+      model = new ExtendedModelMap();
+    }
+
+    @AfterEach
+    public void tearDown(){
+      SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    public void ログイン者が自分のユーザー情報に不備がない状態で更新すると問題なく実行される(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+      when(bindingResult.hasErrors()).thenReturn(false);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/users/" + userId));
+
+      verify(userService, times(2)).findUser(userId);
+      verify(securityContext).setAuthentication(any(UsernamePasswordAuthenticationToken.class));
+    }
+
+    @Test
+    public void ログイン者が自分のユーザー情報に不備がある状態で更新するとユーザー情報編集画面が再表示される(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      when(bindingResult.hasErrors()).thenReturn(true);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("users/edit"));
+    }
+
+    @Test
+    public void ログイン者が存在する自分以外のユーザー情報を更新するとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得（IDを3に設定）
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(3);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ログイン者が存在しないユーザー情報を更新するとトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得（ユーザーはnull）
+      when(userService.findUser(userId)).thenReturn(null);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
+    }
+
+    @Test
+    public void ユーザー更新中に例外が発生した場合はトップページへリダイレクトされる(){
+      UserEntity user = UserFactory.createMockUser();
+      Integer userId = user.getId();
+      UserForm userForm = UserFactory.createUser();
+
+      // ユーザー情報取得
+      when(userService.findUser(userId)).thenReturn(user);
+      // ログインユーザー情報取得
+      when(authentication.getPrincipal()).thenReturn(userDetails);
+      when(userDetails.getId()).thenReturn(userId);
+
+      // バリデーション通過
+      when(bindingResult.hasErrors()).thenReturn(false);
+
+      // 例外を投げる
+      doThrow(new RuntimeException("DBエラー等")).when(userService).updateUser(eq(userId), any(UserForm.class), anyInt());
+
+      String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
+
+      assertThat(result, is("redirect:/"));
     }
   }
 }

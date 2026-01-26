@@ -16,6 +16,7 @@ import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.form.PasswordFindForm;
+import in.tech_camp.protospace_b.form.UserForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -87,6 +88,48 @@ public class UserService {
 
   }
 
+  // ユーザー編集用ユーザー情報取得
+  public UserEntity findUser(Integer id){
+    UserEntity user = userRepository.findById(id);
+    return user;
+  }
+
+  // 編集画面にDB内の情報を表示
+  public UserForm getUserForm(Integer id) {
+    UserEntity user = userRepository.findById(id);
+    if(user == null){
+      throw new RuntimeException("ユーザーが見つかりません");
+    }
+    UserForm form = new UserForm();
+    form.setName(user.getName());
+    form.setProfile(user.getProfile());
+    form.setDepartment(user.getDepartment());
+    form.setPosition(user.getPosition());
+    
+		return form;
+	}
+
+  // 入力情報で更新
+  public void updateUser(Integer id, UserForm form, Integer currentUserId){
+    UserEntity user = userRepository.findById(id);
+
+    // nullチェック
+    if(user == null){
+      throw new RuntimeException("編集対象が見つかりません");
+    }
+
+    // ログインユーザーと編集対象のユーザーが同一でない
+    if (!user.getId().equals(currentUserId)) {
+      throw new RuntimeException("編集権限がありません");
+    }
+
+    user.setName(form.getName());
+    user.setProfile(form.getProfile());
+    user.setDepartment(form.getDepartment());
+    user.setPosition(form.getPosition());
+
+    userRepository.update(user);
+  }
   // 本人確認
   public UserEntity findVerifiedUser(PasswordFindForm form) {
     return userRepository.findByUserInfo(

@@ -44,6 +44,10 @@ public interface UserRepository {
       @Result(property = "prototypes", column = "id", many = @Many(select = "in.tech_camp.protospace_b.repository.PrototypeRepository.findByUserId")) })
   UserEntity findByIdWithProto(Integer id);
 
+  // ユーザー情報更新
+  @Update("UPDATE users SET name=#{name}, profile=#{profile}, department=#{department}, position=#{position} WHERE id=#{id}")
+  void update(UserEntity user);
+  
   @Delete("DELETE FROM users WHERE id = #{id}")
   void deleteById(Integer id);
 

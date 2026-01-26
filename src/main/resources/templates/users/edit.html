@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+  <head>
+    <th:block th:replace="~{common/head :: head}"></th:block>
+  </head>
+
+  <body>
+    <header th:replace="~{common/header :: header}"></header>
+    <main>
+      <div class="com-inner">
+        <div class="com-form">
+          <h2 class="title-h2">ユーザー編集</h2>
+
+          <form class="register-new_user" th:action="@{/users/{id}/update(id=${id})}" th:object="${userForm}" method="post">
+            <div class="com-field">
+              <label>ユーザー名</label><br />
+              <input type="text" th:field="*{name}" />
+              <p
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+                class="new-error"
+              ></p>
+            </div>
+
+            <div class="com-field">
+              <label>プロフィール</label><br />
+              <textarea class="user-textarea" th:field="*{profile}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('profile')}"
+                th:errors="*{profile}"
+                class="new-error"
+              ></p>
+            </div>
+
+            <div class="com-field">
+              <label>所属</label><br />
+              <textarea class="user-textarea" th:field="*{department}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('department')}"
+                th:errors="*{department}"
+                class="new-error"
+              ></p>
+            </div>
+
+            <div class="com-field">
+              <label>役職</label><br />
+              <textarea class="user-textarea" th:field="*{position}"></textarea>
+              <p
+                th:if="${#fields.hasErrors('position')}"
+                th:errors="*{position}"
+                class="new-error"
+              ></p>
+            </div>
+
+            <div class="com-actions">
+              <input
+                class="com-btn"
+                type="submit"
+                value="保存"
+                data-disable-with="保存"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <footer th:replace="~{common/footer :: footer}"></footer>
+  </body>
+</html>

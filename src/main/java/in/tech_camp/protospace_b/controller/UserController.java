@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -189,6 +190,90 @@ public class UserController {
       model.addAttribute("prototypes", user.getPrototypes());
     }
     return "users/show";
+  }
+  
+  // ユーザー編集画面に移動
+  @GetMapping("/users/{id}/edit")
+  public String editUserDetail(@PathVariable("id") Integer id, Authentication authentication, RedirectAttributes redirectAttributes, Model model) {
+    try {
+      UserEntity user = userService.findUser(id);
+
+      UserForm form = userService.getUserForm(id);
+      Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+
+      // ユーザーがnullの場合、存在しない場合
+      if(user == null || !user.getId().equals(currentUserId)){
+        redirectAttributes.addFlashAttribute("errorMessage", "編集権限がありません");
+        return "redirect:/";
+      }
+      
+      model.addAttribute("userForm", form);
+      model.addAttribute("id", id);
+
+      return "users/edit";
+
+    } catch (RuntimeException e) {
+      redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+      return "redirect:/";
+    }
+  }
+
+  // ユーザー情報更新
+  @PostMapping("/users/{id}/update")
+  public String updateUserDetail(@ModelAttribute("userForm")
+                                 @Validated({ValidationOrder.NameSequence.class,
+                                      ValidationOrder.ProfileSequence.class,
+                                      ValidationOrder.DepartmentSequence.class,
+                                      ValidationOrder.PositionSequence.class
+                                 })UserForm userForm,
+                                  BindingResult result,
+                                 @PathVariable("id") Integer id,
+                                 Authentication authentication,
+                                  Model model) {
+
+    UserEntity user = userService.findUser(id);
+    Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+
+    // ユーザーがnullの場合、存在しない場合
+    if(user == null || !user.getId().equals(currentUserId)){
+      return "redirect:/";
+    }
+
+    if(result.hasErrors()){
+      List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+      model.addAttribute("errorMessages", errorMessages);
+
+      model.addAttribute("userForm", userForm);
+      model.addAttribute("id", id);
+
+      return "users/edit";
+    }
+
+    try {
+      userService.updateUser(id, userForm, currentUserId);
+
+      // セッションの更新処理（トップページのログインユーザー表示更新）
+      // 更新後の最新データをDBから取得
+      UserEntity updatedUser = userService.findUser(id);
+      // 新しいCustomUserDetailを作成
+      CustomUserDetails newCustomUserDetails = new CustomUserDetails(updatedUser);
+      // 新しいAuthenticationオブジェクトを作成
+      UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
+        // 新しい本人の情報
+        newCustomUserDetails,
+        // 現在のパスワード
+        authentication.getCredentials(),
+        // 権限（ここでは空リスト返却）
+        newCustomUserDetails.getAuthorities()
+      );
+      // SecurityContextHolderの認証情報を更新
+      SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+    } catch (Exception e) {
+      System.out.println("エラー：" + e);
+      return "redirect:/";
+    }
+    return "redirect:/users/" + id;
   }
 
   // ユーザー削除
