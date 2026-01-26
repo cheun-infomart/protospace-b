@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import in.tech_camp.protospace_b.validation.ValidationOrder;
 import jakarta.validation.constraints.Email;
@@ -55,4 +56,6 @@ public class UserForm {
 
     public static final List<String> SECURITY_QUESTIONS = List.of("好きな食べ物は？", "出身地は？", "ペットに名前は？");
 
+    //アイコン画像
+    private MultipartFile image;
 }

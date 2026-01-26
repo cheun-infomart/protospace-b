@@ -20,7 +20,7 @@ public interface PrototypeRepository {
   @Select("SELECT * FROM prototypes WHERE user_id = #{userId} ORDER BY created_at DESC")
   List<PrototypeEntity> findByUserId(Integer userId);
   
-  @Select("SELECT p.*, u.name AS user_name FROM prototypes p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC;")
+  @Select("SELECT p.*, u.name AS user_name, u.image AS user_image FROM prototypes p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC;")
   @Results(value = {
     @Result(property="id", column="id"),
     @Result(property="name", column="name"),
@@ -28,7 +28,8 @@ public interface PrototypeRepository {
     @Result(property="concept", column="concept"),
     @Result(property="image", column="image"),
     @Result(property="user.id", column="user_id"),
-    @Result(property="user.name", column="user_name")
+    @Result(property="user.name", column="user_name"),
+    @Result(property="user.image", column="user_image")
   })
   List<PrototypeEntity> findAll();
   

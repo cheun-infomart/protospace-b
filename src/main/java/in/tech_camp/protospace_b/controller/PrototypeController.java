@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
@@ -115,33 +114,7 @@ public class PrototypeController {
     }
   }
 
-  // Prototypeの編集画面に移動
-  @GetMapping("/prototypes/{id}/edit")
-  public String editPrototype(@PathVariable("id") Integer id, Authentication authentication,
-      RedirectAttributes redirectAttributes, Model model) {
-    try {
-      PrototypeEntity prototype = prototypeService.findPrototypeById(id);
-
-      PrototypeForm form = prototypeService.getPrototypeForm(id);
-      Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-
-      if (!prototype.getUser().getId().equals(currentUserId)) {
-
-        redirectAttributes.addFlashAttribute("errorMessage", "権限がありません.");
-        return "redirect:/";
-      }
-
-      model.addAttribute("prototypeForm", form);
-      model.addAttribute("id", id);
-
-      return "prototypes/edit";
-    } catch (RuntimeException e) {
-      redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-      return "redirect:/";
-    }
-
-  }
-
+  //プロトタイプ編集
   @PostMapping("/prototypes/{id}/update")
   public String updatePrototype(@ModelAttribute("prototypeForm") @Validated({
       ValidationOrder.NameSequence.class,
@@ -149,15 +122,22 @@ public class PrototypeController {
       ValidationOrder.conceptSequence.class
   }) PrototypeForm prototypeForm, BindingResult result,
       @PathVariable("id") Integer id, Model model) {
-    // TODO: process POST request
+    
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
           .collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
-
       model.addAttribute("prototypeForm", prototypeForm);
       model.addAttribute("id", id);
-      return "prototypes/edit";
+
+      PrototypeEntity prototype = prototypeRepository.findById(id);
+        
+      // いいね・コメント等のデータセット（showPrototypeDetailの内容をコピー、または共通化）
+      prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+      model.addAttribute("prototype", prototype);
+      model.addAttribute("comments", prototype.getComments());
+      model.addAttribute("commentForm", new CommentForm());
+      return "prototypes/show";
     }
 
     try {
@@ -165,13 +145,13 @@ public class PrototypeController {
     } catch (Exception e) {
       // TODO: handle exception
       System.out.println("えらー：" + e);
-      return "redirect:/prototypes/" + id + "/edit";
+      return "redirect:/prototypes/" + id ;
     }
 
     return "redirect:/prototypes/" + id;
   }
-
-  // プロトタイプ詳細画面への遷移
+  
+  //プロトタイプ詳細画面
   @GetMapping("/prototypes/{prototypeId}")
   public String showPrototypeDetail(@PathVariable("prototypeId") Integer prototypeId, Model model, Authentication authentication) {
       PrototypeEntity prototype = prototypeRepository.findById(prototypeId);
@@ -197,6 +177,10 @@ public class PrototypeController {
     }
 
       model.addAttribute("prototype", prototype);
+
+      PrototypeForm form = prototypeService.getPrototypeForm(prototypeId);
+      model.addAttribute("prototypeForm", form);
+      
       model.addAttribute("commentForm", new CommentForm());
       model.addAttribute("comments",prototype.getComments());
       return "prototypes/show";
@@ -257,5 +241,4 @@ public class PrototypeController {
     }
     return "index";
   }
-
 }

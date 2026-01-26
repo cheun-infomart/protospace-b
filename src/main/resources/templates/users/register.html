@@ -16,6 +16,7 @@
             th:action="@{/user}"
             th:object="${userForm}"
             method="post"
+            enctype="multipart/form-data"
             th:data-user-register-active-step="${activeStep != null ? activeStep : 1}"
           >
             <div id="step-1">
@@ -86,6 +87,13 @@
                   class="new-error"
                 ></p>
               </div>
+
+              <div class="com-field">
+                <label th:for="image">アイコンの画像</label><br />
+                <input type="file" th:field="*{image}" id="image" />
+                <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
+              </div>
+
               <button type="button" class="com-btn" onclick="showStep(2)">次へ</button>
             </div>
             <div id="step-2" style="display: none">

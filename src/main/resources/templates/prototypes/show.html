@@ -6,18 +6,77 @@
   <body>
     <header th:replace="~{common/header :: header}"></header>
 
-    <!--詳細エリア-->
+    
     <div class="prototype-show-details">
+      <!--モーダルエリア-->
+      <div
+        id="confirmModal"
+        class="prototype-edit-modal-overlay"
+        th:style="${#vars['org.springframework.validation.BindingResult.prototypeForm']?.hasErrors()} ? 'display: flex;' : 'display: none;'"
+        onclick="closeOnOverlayClick(event, 'confirmModal')"
+      >
+        <div class="prototype-edit-modal-content" onclick="event.stopPropagation()">
+          <span id="modal-close-btn" class="modal-close-btn">&times;</span>
+          <div class="modal-title">
+            <span class="material-symbols-outlined">edit</span>
+            <h2 class="title-h2">プロトタイプ編集</h2>
+          </div>
+          <div class="modal-form">
+            <form
+              th:action="@{/prototypes/{id}/update(id=${prototype.id})}"
+              th:method="post"
+              th:object="${prototypeForm}"
+              enctype="multipart/form-data"
+            >
+              <div class="modal-field">
+                <label th:for="name">プロトタイプの名称</label>
+                <br />
+                <input type="text" th:field="*{name}" id="name" />
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="new-error"></p>
+              </div>
+
+              <div class="modal-field">
+                <label th:for="catchCopy">キャッチコピー</label>
+                <br />
+                <textarea class="user-textarea" th:field="*{catchCopy}" id="catchCopy"></textarea>
+                <p th:if="${#fields.hasErrors('catchCopy')}" th:errors="*{catchCopy}" class="new-error"></p>
+              </div>
+
+              <div class="modal-field">
+                <label th:for="concept">コンセプト</label>
+                <br />
+                <textarea class="user-textarea" th:field="*{concept}" id="concept"></textarea>
+                <p th:if="${#fields.hasErrors('concept')}" th:errors="*{concept}" class="new-error"></p>
+              </div>
+
+              <div class="modal-actions">
+                <label class="file_button" for="image">
+                  画像ファイルを選択
+                  <input type="file" th:field="*{image}" id="image" class="file_input" />
+                </label>
+                <p id="file-name" style="margin-left: 10px; font-size: 0.8em; color: #666;">選択されていません</p>
+                <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
+              </div>
+
+              <div class="modal-actions">
+                <input type="submit" value="保存する" class="modal-btn" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--詳細エリア-->
       <div class="prototype-show-container">
         <div class="prototype-show-header">
           <h3 class="title-h2" th:text="${prototype.name}"></h3>
+
           <div class="prototype-show-user-and-like">
             <div th:replace="~{common/like :: like}"></div>
-            <a
-              th:href="@{/users/{id}(id=${prototype.user.id})}"
-              class="prototype-show-author"
-              th:text="'by ' + ${prototype.user.name}"
-            ></a>
+            <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-show-author">
+              <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
+              <span th:text="|by ${prototype.user.name}|">by 名前</span>
+            </a>
           </div>
 
           <!--ログイン状態かつ自分の投稿かでボタンの表示変更-->
@@ -25,11 +84,11 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
           >
             <div class="prototype-show-button-section">
-              <a
-                th:href="@{/prototypes/{id}/edit(id=${prototype.id})}"
+              <button
                 class="prototype-show-btn"
-                >編集する</a
-              >
+                onclick="openEditModal()"
+                >編集する
+              </button>
               <form
                 th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
                 th:method="post"
@@ -47,84 +106,80 @@
         <div class="prototype-show-image">
           <img th:src="@{${prototype.image}}" alt="メッセージ画像" />
         </div>
-      </div>
+      
 
-      <div class="prototype-show-description">
-        <div class="prototype-show-info-group">
-          <h3 class="prototype-show-info-label">キャッチコピー</h3>
-          <p
-            class="prototype-show-info-text"
-            th:text="${prototype.catchCopy}"
-          ></p>
-        </div>
-        <div class="prototype-show-info-group">
-          <h3 class="prototype-show-info-label">コンセプト</h3>
-          <p
-            class="prototype-show-info-text"
-            th:text="${prototype.concept}"
-          ></p>
-        </div>
+        <div class="prototype-show-description">
+          <div class="prototype-show-info-group">
+            <h3 class="prototype-show-info-label">キャッチコピー</h3>
+            <p
+              class="prototype-show-info-text"
+              th:text="${prototype.catchCopy}"
+            ></p>
+          </div>
+          <div class="prototype-show-info-group">
+            <h3 class="prototype-show-info-label">コンセプト</h3>
+            <p
+              class="prototype-show-info-text"
+              th:text="${prototype.concept}"
+            ></p>
+          </div>
 
-        <!--コメントエリア-->
-        <div class="prototype-show-comment-section">
-          <div th:if="${#authorization.expression('isAuthenticated()')}">
-            <div id="error-container">
-              <div
-                th:if="${errorMessages}"
-                th:each="error : ${errorMessages}"
-                class="new-error"
-                id="new-error"
-              >
-                <span th:text="${error.defaultMessage}"></span>
+          <!--コメントエリア-->
+          <div class="prototype-show-comment-section">
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+              <div id="error-container">
+                <div
+                  th:if="${errorMessages}"
+                  th:each="error : ${errorMessages}"
+                  class="new-error"
+                  id="new-error"
+                >
+                  <span th:text="${error}"></span>
+                </div>
               </div>
+
+              <form
+                th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
+                method="post"
+                th:object="${commentForm}"
+                class="prototype-show-comment-form"
+                id="comment-form"
+              >
+                <label for="comment" class="prototype-show-comment-label">コメント</label>
+                <input class="prototype-show-comment-input" th:field="*{text}" type="text" id="comment-text" />
+                <input class="com-btn" type="submit" value="送信する" />
+              </form>
+            </div>
+            <div th:if="${#authorization.expression('!isAuthenticated()')}">
+              <strong>
+                <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
+              </strong>
             </div>
 
-            <form
-              th:action="@{/prototypes/{prototypeId}/comment(prototypeId=${prototype.id})}"
-              method="post"
-              th:object="${commentForm}"
-              class="prototype-show-comment-form"
-              id="comment-form"
-            >
-              <label for="comment" class="prototype-show-comment-label"
-                >コメント</label
-              >
-              <input
-                class="prototype-show-comment-input"
-                th:field="*{text}"
-                type="text"
-                id="comment-text"
-              />
-              <input class="com-btn" type="submit" value="送信する" />
-            </form>
-          </div>
-          <div th:if="${#authorization.expression('!isAuthenticated()')}">
-            <strong>
-              <p>※※※ コメントの投稿には新規登録/ログインが必要です ※※※</p>
-            </strong>
-          </div>
-
-          <ul class="prototype-show-comments">
-            <li th:each="comment:${comments}" class="prototype-show-comment">
-              <span
-                class="prototype-show-comment-text"
-                th:text="${comment.text}"
-              ></span>
-              <a
+            <ul class="prototype-show-comments">
+              <li th:each="comment:${comments}" class="prototype-show-comment">
+                <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
+                  <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
+                </a>
+                <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+                <a
                 th:href="@{/users/{userId}(userId=${comment.user.id})}"
                 th:text="${comment.user.name}"
                 class="prototype-show-comment-user"
-              ></a>
-            </li>
-          </ul>
+                ></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
+
     <div
       th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
     ></div>
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
+    <script th:src="@{/js/prototypesEdit.js}"></script>
   </body>
   <script th:inline="javascript" th:if="${errorMessage}">
     /*<![CDATA[*/
