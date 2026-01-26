@@ -55,11 +55,9 @@
                 ></p>
                 <div class="prototype-index-user-and-like">
                   <div th:replace="~{common/like :: like}"></div>
-                  <a
-                    class="prototype-index-card_user"
-                    th:href="@{/users/{id}(id=${prototype.user.id})}"
-                    th:text="'by ' + ${prototype.user.name}"
-                  ></a>
+                  <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-index-card_user">
+                  <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
+                  <span th:text="|by ${prototype.user.name}|">by 名前</span>
                 </div>
               </div>
             </div>
@@ -71,5 +69,6 @@
       ></div>
     </main>
     <footer th:replace="~{common/footer :: footer}"></footer>
+    
   </body>
 </html>
