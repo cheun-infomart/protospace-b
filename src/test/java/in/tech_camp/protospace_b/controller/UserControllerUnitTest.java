@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
@@ -74,6 +78,9 @@ public class UserControllerUnitTest {
 
   @Mock
   private Model model;
+
+  @Mock
+  private SecurityContext securityContext;
 
   @InjectMocks
   private UserController userController;
@@ -383,6 +390,17 @@ public class UserControllerUnitTest {
 
   @Nested
   public class ユーザー情報更新{
+
+    @BeforeEach
+    public void setUp(){
+      SecurityContextHolder.setContext(securityContext);
+    }
+
+    @AfterEach
+    public void tearDown(){
+      SecurityContextHolder.clearContext();
+    }
+
     @Test
     public void ログイン者が自分のユーザー情報に不備がない状態で更新すると問題なく実行される(){
       UserEntity user = UserFactory.createMockUser();
@@ -400,6 +418,9 @@ public class UserControllerUnitTest {
       String result = userController.updateUserDetail(userForm, bindingResult, userId, authentication, model);
 
       assertThat(result, is("redirect:/users/" + userId));
+
+      verify(userService, times(2)).findUser(userId);
+      verify(securityContext).setAuthentication(any(UsernamePasswordAuthenticationToken.class));
     }
 
     @Test

@@ -239,7 +239,7 @@ public class UserController {
     try {
       userService.updateUser(id, userForm, currentUserId);
 
-      // セッションの更新処理
+      // セッションの更新処理（トップページのログインユーザー表示更新）
       // 更新後の最新データをDBから取得
       UserEntity updatedUser = userService.findUser(id);
       // 新しいCustomUserDetailを作成
