@@ -98,6 +98,7 @@ public class UserControllerUnitTest {
     void Refererがいると以前のページを保存() {
       String validReferer = "http://localhost:8080/prototypes/1";
       when(request.getHeader("Referer")).thenReturn(validReferer);
+      when(request.getHeader("Accept")).thenReturn("text/html");
       String viewName = userController.showLogin(null, request, session, model);
       assertEquals("users/login", viewName);
       verify(session, times(1)).setAttribute("prevPage", validReferer);
@@ -124,7 +125,7 @@ public class UserControllerUnitTest {
 
     // テスト用の空でない画像ファイルを作成
     private MockMultipartFile createMockImage() {
-        return new MockMultipartFile("image", "test.png", "image/png", "test data".getBytes());
+      return new MockMultipartFile("image", "test.png", "image/png", "test data".getBytes());
     }
 
     @Test
@@ -168,7 +169,7 @@ public class UserControllerUnitTest {
 
       // サービスの呼び出し引数を修正（userEntityとMultipartFileの2引数に対応）
       doThrow(new RuntimeException("DBエラー等"))
-        .when(userService).createUserWithEncryptedPassword(any(UserEntity.class), any(MultipartFile.class));
+          .when(userService).createUserWithEncryptedPassword(any(UserEntity.class), any(MultipartFile.class));
 
       // 実行
       Model model = new ExtendedModelMap();
@@ -204,6 +205,7 @@ public class UserControllerUnitTest {
       assertThat(viewName, is("users/register"));
       verify(bindingResult).rejectValue("email", "null", "メールアドレスは既に存在します");
     }
+
     @Test
     public void ユーザー登録が成功した場合は自動ログインされトップページにリダイレクトされる() throws IOException {
       UserForm userForm = new UserForm();
@@ -215,7 +217,7 @@ public class UserControllerUnitTest {
 
       when(bindingResult.hasErrors()).thenReturn(false);
       when(userRepository.existsByEmail(anyString())).thenReturn(false);
-      
+
       // 自動ログイン処理に必要なHttpServletRequestからHttpSessionを取得する動きをモック化
       when(request.getSession(true)).thenReturn(session);
 
@@ -224,10 +226,10 @@ public class UserControllerUnitTest {
       String result = userController.createUser(userForm, bindingResult, model, request);
 
       assertThat(result, is("redirect:/"));
-      
+
       // ユーザー保存メソッドが呼ばれたか
       verify(userService, times(1)).createUserWithEncryptedPassword(any(UserEntity.class), any(MultipartFile.class));
-      
+
       // セッションに認証情報（SPRING_SECURITY_CONTEXT）がセットされたか検証
       verify(session, times(1)).setAttribute(eq("SPRING_SECURITY_CONTEXT"), any());
     }
@@ -251,7 +253,8 @@ public class UserControllerUnitTest {
       // URLパラメータ ?error= の値を想定したダミー文字列
       String errorParam = "true";
       userController.showLogin(errorParam, request, session, model);
-      verify(model, times(1)).addAttribute(eq("loginError"), anyString());
+
+      assertEquals("メールアドレスまたはパスワードが無効です。", model.getAttribute("loginError"));
     }
   }
 
