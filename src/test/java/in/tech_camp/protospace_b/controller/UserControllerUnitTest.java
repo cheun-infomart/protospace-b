@@ -196,7 +196,7 @@ public class UserControllerUnitTest {
       verify(bindingResult).rejectValue("email", "null", "メールアドレスは既に存在します");
     }
     @Test
-    public void ユーザー登録が成功した場合は自動ログインされトップページにリダイレクトされる() {
+    public void ユーザー登録が成功した場合は自動ログインされトップページにリダイレクトされる() throws IOException {
       UserForm userForm = new UserForm();
       userForm.setName("テスト太郎");
       userForm.setEmail("test@example.com");
@@ -216,7 +216,7 @@ public class UserControllerUnitTest {
       assertThat(result, is("redirect:/"));
       
       // ユーザー保存メソッドが呼ばれたか
-      verify(userService, times(1)).createUserWithEncryptedPassword(any(UserEntity.class));
+      verify(userService, times(1)).createUserWithEncryptedPassword(any(UserEntity.class), any(MultipartFile.class));
       
       // セッションに認証情報（SPRING_SECURITY_CONTEXT）がセットされたか検証
       verify(session, times(1)).setAttribute(eq("SPRING_SECURITY_CONTEXT"), any());

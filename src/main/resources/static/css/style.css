@@ -690,14 +690,36 @@ footer {
   display: flex;
   gap: 6px;
   list-style-type: none;
+  align-items: flex-start; /* 修正：2行のテキストに合わせて上端で揃える */
+}
+
+/* コメント内容（名前・日付・本文）を縦に並べる専用コンテナ */
+.prototype-show-comment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ユーザー名と日付を横に並べる専用コンテナ */
+.prototype-show-comment-user-date {
+  display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+/* 投稿日時のスタイル（文字色を薄く、少し小さく） */
+.prototype-show-comment-date {
+  font-size: 12px;
+  color: #999;
+  line-height: 1;
 }
 
 .prototype-show-comment-text {
   font-weight: 400;
   font-size: 16px;
-  line-height: 100%;
+  line-height: 1.4; /* 修正：2行になった際に読みやすいよう少し広げる */
 }
+
 .prototype-show-comment-user {
   font-weight: 400;
   font-size: 16px;

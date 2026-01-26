@@ -52,12 +52,7 @@
         <div class="prototype-show-comment-section">
           <div th:if="${#authorization.expression('isAuthenticated()')}">
             <div id="error-container">
-              <div
-                th:if="${errorMessages}"
-                th:each="error : ${errorMessages}"
-                class="new-error"
-                id="new-error"
-              >
+              <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
                 <span th:text="${error.defaultMessage}"></span>
               </div>
             </div>
@@ -85,20 +80,24 @@
               <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
                 <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
               </a>
-              <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
-              <a
-                th:href="@{/users/{userId}(userId=${comment.user.id})}"
-                th:text="${comment.user.name}"
-                class="prototype-show-comment-user"
-              ></a>
+
+              <div class="prototype-show-comment-content">
+                <div class="prototype-show-comment-user-date">
+                  <a
+                    th:href="@{/users/{userId}(userId=${comment.user.id})}"
+                    th:text="${comment.user.name}"
+                    class="prototype-show-comment-user"
+                  ></a>
+                  <div class="prototype-show-comment-date" th:text="${comment.createdAt}">日付</div>
+                </div>
+                <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+              </div>
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div
-      th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
-    ></div>
+    <div th:replace="~{common/login_modal_for_like :: login_modal_for_like}"></div>
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
   </body>
