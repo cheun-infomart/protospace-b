@@ -14,13 +14,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; 
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; 
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import in.tech_camp.protospace_b.config.CustomUserDetails;
@@ -37,7 +37,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor; // 追加
-
 
 @Controller
 @AllArgsConstructor
@@ -69,7 +68,7 @@ public class UserController {
       HttpServletRequest request) {
     userForm.validatePasswordConfirmation(result);
     if (userForm.getImage().isEmpty()) {
-        result.rejectValue("image", "error.image", "アイコン画像は必須です");
+      result.rejectValue("image", "error.image", "アイコン画像は必須です");
     }
 
     if (userRepository.existsByEmail(userForm.getEmail())) {
@@ -100,13 +99,15 @@ public class UserController {
     userEntity.setDepartment(userForm.getDepartment());
     userEntity.setPosition(userForm.getPosition());
     userEntity.setPassword(userForm.getPassword());
+    userEntity.setSecurityQuestion(userForm.getSecurityQuestion());
+    userEntity.setSecurityAnswer(userForm.getSecurityAnswer());
 
     try {
       userService.createUserWithEncryptedPassword(userEntity, userForm.getImage());
       // 自動ログイン処理
       CustomUserDetails userDetails = new CustomUserDetails(userEntity);
       UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-        userDetails, null, userDetails.getAuthorities());
+          userDetails, null, userDetails.getAuthorities());
 
       SecurityContext context = SecurityContextHolder.createEmptyContext();
       context.setAuthentication(token);
@@ -166,23 +167,22 @@ public class UserController {
       Integer currentUserId = null;
       if (authentication != null && authentication
           .getPrincipal() instanceof in.tech_camp.protospace_b.config.CustomUserDetails) {
-        currentUserId =
-            ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal())
-                .getId();
+        currentUserId = ((in.tech_camp.protospace_b.config.CustomUserDetails) authentication.getPrincipal())
+            .getId();
       }
 
-        // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
-        // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
-        for (PrototypeEntity prototype : prototypes) {
-            prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
-            
-            if (currentUserId != null) {
-                int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
-                prototype.setIsLiked(likeCheck > 0);
-            } else {
-                prototype.setIsLiked(false);
-            }
+      // 2. ユーザーが投稿した各プロトタイプに「いいね」情報をセット
+      // ※ PrototypeController等と同様に likeRepository をインジェクションしておく必要があります
+      for (PrototypeEntity prototype : prototypes) {
+        prototype.setLikeCount(likeRepository.countByPrototypeId(prototype.getId()));
+
+        if (currentUserId != null) {
+          int likeCheck = likeRepository.countByUserAndPrototype(currentUserId, prototype.getId());
+          prototype.setIsLiked(likeCheck > 0);
+        } else {
+          prototype.setIsLiked(false);
         }
+      }
       model.addAttribute("user", user);
       model.addAttribute("prototypes", user.getPrototypes());
     }
@@ -244,7 +244,6 @@ public class UserController {
   @GetMapping("/users/password/reset")
   public String showPasswordResetForm(HttpSession session, Authentication aut,
       Model model) {
-
 
     if (aut != null && aut.isAuthenticated() && !(aut instanceof AnonymousAuthenticationToken)) {
       return "redirect:/";
