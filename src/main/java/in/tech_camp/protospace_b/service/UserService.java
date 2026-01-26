@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import in.tech_camp.protospace_b.ImageUrl;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.UserEntity;
+import in.tech_camp.protospace_b.form.PasswordFindForm;
 import in.tech_camp.protospace_b.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -25,32 +27,31 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final ImageUrl imageUrl; // 画像保存パス取得用に追加
 
-    // 画像ファイルの保存処理（PrototypeServiceを参考に実装）
-    public String saveImage(MultipartFile imageFile) throws IOException {
-        if (imageFile == null || imageFile.isEmpty()) {
-            return null;
-        }
-
-        String uploadDir = imageUrl.getImageUrl();
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_" + imageFile.getOriginalFilename();
-        Path imagePath = Paths.get(uploadDir, fileName);
-
-        if (!Files.exists(imagePath)) {
-            Files.createDirectories(imagePath);
-        }
-        
-        Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-        return "/uploads/" + fileName;
+  // 画像ファイルの保存処理（PrototypeServiceを参考に実装）
+  public String saveImage(MultipartFile imageFile) throws IOException {
+    if (imageFile == null || imageFile.isEmpty()) {
+      return null;
     }
 
+    String uploadDir = imageUrl.getImageUrl();
+    String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_"
+        + imageFile.getOriginalFilename();
+    Path imagePath = Paths.get(uploadDir, fileName);
 
+    if (!Files.exists(imagePath)) {
+      Files.createDirectories(imagePath);
+    }
+
+    Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+    return "/uploads/" + fileName;
+  }
 
   public void createUserWithEncryptedPassword(UserEntity userEntity, MultipartFile imageFile) throws IOException {
 
     // 1. 画像の保存とパスのセット
     if (imageFile != null && !imageFile.isEmpty()) {
-        String savedImagePath = saveImage(imageFile);
-        userEntity.setImage(savedImagePath);
+      String savedImagePath = saveImage(imageFile);
+      userEntity.setImage(savedImagePath);
     }
     // 2. パスワードの暗号化
     String encodedPassword = encodePassword(userEntity.getPassword());
@@ -84,5 +85,21 @@ public class UserService {
     // 削除処理実行
     userRepository.deleteById(id);
 
+  }
+
+  // 本人確認
+  public UserEntity findVerifiedUser(PasswordFindForm form) {
+    return userRepository.findByUserInfo(
+        form.getEmail(),
+        form.getSecurityQuestion(),
+        form.getSecurityAnswer());
+  }
+
+  // パスワード変更
+  @Transactional
+  public void updatePassword(String email, String newPassword) {
+    String encodedPassword = passwordEncoder.encode(newPassword);
+
+    userRepository.updatePassword(email, encodedPassword);
   }
 }

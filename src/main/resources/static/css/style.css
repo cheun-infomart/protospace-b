@@ -399,7 +399,7 @@ footer {
   padding: 10px 0;
   text-align: center;
   color: #fff;
-  margin-top: auto;
+  margin-top: 48px;
 }
 
 .copyright {
@@ -464,7 +464,7 @@ footer {
 }
 
 .com-actions {
-  margin: 0 0 40px;
+  margin: 0 0 30px;
 }
 
 /* エラーメッセージ（前回決めた通り） */
@@ -924,6 +924,16 @@ footer {
 
 .user-show-author-link:hover {
   color: #666;
+}
+
+.password-find a {
+  color: #3498db;
+  font-size: 0.9rem; 
+  transition: all 0.3s;/
+}
+
+.password-find a:hover {
+  text-decoration: underline; 
 }
 
 /* 1024px以下の表示 */
