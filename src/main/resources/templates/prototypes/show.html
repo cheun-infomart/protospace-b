@@ -77,9 +77,11 @@
 
           <ul class="prototype-show-comments">
             <li th:each="comment:${comments}" class="prototype-show-comment">
-              <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
-                <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
-              </a>
+              <div class="prototype-show-comment-side">
+                <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
+                  <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
+                </a>
+              </div>
 
               <div class="prototype-show-comment-content">
                 <div class="prototype-show-comment-user-date">
@@ -88,9 +90,12 @@
                     th:text="${comment.user.name}"
                     class="prototype-show-comment-user"
                   ></a>
-                  <div class="prototype-show-comment-date" th:text="${comment.createdAt}">日付</div>
+                  <div class="prototype-show-comment-date" th:text="${comment.getRelativeTime}">日付</div>
                 </div>
-                <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+
+                <div class="prototype-show-comment-text-wrapper">
+                  <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+                </div>
               </div>
             </li>
           </ul>

@@ -58,17 +58,26 @@ public class CommentController {
 
   String htmlResponse = String.format(
         "<li class='prototype-show-comment'>" +
-        "  <a href='/users/%d'>" +
-        "    <img src='%s' alt='user-icon' class='user-icon-mini' />" +
-        "  </a>" +
-        "  <span class='prototype-show-comment-text'>%s</span>" +
-        "  <a href='/users/%d' class='prototype-show-comment-user'>%s</a>" +
-        "</li>", 
-        currentUser.getId(), // アイコンのリンク用
-        userImage,           // imgタグのsrc用
-        commentForm.getText(), 
+        "  <div class='prototype-show-comment-side'>" + 
+        "    <a href='/users/%d'>" +
+        "      <img src='%s' alt='user-icon' class='user-icon-mini' />" + 
+        "    </a>" +
+        "  </div>" + 
+        "  <div class='prototype-show-comment-content'>" + 
+        "    <div class='prototype-show-comment-user-date'>" +
+        "      <a href='/users/%d' class='prototype-show-comment-user'>%s</a>" +
+        "      <div class='prototype-show-comment-date'>たった今</div>" +
+        "    </div>" +
+        "    <div class='prototype-show-comment-text-wrapper'>" + 
+        "      <span class='prototype-show-comment-text'>%s</span>" + 
+        "    </div>" + 
+        "  </div>" +
+        "</li>",
         currentUser.getId(), 
-        displayName
+        userImage,           
+        currentUser.getId(),
+        displayName,
+        commentForm.getText()
     );
     return ResponseEntity.ok(htmlResponse);
   }

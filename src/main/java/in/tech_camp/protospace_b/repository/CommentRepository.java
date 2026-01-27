@@ -19,7 +19,6 @@ public interface  CommentRepository {
     @Result(property = "user.name", column = "user_name"),
     @Result(property = "user.image", column = "user_image"),
     @Result(property = "createdAt", column = "created_at")
-  
     })
     List<CommentEntity> findByPrototypeId(Integer prototypeId);
 
