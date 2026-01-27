@@ -254,6 +254,21 @@ main {
   width: 100%;
 }
 
+.prototype-index-icons{
+  display: flex;
+  gap:10px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.prototype-index-comment {
+    /* 1. Flexbox で中央揃えにする場合 */
+    display: flex;
+    align-items: center;
+}
+
 .prototype-index-card_user {
   display: flex;
   align-items: center;
