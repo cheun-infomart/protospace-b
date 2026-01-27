@@ -205,7 +205,6 @@ main {
   background-color: rgba(241, 248, 254, 0.5);
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08), 
               -2px -2px 5px rgba(255, 255, 255, 0.5);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 #prototype_link {
   display: block;
