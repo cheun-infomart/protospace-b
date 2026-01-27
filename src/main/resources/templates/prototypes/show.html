@@ -69,7 +69,7 @@
       <!--詳細エリア-->
       <div class="prototype-show-container">
         <div class="prototype-show-header">
-          <h3 class="title-h2" th:text="${prototype.name}"></h3>
+          <h3 class="prototype-show-title" th:text="${prototype.name}"></h3>
 
           <div class="prototype-show-user-and-like">
             <div th:replace="~{common/like :: like}"></div>
@@ -103,7 +103,7 @@
         </div>
         <!-- メイン画像 -->
         <div class="prototype-show-image">
-          <img th:src="@{${prototype.image}}" alt="メッセージ画像" />
+          <img th:src="@{${prototype.image}}" alt="プロトタイプ画像" />
         </div>
       
 
