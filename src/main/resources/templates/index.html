@@ -10,10 +10,7 @@
 
     <main class="prototype-index-main">
       <div class="prototype-index-content">
-        <div
-          class="prototype-index-greeting"
-          th:if="${#authorization.expression('isAuthenticated()')}"
-        >
+        <div class="prototype-index-greeting" th:if="${#authorization.expression('isAuthenticated()')}">
           <span>こんにちは、</span>
           <a
             class="prototype-index-greeting_link"

@@ -6,7 +6,6 @@
   <body>
     <header th:replace="~{common/header :: header}"></header>
 
-    
     <div class="prototype-show-details">
       <!--モーダルエリア-->
       <div
@@ -17,7 +16,6 @@
         <div class="prototype-edit-modal-content">
           <span class="modal-close-btn">&times;</span>
           <div class="modal-title">
-            
             <span class="material-symbols-outlined">edit</span>
             <h2 class="title-h2">プロトタイプ編集</h2>
           </div>
@@ -54,7 +52,7 @@
                   画像ファイルを選択
                   <input type="file" th:field="*{image}" id="image" class="file_input" />
                 </label>
-                <p id="file-name" style="margin-left: 10px; font-size: 0.8em; color: #666;">選択されていません</p>
+                <p id="file-name" style="margin-left: 10px; font-size: 0.8em; color: #666">選択されていません</p>
                 <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
               </div>
 
@@ -84,19 +82,9 @@
             th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getId == prototype.user.id}"
           >
             <div class="prototype-show-button-section">
-              <button
-                class="prototype-show-btn prototype-show-btn-edit"
-                >編集する</button
-              >
-              <form
-                th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
-                th:method="post"
-              >
-                <input
-                  type="submit"
-                  class="prototype-show-btn"
-                  value="削除する"
-                />
+              <button class="prototype-show-btn prototype-show-btn-edit">編集する</button>
+              <form th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}" th:method="post">
+                <input type="submit" class="prototype-show-btn" value="削除する" />
               </form>
             </div>
           </div>
@@ -105,34 +93,22 @@
         <div class="prototype-show-image">
           <img th:src="@{${prototype.image}}" alt="プロトタイプ画像" />
         </div>
-      
 
         <div class="prototype-show-description">
           <div class="prototype-show-info-group">
             <h3 class="prototype-show-info-label">キャッチコピー</h3>
-            <p
-              class="prototype-show-info-text"
-              th:text="${prototype.catchCopy}"
-            ></p>
+            <p class="prototype-show-info-text" th:text="${prototype.catchCopy}"></p>
           </div>
           <div class="prototype-show-info-group">
             <h3 class="prototype-show-info-label">コンセプト</h3>
-            <p
-              class="prototype-show-info-text"
-              th:text="${prototype.concept}"
-            ></p>
+            <p class="prototype-show-info-text" th:text="${prototype.concept}"></p>
           </div>
 
           <!--コメントエリア-->
           <div class="prototype-show-comment-section">
             <div th:if="${#authorization.expression('isAuthenticated()')}">
               <div id="error-container">
-                <div
-                  th:if="${errorMessages}"
-                  th:each="error : ${errorMessages}"
-                  class="new-error"
-                  id="new-error"
-                >
+                <div th:if="${errorMessages}" th:each="error : ${errorMessages}" class="new-error" id="new-error">
                   <span th:text="${error}"></span>
                 </div>
               </div>
@@ -157,24 +133,33 @@
 
             <ul class="prototype-show-comments">
               <li th:each="comment:${comments}" class="prototype-show-comment">
-                <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
-                  <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
-                </a>
-                <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
-                <a
-                  th:href="@{/users/{userId}(userId=${comment.user.id})}"
-                  th:text="${comment.user.name}"
-                  class="prototype-show-comment-user"
-                ></a>
+                <div class="prototype-show-comment-side">
+                  <a th:href="@{/users/{userId}(userId=${comment.user.id})}">
+                    <img th:src="@{${comment.user.image}}" alt="user-icon" class="user-icon-mini" />
+                  </a>
+                </div>
+
+                <div class="prototype-show-comment-content">
+                  <div class="prototype-show-comment-user-date">
+                    <a
+                      th:href="@{/users/{userId}(userId=${comment.user.id})}"
+                      th:text="${comment.user.name}"
+                      class="prototype-show-comment-user"
+                    ></a>
+                    <div class="prototype-show-comment-date" th:text="${comment.getRelativeTime}">日付</div>
+                  </div>
+
+                  <div class="prototype-show-comment-text-wrapper">
+                    <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-    <div
-      th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
-    ></div>
+    <div th:replace="~{common/login_modal_for_like :: login_modal_for_like}"></div>
     <footer th:replace="~{common/footer :: footer}"></footer>
     <script th:src="@{/js/comment.js}"></script>
     <script th:src="@{/js/prototypesEdit.js}"></script>
