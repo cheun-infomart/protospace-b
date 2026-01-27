@@ -20,13 +20,13 @@
                 <div class="com-field">
                   <label>メールアドレス</label><br />
                   <input type="text" th:field="*{email}" autofocus="autofocus" />
-                  <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="new-error"></p>
+                  <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="upper-new-error"></p>
                 </div>
 
                 <div class="com-field">
                   <label>パスワード(6文字以上)</label><br />
                   <input type="password" th:field="*{password}" autocomplete="off" />
-                  <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="new-error"></p>
+                  <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="upper-new-error"></p>
                 </div>
 
                 <div class="com-field">
@@ -35,20 +35,32 @@
                   <p
                     th:if="${#fields.hasErrors('passwordConfirmation')}"
                     th:errors="*{passwordConfirmation}"
-                    class="new-error"
+                    class="upper-new-error"
                   ></p>
                 </div>
 
                 <div class="com-field">
                   <label>ユーザー名</label><br />
                   <input type="text" th:field="*{name}" />
-                  <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="new-error"></p>
+                  <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="upper-new-error"></p>
                 </div>
 
               </div>
-              <div class="register-upper-right">
-                <img id="image-preview" src="" alt="プレビュー"/>
-                <p id="file-name">選択されていません</p>
+              <div class="register-upper-right-wrapper">
+                <p class="register-icon-title" th:for="image">アイコンの画像</p>
+                <div class="register-upper-right">
+                  <img id="image-preview" src="" alt="プレビュー"/>
+                  <div class="register-text">
+                    <p id="file-name-text" class="file-name-text"></p>
+                    <div class="file-select-area">
+                      <label for="image" class="file-select-button">
+                        ファイルを選択
+                      </label>
+                      <input type="file" th:field="*{image}" id="image" class="hidden-file-input"/>
+                    </div>
+                  </div>
+                </div>
+                <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-image-error"></p>
               </div>
             </div>
 
@@ -71,12 +83,7 @@
                 <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}" class="new-error"></p>
               </div>
 
-              <div class="com-field">
-                <label th:for="image">アイコンの画像</label>
-                <br />
-                <input type="file" th:field="*{image}" id="image" />
-                <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
-              </div>
+              
 
               <div class="com-actions">
                 <input class="com-btn" type="submit" value="新規登録" data-disable-with="新規登録" />

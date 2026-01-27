@@ -488,35 +488,112 @@ footer {
     新規登録画面
    ========================================== */
 
+.upper-new-error{
+  color: #ff4d4f;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  max-width: 180px;
+}
+
 .register-upper{
   display: flex;
+  align-items: stretch;
   gap:10px;
   width: 50%;
 }
 
-.register-upper-right{
-  margin:10px 0;
+.register-upper-left {
+  flex: 0 0 auto; /* 勝手に伸び縮みさせない */
+}
+
+.register-upper-right-wrapper {
+  flex: 1;
+  max-width: 200px;
+  max-height: 280px;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 左右（主軸）の中央 */
+  margin: 10px auto 0;
+}
+
+.register-upper-right{
+  width:100%;
+  margin:0 auto ;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  border:1px solid #999999;
+  border-radius: 5px;
+  flex-shrink: 0
 }
 
 .register-upper-right img{
   display: none; 
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 8px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
- 
 
+.register-icon-title{
+  align-self: flex-start;
+  color: #3b4043;
+  line-height: 1.6;
+  font-size: 16px;
+}
+.register-text{
+  width: 100%;
+  text-align: center;
+  /* 上にオートのマージンを入れることで、一番下まで押し下げられる */
+  margin-top: auto; 
+}
 
-.register-upper-right p{
+.register-upper-right{
   font-size: 0.8em; 
   color: #666;
 }
+
+.com-field-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.file-select-button {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #007bff; /* ボタンの色 */
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.file-select-button:hover {
+  background-color: #0056b3;
+}
+
+.file-select-area{
+  margin-bottom: 10px;
+}
+/* インプットは隠す（これで「選択されていません」が消える） */
+.hidden-file-input {
+  display: none;
+}
+
+.file-name-text {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.new-image-error{
+text-align: center;
+color: #ff4d4f;
+font-size: 0.85rem;
+margin-bottom: 10px;
+}
+
 /* ==========================================
    プロトタイプ詳細画面
    ========================================== */

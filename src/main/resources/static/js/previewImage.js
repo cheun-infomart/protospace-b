@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('image');
-  const fileNameDisplay = document.getElementById('file-name');
+  const fileNameDisplay = document.getElementById('file-name-text');
   const previewImage = document.getElementById('image-preview');
 
   if(fileInput){
@@ -26,5 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     })
   }
+
+  document.getElementById('image').addEventListener('change', function(e) {
+  const fileName = e.target.files[0] ? e.target.files[0].name : '未選択';
+  document.getElementById('file-name-text').textContent = fileName;
+});
 });
 
