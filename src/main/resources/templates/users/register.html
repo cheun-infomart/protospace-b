@@ -58,9 +58,11 @@
                 <div class="register-upper-right-wrapper">
                   <p class="register-icon-title" th:for="image">アイコンの画像</p>
                   <div class="register-upper-right">
-                    <img id="image-preview" src="" alt="プレビュー"/>
+                    <div class="circle-base">
+                      <img id="image-preview" src="" alt="プレビュー"/>
+                    </div>
                     <div class="register-text">
-                      <p id="file-name-text" class="file-name-text"></p>
+                      <p id="file-name-text" class="file-name-text">未選択</p>
                       <div class="file-select-area">
                         <label for="image" class="file-select-button">
                           ファイルを選択

@@ -74,6 +74,8 @@ public class UserControllerUnitTest {
 
   @Mock
   private RedirectAttributes redirectAttributes;
+  
+  @Mock
   private HttpSession session;
 
   @Mock
@@ -221,9 +223,9 @@ public class UserControllerUnitTest {
       // 自動ログイン処理に必要なHttpServletRequestからHttpSessionを取得する動きをモック化
       when(request.getSession(true)).thenReturn(session);
 
-    //   Model model = new ExtendedModelMap();
+       Model model = new ExtendedModelMap();
 
-    //   String result = userController.createUser(userForm, bindingResult, model, request);
+       String result = userController.createUser(userForm, bindingResult, model, request);
 
       assertThat(result, is("redirect:/"));
 
