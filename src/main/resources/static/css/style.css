@@ -371,11 +371,12 @@ main {
 }
 
 .user-icon-mini {
-  width: 30px;
-  height: 30px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 8px;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
 }
 
 /* 1024px以下の表示 */
@@ -781,9 +782,9 @@ font-size: 0.85rem;
   gap: 16px;
 }
 
-.prototype-show-title {
+.prototype-show-title{
   font-weight: 700;
-  font-size: 24px;
+  font-size: 30px;
   line-height: 100%;
   color: #3b4043;
 }
@@ -855,8 +856,8 @@ font-size: 0.85rem;
 }
 
 .prototype-show-image {
-  width: 400px;
-  height: 400px;
+  width: 324px;
+  height: 324px;
   padding: 16px 0;
   margin: 0 auto;
 }
@@ -959,29 +960,47 @@ font-size: 0.85rem;
 .prototype-show-comments {
   display: flex;
   flex-flow: column;
-  gap: 5px;
+  gap: 10px;
+  max-height: 500px; /* 修正：任意の高さに制限 */
+  overflow-y: auto; /* 追加：高さ制限を超えたらスクロールを表示 */
+  padding-right: 10px; /* 追加：スクロールバーとコンテンツの重なりを防止 */
 }
 
+/* リストアイテム全体を縦並びに */
 .prototype-show-comment {
   display: flex;
-  gap: 6px;
-  list-style-type: none;
-  align-items: center;
+  align-items: flex-start; /* 基本は上揃え */
+  gap: 8px; /* アイコンと右側ブロックの間の距離 */
 }
 
-.prototype-show-comment-text {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
+/* 右側：縦に並べる */
+.prototype-show-comment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* 名前行と本文の上下の隙間 */
+  flex: 1; /* 残りの幅をすべて使う */
 }
-.prototype-show-comment-user {
-  font-weight: 400;
+
+/* ユーザー名と日付の行 */
+.prototype-show-comment-user-date {
+  display: flex;
+  align-items: flex-end; /* 名前と日付を下揃えに */
+  /* アイコンと高さを合わせるための調整 */
+  min-height: 30px; /* アイコンの高さと同じにする */
+  gap: 8px;
+}
+
+.prototype-show-comment-user,
+.prototype-show-comment-date {
   font-size: 16px;
-  line-height: 100%;
-  text-decoration-line: underline;
-  text-decoration-style: solid;
-  text-underline-offset: 0%;
-  color: #999999;
+  color: #999;
+}
+
+/* コメント本文のスタイル */
+.prototype-show-comment-text {
+  font-size: 20px;
+  line-height: 1.4;
+  word-break: break-all;
 }
 
 /* ==========================================
