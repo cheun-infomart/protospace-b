@@ -34,8 +34,8 @@
 // //   @MockitoBean
 // //   private LikeService likeService;
 
-// //   @Nested
-// //     class ログイン済みの場合 {
+  @Nested
+  class ログイン済みの場合 {
 
 // //     @Test
 // //     public void いいねボタンを押すと200OKとJSONが返ること() throws Exception {
@@ -49,29 +49,28 @@
 // //       user.setId(1);
 // //       CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
+      mockMvc.perform(post("/api/prototypes/10/like")
+          .with(SecurityMockMvcRequestPostProcessors.user(customUserDetails)) // ログイン状態を再現
+          .with(SecurityMockMvcRequestPostProcessors.csrf()))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.isLiked").value(true))
+          .andExpect(jsonPath("$.LikeCount").value(5));
 
-// //       mockMvc.perform(post("/api/prototypes/10/like")
-// //               .with(SecurityMockMvcRequestPostProcessors.user(customUserDetails)) // ログイン状態を再現
-// //               .with(SecurityMockMvcRequestPostProcessors.csrf()))
-// //               .andExpect(status().isOk())
-// //               .andExpect(jsonPath("$.isLiked").value(true))
-// //               .andExpect(jsonPath("$.LikeCount").value(5));
-      
-// //       verify(likeService, times(1)).toggleLike(eq(1), eq(10));
-// //     }
-// //   }
+      verify(likeService, times(1)).toggleLike(eq(1), eq(10));
+    }
+  }
 
-// //   @Nested
-// //   class 未ログインの場合 {
-// //     @Test
-// //     public void いいねボタンを押すとエラーが発生すること() throws Exception {
-// //       // ログイン情報を渡さずにPOSTリクエスト
-// //       mockMvc.perform(post("/api/prototypes/10/like")
-// //               .with(SecurityMockMvcRequestPostProcessors.csrf()))
-// //               .andExpect(status().isUnauthorized());
-      
-// //       // Serviceは呼ばれていないことを検証
-// //       verify(likeService, never()).toggleLike(anyInt(), anyInt());
-// //     }
-// //   }
-// // }
+  @Nested
+  class 未ログインの場合 {
+    @Test
+    public void いいねボタンを押すとエラーが発生すること() throws Exception {
+      // ログイン情報を渡さずにPOSTリクエスト
+      mockMvc.perform(post("/api/prototypes/10/like")
+          .with(SecurityMockMvcRequestPostProcessors.csrf()))
+          .andExpect(status().isUnauthorized());
+
+      // Serviceは呼ばれていないことを検証
+      verify(likeService, never()).toggleLike(anyInt(), anyInt());
+    }
+  }
+}
