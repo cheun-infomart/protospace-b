@@ -24,20 +24,27 @@ public class SecurityConfig {
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/",
+                                                .requestMatchers("/css/**", "/js/**", "/images/**",
+                                                                "/uploads/**", "/",
                                                                 "/users/register", "/users/login",
                                                                 "/.well-known/**",
                                                                 "/favicon.ico",
-                                                                "/prototypes/{id:[0-9]+}", "/users/{id:[0-9]+}",
+                                                                "/prototypes/{id:[0-9]+}",
+                                                                "/users/{id:[0-9]+}",
                                                                 "/prototypes/search/**")
+
                                                 .permitAll()
-                                                .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                                                .requestMatchers("/users/password/find",
+                                                                "/users/password/reset")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/user")
+                                                .permitAll()
                                                 .requestMatchers("/api/**").authenticated()
                                                 .anyRequest().authenticated())
                                 .formLogin(login -> login
                                                 .loginProcessingUrl("/login")
                                                 .loginPage("/users/login")
-                                                .failureUrl("/login?error")
+                                                .failureUrl("/users/login?error")
                                                 .successHandler(customLoginSession)
                                                 .usernameParameter("email")
                                                 .permitAll())

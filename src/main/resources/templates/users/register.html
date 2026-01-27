@@ -10,68 +10,131 @@
       <div class="com-inner">
         <div class="com-form">
           <h2 class="title-h2">ユーザー新規登録</h2>
+          <form
+            class="register-new_user"
+            id="userRegister_form"
+            th:action="@{/user}"
+            th:object="${userForm}"
+            method="post"
+            enctype="multipart/form-data"
+            th:data-user-register-active-step="${activeStep != null ? activeStep : 1}"
+          >
+            <div id="step-1">
+              <h3>１：アカウント情報</h3>
 
-          <form class="register-new_user" th:action="@{/user}" th:object="${userForm}" method="post" enctype="multipart/form-data">
-            <div class="com-field">
-              <label>メールアドレス</label><br />
-              <input type="text" th:field="*{email}" autofocus="autofocus" />
-              <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="new-error"></p>
+              <div class="register-upper">
+                
+                <div class="register-upper-left">
+                
+                  <div class="com-field">
+                    <label>メールアドレス</label><br />
+                    <input type="text" th:field="*{email}" autofocus="autofocus" />
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="upper-new-error"></p>
+                  </div>
+
+                  <div class="com-field">
+                    <label>パスワード(6文字以上)</label><br />
+                    <input type="password" th:field="*{password}" autocomplete="off" />
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="upper-new-error"></p>
+                  </div>
+
+                  <div class="com-field">
+                    <label>パスワード再入力</label><br />
+                    <input type="password" th:field="*{passwordConfirmation}" />
+                    <p
+                      th:if="${#fields.hasErrors('passwordConfirmation')}"
+                      th:errors="*{passwordConfirmation}"
+                      class="upper-new-error"
+                    ></p>
+                  </div>
+
+                  <div class="com-field">
+                    <label>ユーザー名</label><br />
+                    <input type="text" th:field="*{name}" />
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="upper-new-error"></p>
+                  </div>
+
+                </div>
+                <div class="register-upper-right-wrapper">
+                  <p class="register-icon-title" th:for="image">アイコンの画像</p>
+                  <div class="register-upper-right">
+                    <img id="image-preview" src="" alt="プレビュー"/>
+                    <div class="register-text">
+                      <p id="file-name-text" class="file-name-text"></p>
+                      <div class="file-select-area">
+                        <label for="image" class="file-select-button">
+                          ファイルを選択
+                        </label>
+                        <input type="file" th:field="*{image}" id="image" class="hidden-file-input"/>
+                      </div>
+                    </div>
+                  </div>
+                  <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-image-error"></p>
+                </div>
+              </div>
+            
+              <div class="register-lower">
+                <div class="com-field">
+                  <label>プロフィール</label><br />
+                  <textarea class="user-textarea" th:field="*{profile}"></textarea>
+                  <p th:if="${#fields.hasErrors('profile')}" th:errors="*{profile}" class="new-error"></p>
+                </div>
+
+                <div class="com-field">
+                  <label>所属</label><br />
+                  <textarea class="user-textarea" th:field="*{department}"></textarea>
+                  <p th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="new-error"></p>
+                </div>
+
+                <div class="com-field">
+                  <label>役職</label><br />
+                  <textarea class="user-textarea" th:field="*{position}"></textarea>
+                  <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}" class="new-error"></p>
+                </div>
+
+                
+
+                <button type="button" class="com-btn" onclick="showStep(2)">次へ</button>
+              </div>
             </div>
 
-            <div class="com-field">
-              <label>パスワード(6文字以上)</label><br />
-              <input type="password" th:field="*{password}" autocomplete="off" />
-              <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="new-error"></p>
-            </div>
+            
+            <div id="step-2" style="display: none">
+              <h3>２：本人確認設定</h3>
 
-            <div class="com-field">
-              <label>パスワード再入力</label><br />
-              <input type="password" th:field="*{passwordConfirmation}" />
-              <p
-                th:if="${#fields.hasErrors('passwordConfirmation')}"
-                th:errors="*{passwordConfirmation}"
-                class="new-error"
-              ></p>
-            </div>
+              <div class="com-field">
+                <label>本人確認質問</label><br />
+                <select th:field="*{securityQuestion}">
+                  <option value="">質問を選んでください</option>
+                  <option th:each="q : ${questions}" th:value="${q}" th:text="${q}"></option>
+                </select>
+              </div>
 
-            <div class="com-field">
-              <label>ユーザー名</label><br />
-              <input type="text" th:field="*{name}" />
-              <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="new-error"></p>
-            </div>
+              <div class="com-field">
+                <label>答え</label><br />
+                <input type="text" th:field="*{securityAnswer}" />
+                <p
+                  th:if="${#fields.hasErrors('securityAnswer')}"
+                  th:errors="*{securityAnswer}"
+                  class="new-error"
+                ></p>
+              </div>
 
-            <div class="com-field">
-              <label>プロフィール</label><br />
-              <textarea class="user-textarea" th:field="*{profile}"></textarea>
-              <p th:if="${#fields.hasErrors('profile')}" th:errors="*{profile}" class="new-error"></p>
-            </div>
-
-            <div class="com-field">
-              <label>所属</label><br />
-              <textarea class="user-textarea" th:field="*{department}"></textarea>
-              <p th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="new-error"></p>
-            </div>
-
-            <div class="com-field">
-              <label>役職</label><br />
-              <textarea class="user-textarea" th:field="*{position}"></textarea>
-              <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}" class="new-error"></p>
-            </div>
-
-            <div class="com-field">
-              <label th:for="image">アイコンの画像</label>
-              <br />
-              <input type="file" th:field="*{image}" id="image" />
-              <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="new-error"></p>
-            </div>
-
-            <div class="com-actions">
-              <input class="com-btn" type="submit" value="新規登録" data-disable-with="新規登録" />
+              <div class="com-actions">
+                <button type="button" class="com-btn" onclick="showStep(1)">前へ</button>
+                <input
+                  class="com-btn"
+                  type="submit"
+                  value="新規登録"
+                  data-disable-with="新規登録"
+                />
+              </div>
             </div>
           </form>
         </div>
       </div>
     </main>
     <footer th:replace="~{common/footer :: footer}"></footer>
+    <script th:src="@{/js/previewImage.js}"></script>
   </body>
 </html>

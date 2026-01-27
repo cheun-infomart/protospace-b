@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("login-modal-for-like");
-  const closeBtn = document.getElementById("close-login-modal");
-  
+  const modalId = "login-modal-for-like";
+  setupModalEvents(modalId);
+
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".like-btn");
 
@@ -12,30 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 未ログイン時
     if (!prototypeId) {
       event.preventDefault();
-
-      // クリックされた瞬間に改めてモーダルをHTMLから探す
-      const modal = document.getElementById("login-modal-for-like");
-
-      if (modal) {
-        modal.style.display = "flex";
-
-        // モーダル内の「✖」ボタンで閉じる処理
-        const closeBtn = modal.querySelector("#modal-close-btn");
-        closeBtn.onclick = () => {
-          modal.style.display = "none";
-        };
-
-        // 背景クリックで閉じる処理
-        modal.onclick = (event) => {
-          if (event.target === modal) modal.style.display = "none";
-        };
-      } else {
-        console.error(
-          "モーダルが見つかりません。HTMLのth:replaceを確認してください。",
-        );
-      }
+      openModal(modalId);
       return;
     }
+
     // ログイン時の処理：fetchを実行
     event.preventDefault();
 
@@ -72,4 +52,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
