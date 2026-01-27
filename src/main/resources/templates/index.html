@@ -42,7 +42,13 @@
                 ></a>
                 <p class="prototype-index-card_summary" th:text="${prototype.catchCopy}"></p>
                 <div class="prototype-index-user-and-like">
-                  <div th:replace="~{common/like :: like}"></div>
+                  <div class="prototype-index-icons">
+                    <div th:replace="~{common/like :: like}"></div>
+                    <a th:href="@{/prototypes/{id}(id=${prototype.id})}" class="prototype-index-comment">
+                      <span class="material-symbols-outlined"style="color: #657786; font-size: 20px; line-height: 1;" >mode_comment</span>
+                      <span th:text="${prototype.comments.size()}" style="margin-left: 4px; color: #657786; font-size: 14px; ">0</span>
+                    </a>
+                  </div>
                   <a th:href="@{/users/{id}(id=${prototype.user.id})}" class="prototype-index-card_user">
                     <img th:src="@{${prototype.user.image}}" alt="user-icon" class="user-icon-mini" />
                     <span th:text="|by ${prototype.user.name}|">by 名前</span>
