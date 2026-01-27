@@ -18,6 +18,11 @@ import in.tech_camp.protospace_b.entity.PrototypeEntity;
 @Mapper
 public interface PrototypeRepository {
   @Select("SELECT * FROM prototypes WHERE user_id = #{userId} ORDER BY created_at DESC")
+  @Results(value ={
+    @Result(property="id", column="id"),
+    @Result(property = "comments", column = "id",
+      many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
+  })
   List<PrototypeEntity> findByUserId(Integer userId);
   
   @Select("SELECT p.*, u.name AS user_name, u.image AS user_image FROM prototypes p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC;")
@@ -29,7 +34,9 @@ public interface PrototypeRepository {
     @Result(property="image", column="image"),
     @Result(property="user.id", column="user_id"),
     @Result(property="user.name", column="user_name"),
-    @Result(property="user.image", column="user_image")
+    @Result(property="user.image", column="user_image"),
+    @Result(property = "comments", column = "id",
+      many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })
   List<PrototypeEntity> findAll();
   
@@ -60,8 +67,11 @@ public interface PrototypeRepository {
         "translate(concept, 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん', 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲン') ILIKE CONCAT('%', #{keyword}, '%') " +
         "ORDER BY created_at DESC")
   @Results(value = {
+    @Result(property = "id", column = "id"),
     @Result(property = "user", column = "user_id",
-            one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById"))
+            one = @One(select = "in.tech_camp.protospace_b.repository.UserRepository.findById")),
+     @Result(property = "comments", column = "id",
+      many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })
   List<PrototypeEntity> findByTextContaining(String keyword);
 }
