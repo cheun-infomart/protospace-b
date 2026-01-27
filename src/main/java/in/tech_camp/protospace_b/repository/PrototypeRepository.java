@@ -29,7 +29,9 @@ public interface PrototypeRepository {
     @Result(property="image", column="image"),
     @Result(property="user.id", column="user_id"),
     @Result(property="user.name", column="user_name"),
-    @Result(property="user.image", column="user_image")
+    @Result(property="user.image", column="user_image"),
+    @Result(property = "comments", column = "id",
+      many = @Many(select = "in.tech_camp.protospace_b.repository.CommentRepository.findByPrototypeId"))
   })
   List<PrototypeEntity> findAll();
   
