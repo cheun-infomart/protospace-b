@@ -13,11 +13,11 @@
         id="confirmModal"
         class="prototype-edit-modal-overlay"
         th:style="${#vars['org.springframework.validation.BindingResult.prototypeForm']?.hasErrors()} ? 'display: flex;' : 'display: none;'"
-        onclick="closeOnOverlayClick(event, 'confirmModal')"
       >
-        <div class="prototype-edit-modal-content" onclick="event.stopPropagation()">
-          <span id="modal-close-btn" class="modal-close-btn">&times;</span>
+        <div class="prototype-edit-modal-content">
+          <span class="modal-close-btn">&times;</span>
           <div class="modal-title">
+            
             <span class="material-symbols-outlined">edit</span>
             <h2 class="title-h2">プロトタイプ編集</h2>
           </div>
@@ -85,10 +85,9 @@
           >
             <div class="prototype-show-button-section">
               <button
-                class="prototype-show-btn"
-                onclick="openEditModal()"
-                >編集する
-              </button>
+                class="prototype-show-btn prototype-show-btn-edit"
+                >編集する</button
+              >
               <form
                 th:action="@{/prototypes/{prototypeId}/delete(prototypeId=${prototype.id})}"
                 th:method="post"
@@ -163,9 +162,9 @@
                 </a>
                 <span class="prototype-show-comment-text" th:text="${comment.text}"></span>
                 <a
-                th:href="@{/users/{userId}(userId=${comment.user.id})}"
-                th:text="${comment.user.name}"
-                class="prototype-show-comment-user"
+                  th:href="@{/users/{userId}(userId=${comment.user.id})}"
+                  th:text="${comment.user.name}"
+                  class="prototype-show-comment-user"
                 ></a>
               </li>
             </ul>
@@ -173,7 +172,6 @@
         </div>
       </div>
     </div>
-
     <div
       th:replace="~{common/login_modal_for_like :: login_modal_for_like}"
     ></div>
