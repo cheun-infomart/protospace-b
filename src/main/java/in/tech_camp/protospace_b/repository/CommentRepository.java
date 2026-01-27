@@ -13,10 +13,12 @@ import in.tech_camp.protospace_b.entity.CommentEntity;
 
 @Mapper
 public interface  CommentRepository {
-  @Select("SELECT c.*, u.id AS user_id, u.name AS user_name FROM comments c JOIN users u ON c.user_id = u.id WHERE c.prototype_id = #{prototypeId}")
+  @Select("SELECT c.*, u.id AS user_id, u.name AS user_name, u.image AS user_image FROM comments c JOIN users u ON c.user_id = u.id WHERE c.prototype_id = #{prototypeId} ORDER BY c.created_at DESC")
   @Results(value ={
     @Result(property = "user.id", column = "user_id"),
     @Result(property = "user.name", column = "user_name"),
+    @Result(property = "user.image", column = "user_image"),
+    @Result(property = "createdAt", column = "created_at")
     })
     List<CommentEntity> findByPrototypeId(Integer prototypeId);
 

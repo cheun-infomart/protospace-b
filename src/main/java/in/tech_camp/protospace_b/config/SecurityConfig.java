@@ -13,30 +13,51 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/css/**", "/images/**","/uploads/**", "/", "/users/register", "/users/login","/prototypes/{id:[0-9]+}","/users/{id:[0-9]+}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(login -> login
-                        .loginProcessingUrl("/login")
-                        .loginPage("/users/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error")
-                        .usernameParameter("email") 
-                        .permitAll())
+        private final CustomLoginSession customLoginSession;
 
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"));
+        public SecurityConfig(CustomLoginSession customLoginSession) {
+                this.customLoginSession = customLoginSession;
+        }
 
-        return http.build();
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                                                .requestMatchers("/css/**", "/js/**", "/images/**",
+                                                                "/uploads/**", "/",
+                                                                "/users/register", "/users/login",
+                                                                "/.well-known/**",
+                                                                "/favicon.ico",
+                                                                "/prototypes/{id:[0-9]+}",
+                                                                "/users/{id:[0-9]+}",
+                                                                "/prototypes/search/**")
+
+                                                .permitAll()
+                                                .requestMatchers("/users/password/find",
+                                                                "/users/password/reset")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/user")
+                                                .permitAll()
+                                                .requestMatchers("/api/**").authenticated()
+                                                .anyRequest().authenticated())
+                                .formLogin(login -> login
+                                                .loginProcessingUrl("/login")
+                                                .loginPage("/users/login")
+                                                .failureUrl("/users/login?error")
+                                                .successHandler(customLoginSession)
+                                                .usernameParameter("email")
+                                                .permitAll())
+
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/"));
+
+                return http.build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }

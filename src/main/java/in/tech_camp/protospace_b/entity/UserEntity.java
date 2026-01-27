@@ -12,7 +12,11 @@ public class UserEntity {
   private String profile;
   private String department;
   private String position;
+  private String image;
   private String password;
   private List<PrototypeEntity> prototypes;
   private List<CommentEntity> comments;
+
+  private String securityQuestion;
+  private String securityAnswer;
 }

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import in.tech_camp.protospace_b.config.CustomUserDetails;
 import in.tech_camp.protospace_b.entity.CommentEntity;
 import in.tech_camp.protospace_b.entity.PrototypeEntity;
+import in.tech_camp.protospace_b.entity.UserEntity;
 import in.tech_camp.protospace_b.factory.PrototypeFormFactory;
 import in.tech_camp.protospace_b.form.CommentForm;
 import in.tech_camp.protospace_b.form.PrototypeForm;
@@ -48,6 +50,9 @@ public class PrototypeControllerUnitTest {
 
   @Mock
   private PrototypeService prototypeService;  
+
+  @Mock
+  private in.tech_camp.protospace_b.repository.LikeRepository likeRepository;
 
   @Mock
   private BindingResult bindingResult;
@@ -82,7 +87,7 @@ public class PrototypeControllerUnitTest {
     
     @Test
     public void プロトタイプ一覧にリクエストするとプロトタイプ一覧のビューファイルがレスポンスで返ってくる(){
-      String result = prototypeController.showPrototypes(model);
+      String result = prototypeController.showPrototypes(model, authentication);
       assertThat(result,is("index"));
     }
 
@@ -108,8 +113,14 @@ public class PrototypeControllerUnitTest {
       // findAllメソッド呼び出し時expectedPrototypeListを返す
       when(prototypeRepository.findAll()).thenReturn(expectedPrototypeList);
 
+      // いいねカウントのモック設定
+      when(likeRepository.countByPrototypeId(anyInt())).thenReturn(5);
+      
+      // ログイン中ユーザーのいいねチェック (0 = 未いいねとして返す)
+      when(likeRepository.countByUserAndPrototype(any(), anyInt())).thenReturn(0);
+
       // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
-      prototypeController.showPrototypes(model);
+      prototypeController.showPrototypes(model, authentication);
 
       // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
       assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
@@ -126,7 +137,7 @@ public class PrototypeControllerUnitTest {
       prototype.setId(prototypeId);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
 
       assertThat(result, is("prototypes/show"));
     }
@@ -138,7 +149,7 @@ public class PrototypeControllerUnitTest {
       prototype.setId(prototypeId);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
 
       assertThat(result, is("prototypes/show"));
 
@@ -148,7 +159,7 @@ public class PrototypeControllerUnitTest {
     @Test
     public void 詳細機能にリクエストするときにDBに無いプロトタイプIDを指定されたときにトップページにリダイレクトされる(){
       when(prototypeRepository.findById(1)).thenReturn(null);
-      String result = prototypeController.showPrototypeDetail(1, model);
+      String result = prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(result, is("redirect:/"));
     }
 
@@ -159,7 +170,7 @@ public class PrototypeControllerUnitTest {
       PrototypeEntity prototype = new PrototypeEntity();
       prototype.setId(1);
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      prototypeController.showPrototypeDetail(1, model);
+      prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(model.getAttribute("commentForm"), is(commentForm));
     }
 
@@ -180,7 +191,7 @@ public class PrototypeControllerUnitTest {
       prototype.setComments(expectedCommentList);
 
       when(prototypeRepository.findById(1)).thenReturn(prototype);
-      prototypeController.showPrototypeDetail(1, model);
+      prototypeController.showPrototypeDetail(1, model, authentication);
       assertThat(model.getAttribute("comments"), is(expectedCommentList));
     }
   }
@@ -359,32 +370,6 @@ public class PrototypeControllerUnitTest {
 
   @Nested
   class プロトタイプ編集機能 {
-    @Test
-    public void ゲットメソッドでView画面表示できる() {
-      Integer userId = 100;
-      Integer prototypeId = 1;
-
-      PrototypeEntity prototype = new PrototypeEntity();
-      prototype.setId(prototypeId);
-      in.tech_camp.protospace_b.entity.UserEntity owner = new in.tech_camp.protospace_b.entity.UserEntity();
-      owner.setId(userId);
-      prototype.setUser(owner);
-
-      // 権限チェック用のEntity取得
-      when(prototypeService.findPrototypeById(prototypeId)).thenReturn(prototype);
-      // フォーム表示用のデータ取得
-      when(prototypeService.getPrototypeForm(prototypeId)).thenReturn(testForm);
-      // ログインユーザー情報の取得
-      when(authentication.getPrincipal()).thenReturn(customUserDetails);
-      when(customUserDetails.getId()).thenReturn(userId);
-
-      Model model = new ExtendedModelMap();
-
-      String result = prototypeController.editPrototype(prototypeId, authentication, redirectAttributes, model);
-
-      assertThat(result, is("prototypes/edit"));
-      assertThat(model.getAttribute("prototypeForm"), is(testForm));
-    }
 
     @Test
     public void 編集機能が問題なく実行されたか() {
@@ -392,8 +377,86 @@ public class PrototypeControllerUnitTest {
     Model model = new ExtendedModelMap();
     //updateメソッド実行
     String result = prototypeController.updatePrototype(testForm, bindingResult, 1, model);
+    
     //問題なくupdateされredirectになっているか
     assertThat(result, is("redirect:/prototypes/1"));
+    }
+
+    @Test
+    public void バリデーションエラー時に詳細画面を返し詳細データが保持されていること() {
+    // 1. 準備：必要なIDやモックオブジェクト
+    Integer prototypeId = 1;
+    Integer userId = 100;
+
+    // フォーム（名前を空にしてエラー想定のデータを作成）
+    PrototypeForm testForm = new PrototypeForm();
+    testForm.setName(""); 
+
+    // 詳細画面の再表示に必要なエンティティ
+    PrototypeEntity prototype = new PrototypeEntity();
+    prototype.setId(prototypeId);
+    UserEntity owner = new UserEntity();
+    owner.setId(userId);
+    prototype.setUser(owner);
+
+    // 依存サービス・リポジトリの挙動設定
+    when(prototypeRepository.findById(prototypeId)).thenReturn(prototype);
+    when(bindingResult.hasErrors()).thenReturn(true); // エラーがある状態をシミュレート
+
+    Model model = new ExtendedModelMap();
+
+    // 2. 実行：コントローラーのメソッドを直接叩く
+    String result = prototypeController.updatePrototype(
+        testForm, 
+        bindingResult, 
+        prototypeId, 
+        model
+    );
+
+    // 3. 検証
+    // View名が詳細画面（show）になっているか
+    assertThat(result, is("prototypes/show"));
+
+    // モーダル内で表示し続けるためにフォームと詳細データがModelに入っているか
+    assertThat(model.getAttribute("prototypeForm"), is(testForm));
+    assertThat(model.getAttribute("prototype"), is(prototype));
+    
+    // エラーメッセージが生成されているか
+    assertThat(model.containsAttribute("errorMessages"), is(true));
+    }
+  }
+
+  @Nested
+  class プロトタイプ検索機能{
+    @Test
+    public void 検索キーワードを入力すると対象のプロトタイプが表示されるか(){
+      PrototypeEntity prototype1 = new PrototypeEntity();
+      prototype1.setId(1);
+      prototype1.setName("プロトタイプな名前");
+
+      PrototypeEntity prototype2 = new PrototypeEntity();
+      prototype2.setId(2);
+      prototype2.setCatchCopy("これはプロトタイプです");
+
+      PrototypeEntity prototype3 = new PrototypeEntity();
+      prototype3.setId(3);
+      prototype3.setConcept("プロトタイプという概念");
+
+      // テストデータをexpectedPrototypeListに格納
+      List<PrototypeEntity> expectedPrototypeList = Arrays.asList(prototype1, prototype2, prototype3);
+
+      when(prototypeService.convertToKatakana("プロトタイプ")).thenReturn("プロトタイプ");
+      // findAllメソッド呼び出し時expectedPrototypeListを返す
+      when(prototypeRepository.findByTextContaining("プロトタイプ")).thenReturn(expectedPrototypeList);
+
+      // テスト用のモデルオブジェクトを生成し、showPrototypesに渡す
+      String result= prototypeController.searchPrototypes("プロトタイプ","XMLHttpRequest", model, authentication);
+
+      //　対象のビューが表示されるか
+      assertThat(result, is("index :: #search-results"));
+
+      // 実測値prototypesが期待値expectedPrototypeListと一致するか確認
+      assertThat(model.getAttribute("prototypes"), is(expectedPrototypeList));
     }
   }
 }
