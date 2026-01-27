@@ -168,6 +168,13 @@ main {
 .prototype-index-main {
   display: block;
   unicode-bidi: isolate;
+  background-color: #ffffff;
+  /* ヘッダーとフッターの余白を消す */
+  margin-top: -48px;
+  margin-bottom: -48px;
+  /* 消した分の余白を作る */
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
 .prototype-index-content {
   width: 1024px;
@@ -192,6 +199,13 @@ main {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  padding: 10px;
+  background-color: rgba(241, 248, 254, 0.5);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08), 
+              -2px -2px 5px rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 #prototype_link {
   display: block;
